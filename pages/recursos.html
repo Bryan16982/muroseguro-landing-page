@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recursos - MuroSeguro</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/recursos.css">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- Sidebar común (enviado por Bryan, no modificar) -->
+    <aside class="sidebar">
+      <div class="logo-container">
+        <img src="../assets/images/logo-muroseguro.png" alt="Logo MuroSeguro">
+      </div>
+      <nav>
+        <a href="index.html">Inicio</a>
+        <a href="evaluacion.html">Evaluar</a>
+        <a href="resultados.html">Resultados</a>
+        <a href="directorio.html">Directorio</a>
+        <a href="recursos.html">Recursos</a>
+        <a href="perfil.html">Perfil</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+
+      <!-- ============ Encabezado (frame: Recursos · Centro de recursos) ============ -->
+      <header class="recursos-header">
+        <p class="caption etiqueta-seccion">INFORMACIÓN Y PREVENCIÓN</p>
+        <h1 class="h1">Centro de Recursos</h1>
+        <p class="body-text">Infografías, videos y términos para orientarle.</p>
+      </header>
+
+      <!-- ============ HU-015 y HU-016: Infografías y videos ============ -->
+      <section class="recursos-seccion">
+        <h2 class="h2">Infografías y videos</h2>
+        <!-- recursos.js llena esta grilla -->
+        <div class="grid-3" id="lista-recursos"></div>
+      </section>
+
+      <!-- Visor (Lightbox) para infografías y videos. Empieza oculto. -->
+      <div class="visor oculto" id="visor">
+        <div class="visor-caja">
+          <button type="button" class="visor-cerrar" id="btn-cerrar-visor" aria-label="Cerrar">X</button>
+          <h3 class="h3" id="visor-titulo"></h3>
+
+          <!-- HU-015: imagen de la infografía -->
+          <img src="" alt="" id="visor-imagen" class="visor-imagen">
+
+          <!-- HU-016: video nativo. "controls" trae Play, Pausa, Volumen, Pantalla completa y CC -->
+          <video controls id="visor-video" class="visor-video oculto">
+            <source src="" type="video/mp4" id="visor-video-fuente">
+            <track kind="subtitles" src="" srclang="es" label="Español" id="visor-subtitulos">
+            Su navegador no puede reproducir este video.
+          </video>
+
+          <p class="aviso" id="visor-aviso"></p>
+        </div>
+      </div>
+
+      <!-- ============ HU-017: Glosario Sísmico ============ -->
+      <section class="recursos-seccion">
+        <div class="card">
+          <h2 class="h2">Glosario Sísmico</h2>
+
+          <div class="form-group">
+            <label for="buscador-glosario" class="form-label">Buscar término técnico</label>
+            <input type="text" id="buscador-glosario" class="form-input search-bar" placeholder="Ej.: cangrejera, estribo, ductilidad">
+          </div>
+
+          <!-- recursos.js llena esta lista -->
+          <dl class="glosario" id="lista-glosario"></dl>
+
+          <p class="mensaje-vacio oculto" id="glosario-vacio" role="status">
+            No se encontró el término. Intente con otra palabra.
+          </p>
+
+          <p class="aviso">Conocer estos términos no otorga facultades para certificar una estructura.</p>
+        </div>
+      </section>
+
+      <!-- ============ HU-025 y HU-026: Casos de Estudio (frame: Prevención · Casos de estudio) ============ -->
+      <section class="recursos-seccion" id="casos">
+        <p class="caption etiqueta-seccion">CENTRO DE RECURSOS</p>
+        <h2 class="h2">Casos de Estudio</h2>
+        <p class="text-support">Galería de intervenciones en viviendas · Contenido ilustrativo</p>
+
+        <!-- Botones tipo píldora (tags) -->
+        <div class="tags">
+          <button type="button" class="tag activo" data-tag="Todos">Todos</button>
+          <button type="button" class="tag" data-tag="Ampliación">Ampliación</button>
+          <button type="button" class="tag" data-tag="Cimentación">Cimentación</button>
+          <button type="button" class="tag" data-tag="Cangrejera">Cangrejera</button>
+        </div>
+
+        <!-- recursos.js llena esta grilla -->
+        <div class="grid-3" id="grilla-casos"></div>
+
+        <p class="mensaje-vacio oculto" id="casos-vacio" role="status">
+          Aún no hay casos documentados para esta etiqueta.
+        </p>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/recursos.js"></script>
+</body>
+</html>
