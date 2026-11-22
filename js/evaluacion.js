@@ -889,7 +889,7 @@
       detail: { paso: 4, siguiente: 'resultados' }
     }));
 
-    window.location.href = 'resultados.html';
+    window.location.href = 'resultados.html?desde=evaluacion';
   });
 
   window.addEventListener('pagehide', () => {
