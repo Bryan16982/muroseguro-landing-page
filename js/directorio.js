@@ -215,7 +215,7 @@ function renderizarTodo() {
   for (let i = 0; i < visibles.length; i++) {
     const ing = visibles[i];
     const rutaFoto = ing.foto
-      ? "../assets/images/ingenieros/" + encodeURI(ing.foto)
+      ? "../recursos/images/ingeniero/" + encodeURI(ing.foto)
       : avatarSvg;
     const urlWhatsapp =
       "https://wa.me/" + ing.telefono + "?text=" + encodeURIComponent(mensajeBase);
@@ -310,4 +310,3 @@ function renderizarFaq() {
 
 renderizarTodo();
 renderizarFaq();
-
