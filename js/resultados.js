@@ -1,411 +1,398 @@
 /* =========================================================
-   resultados.css - Integrante 4 (Motor de Riesgo y Reportes)
-   Usa solo variables de styles.css. Todo va bajo .resultados
-   para no sobrescribir las clases base.
+   resultados.js - Integrante 4 (Motor de Riesgo y Reportes)
+   HU-012 Semáforo | HU-013 Dashboard | HU-014 PDF
+   HU-024 Mapa SVG | HU-029 Copiar enlace
+   Sin backend: lee de localStorage o de datos de prueba.
    ========================================================= */
+(function () {
+  'use strict';
 
-.resultados {
-  min-width: 0;
-}
+  /* ---------- 1. Configuración del motor (HU-012 CA01) ---------- */
+  var STORAGE_KEY = 'muroseguro_evaluacion';
 
-.resultados *,
-.resultados *::before,
-.resultados *::after {
-  box-sizing: border-box;
-}
+  // Suma ponderada: clave -> puntos + texto visible
+  var PESOS = {
+    columna:           { pts: 5, label: 'Daños en columnas' },
+    desplome:          { pts: 5, label: 'Desplome o inclinación de muros' },
+    muro:              { pts: 4, label: 'Grietas en muros portantes' },
+    grietas:           { pts: 4, label: 'Grietas visibles' },
+    losa:              { pts: 3, label: 'Losa o techo con daños' },
+    huaico:            { pts: 3, label: 'Exposición a huaicos' },
+    terreno_humedo:    { pts: 3, label: 'Zona de alta humedad o inundación' },
+    terreno_inclinado: { pts: 2, label: 'Terreno inclinado o con pendiente' },
+    humedad:           { pts: 2, label: 'Humedad en muros' },
+    lluvia:            { pts: 1, label: 'Exposición a lluvia' },
+    viento:            { pts: 1, label: 'Exposición a viento' }
+  };
 
-.resultados :focus-visible,
-.modal-limites :focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
-}
+  var PUNTAJE_MAX_ESCALA = 20; // 100% de la barra
+  var UMBRAL_AMARILLO = 6;     // 0-5 verde | 6-12 amarillo | 13+ rojo
+  var UMBRAL_ROJO = 13;
 
-/* Botones / enlaces-botón: mínimo 44x44 */
-.resultados .btn-primary,
-.resultados .btn-secondary,
-.modal-limites .btn-primary,
-.modal-limites .btn-secondary {
-  min-height: 44px;
-  min-width: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-decoration: none;
-  cursor: pointer;
-}
+  var NIVELES = {
+    verde: {
+      titulo: 'Riesgo Bajo',
+      desc: 'No se detectaron señales visibles de alta vulnerabilidad. Mantén el monitoreo periódico.',
+      acciones: [
+        'Revisa muros y columnas cada 6 meses.',
+        'Mantén limpios los drenajes y canaletas.',
+        'No hagas ampliaciones sin asesoría técnica.'
+      ]
+    },
+    amarillo: {
+      titulo: 'Riesgo Medio',
+      desc: 'Hay señales que conviene vigilar. Se recomienda consultar a un profesional para confirmar.',
+      acciones: [
+        'Fotografía y mide las grietas para ver si crecen.',
+        'Programa una inspección con un ingeniero civil colegiado.',
+        'Evita añadir pisos o cargas hasta recibir orientación.',
+        'Repara filtraciones de agua en techos y muros.'
+      ]
+    },
+    rojo: {
+      titulo: 'Riesgo Alto',
+      desc: 'Se detectaron varias señales de vulnerabilidad importante. Busca a un especialista cuanto antes.',
+      acciones: []
+    }
+  };
 
-/* ---------- Encabezado ---------- */
-.res-header { margin-bottom: 20px; }
-.res-header h1 { color: var(--color-secondary); margin: 0 0 4px; }
-.res-subtitulo { margin: 0; color: var(--color-secondary); opacity: 0.8; }
+  // Datos de prueba (usar con ?demo=rojo | amarillo | verde)
+  var DEMOS = {
+    rojo:     ['columna', 'muro', 'huaico', 'grietas'],
+    amarillo: ['losa', 'lluvia', 'terreno_inclinado', 'humedad'],
+    verde:    ['lluvia']
+  };
 
-.resultados .card { margin-bottom: 16px; }
+  // Datos de prueba del mapa (HU-024)
+  var DISTRITOS = {
+    'laredo':            { nombre: 'Laredo',             riesgo: 'bajo',  viviendas: 120, pctAlto: 8 },
+    'alto-trujillo':     { nombre: 'Alto Trujillo',      riesgo: 'alto',  viviendas: 540, pctAlto: 46 },
+    'moche':             { nombre: 'Moche',              riesgo: 'medio', viviendas: 210, pctAlto: 22 },
+    'la-esperanza':      { nombre: 'La Esperanza',       riesgo: 'medio', viviendas: 480, pctAlto: 27 },
+    'el-porvenir':       { nombre: 'El Porvenir',        riesgo: 'alto',  viviendas: 430, pctAlto: 41 },
+    'florencia-de-mora': { nombre: 'Florencia de Mora',  riesgo: 'medio', viviendas: 190, pctAlto: 24 },
+    'trujillo-centro':   { nombre: 'Trujillo (Centro)',  riesgo: 'bajo',  viviendas: 350, pctAlto: 10 },
+    'huanchaco':         { nombre: 'Huanchaco',          riesgo: 'bajo',  viviendas: 160, pctAlto: 12 },
+    'victor-larco':      { nombre: 'Víctor Larco',       riesgo: 'medio', viviendas: 260, pctAlto: 19 }
+  };
+  var TEXTO_RIESGO = { bajo: 'Riesgo bajo', medio: 'Riesgo medio', alto: 'Riesgo alto' };
+  var COLOR_PUNTO = { bajo: 'punto-verde', medio: 'punto-amarillo', alto: 'punto-rojo' };
 
-.res-h2 {
-  margin: 0 0 12px;
-  font-size: 1.125rem;
-  color: var(--color-secondary);
-}
+  /* ---------- 2. Utilidades ---------- */
+  function $(sel) { return document.querySelector(sel); }
+  function $$(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
 
-.res-etiqueta {
-  margin: 0 0 4px;
-  font-size: 0.8125rem;
-  color: var(--color-secondary);
-  opacity: 0.75;
-}
-
-.res-nota {
-  margin: 8px 0 12px;
-  font-size: 0.875rem;
-  color: var(--color-secondary);
-  opacity: 0.85;
-}
-
-.res-aviso {
-  margin: 16px 0 0;
-  padding: 12px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-secondary);
-  background: var(--bg-dominant);
-  border-left: 4px solid var(--color-warning);
-  border-radius: 6px;
-}
-
-/* ---------- Semáforo ---------- */
-.res-semaforo-cuerpo {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.semaforo {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px;
-  background: var(--color-secondary);
-  border-radius: 999px;
-  flex: 0 0 auto;
-}
-
-.lampara {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid var(--bg-white);
-  opacity: 0.25;
-  transition: opacity 0.25s ease, box-shadow 0.25s ease;
-}
-.lampara-rojo { background: var(--color-error); }
-.lampara-amarillo { background: var(--color-warning); }
-.lampara-verde { background: var(--color-success); }
-
-.lampara.activa {
-  opacity: 1;
-  box-shadow: 0 0 0 4px var(--bg-white);
-}
-
-.res-semaforo-texto { flex: 1 1 200px; min-width: 0; }
-
-.res-nivel {
-  margin: 0 0 6px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-secondary);
-}
-
-.res-desc { margin: 0; color: var(--color-secondary); }
-
-.res-semaforo { border-top: 6px solid var(--border-neutral); }
-.res-semaforo.nivel-verde { border-top-color: var(--color-success); }
-.res-semaforo.nivel-amarillo { border-top-color: var(--color-warning); }
-.res-semaforo.nivel-rojo { border-top-color: var(--color-error); }
-
-/* ---------- Barra de progreso (HU-013 CA01) ---------- */
-.res-barra-bloque { margin-top: 20px; }
-
-.res-barra-info {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 6px;
-  font-size: 0.875rem;
-  color: var(--color-secondary);
-}
-
-.barra {
-  height: 16px;
-  background: var(--bg-dominant);
-  border: 1px solid var(--border-neutral);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.barra-relleno {
-  height: 100%;
-  width: 0;
-  background: var(--color-success);
-  border-radius: 999px;
-  transition: width 0.6s ease;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
-.nivel-amarillo .barra-relleno { background: var(--color-warning); }
-.nivel-rojo .barra-relleno { background: var(--color-error); }
-
-.barra-escala {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 4px;
-  font-size: 0.75rem;
-  color: var(--color-secondary);
-  opacity: 0.8;
-}
-
-/* ---------- Botón urgente (HU-013 CA02) ---------- */
-.res-urgente {
-  border: 2px solid var(--color-error);
-}
-.res-urgente h2 { color: var(--color-error); }
-
-.res-urgente-btn {
-  margin-top: 12px;
-  animation: pulso-urgente 1.2s ease-in-out infinite;
-}
-
-@keyframes pulso-urgente {
-  0%   { box-shadow: 0 0 0 0 var(--color-error); }
-  70%  { box-shadow: 0 0 0 12px transparent; }
-  100% { box-shadow: 0 0 0 0 transparent; }
-}
-
-/* ---------- Stats ---------- */
-.res-stats { margin-bottom: 16px; }
-.res-stats .card { margin-bottom: 0; }
-.res-stat-valor {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-secondary);
-}
-
-/* ---------- Listas ---------- */
-.res-lista {
-  margin: 0;
-  padding-left: 20px;
-  color: var(--color-secondary);
-}
-.res-lista li { margin-bottom: 8px; }
-
-.res-factores {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.res-factores li {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border-neutral);
-  color: var(--color-secondary);
-}
-.res-factores li:last-child { border-bottom: none; }
-
-/* ---------- Acciones ---------- */
-.res-acciones {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.res-acciones button { flex: 1 1 200px; }
-
-/* ---------- Mapa SVG (HU-024) ---------- */
-.mapa-contenedor {
-  background: var(--bg-dominant);
-  border-radius: 8px;
-  padding: 8px;
-  margin-bottom: 12px;
-}
-
-.mapa-svg {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-}
-
-.zona {
-  stroke: var(--bg-white);
-  stroke-width: 3;
-  stroke-linejoin: round;
-  fill-opacity: 0.55;
-  cursor: pointer;
-  transition: fill-opacity 0.2s ease;
-}
-.zona-bajo  { fill: var(--color-success); }
-.zona-medio { fill: var(--color-warning); }
-.zona-alto  { fill: var(--color-error); }
-
-.zona:hover,
-.zona:focus {
-  fill-opacity: 1;
-}
-.zona:focus-visible {
-  outline: none;
-  stroke: var(--color-accent);
-  stroke-width: 4;
-}
-.zona.seleccionada {
-  fill-opacity: 1;
-  stroke: var(--color-secondary);
-  stroke-width: 4;
-}
-
-.mapa-etiquetas text {
-  font-size: 12px;
-  font-weight: 600;
-  text-anchor: middle;
-  fill: var(--color-secondary);
-  pointer-events: none;
-}
-
-.mapa-info {
-  min-height: 72px;
-  padding: 12px;
-  margin-bottom: 12px;
-  background: var(--bg-white);
-  border: 1px solid var(--border-neutral);
-  border-radius: 8px;
-  color: var(--color-secondary);
-}
-.mapa-info p { margin: 0 0 6px; }
-.mapa-info p:last-child { margin-bottom: 0; }
-.mapa-info strong { font-size: 1rem; }
-
-.insignia {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
-  border: 1px solid var(--border-neutral);
-  border-radius: 999px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-secondary);
-  background: var(--bg-white);
-}
-
-.mapa-leyenda {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: 0.875rem;
-  color: var(--color-secondary);
-}
-.mapa-leyenda li { display: flex; align-items: center; gap: 6px; }
-
-.punto {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-.punto-verde { background: var(--color-success); }
-.punto-amarillo { background: var(--color-warning); }
-.punto-rojo { background: var(--color-error); }
-
-/* ---------- Modal (HU-012 CA03) ---------- */
-.modal-limites {
-  margin: auto; /* el reset global de styles.css quita el centrado nativo */
-  width: calc(100% - 32px);
-  max-width: 480px;
-  padding: 24px;
-  border: 1px solid var(--border-neutral);
-  border-radius: 12px;
-  background: var(--bg-white);
-  color: var(--color-secondary);
-}
-.modal-limites::backdrop {
-  background: color-mix(in srgb, var(--color-secondary) 70%, transparent);
-}
-.modal-limites h2 { margin: 0 0 12px; font-size: 1.25rem; }
-.modal-limites p { margin: 0 0 16px; }
-
-.modal-check {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-.modal-check input[type="checkbox"] {
-  flex: 0 0 24px;
-  width: 24px;
-  height: 24px;
-  margin-top: 2px;
-  accent-color: var(--color-accent);
-}
-.modal-check label { cursor: pointer; padding: 2px 0; }
-
-.modal-acciones {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-.modal-acciones > * { flex: 1 1 160px; }
-
-/* ---------- Cabecera de impresión (oculta en pantalla) ---------- */
-.print-header { display: none; }
-
-/* ---------- Responsive ---------- */
-@media (max-width: 768px) {
-  .resultados .grid-3 { grid-template-columns: 1fr; }
-  .res-nivel { font-size: 1.25rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .res-urgente-btn { animation: none; outline: 3px solid var(--color-error); }
-  .barra-relleno, .zona, .lampara { transition: none; }
-}
-
-/* ---------- Impresión / PDF (HU-014 CA02, CA03) ---------- */
-@media print {
-  .sidebar,
-  .no-print,
-  .modal-limites,
-  .res-urgente-btn {
-    display: none !important;
+  function crear(tag, clase, texto) {
+    var el = document.createElement(tag);
+    if (clase) el.className = clase;
+    if (texto !== undefined) el.textContent = texto;
+    return el;
   }
 
-  .app-layout { display: block; }
-  .main-content.resultados {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    overflow: visible;
+  function leerStorage() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
   }
 
-  .print-header {
-    display: block;
-    margin-bottom: 16px;
-    padding: 12px;
-    text-align: center;
-    font-weight: 700;
-    color: var(--color-secondary);
-    border: 2px solid var(--color-secondary);
+  // Solo se aceptan claves conocidas (evita inyección desde la URL)
+  function limpiarFactores(lista) {
+    var vistos = {};
+    return (Array.isArray(lista) ? lista : []).map(function (f) {
+      return String(f).toLowerCase().trim();
+    }).filter(function (f) {
+      if (!PESOS[f] || vistos[f]) return false;
+      vistos[f] = true;
+      return true;
+    });
   }
 
-  .resultados .card { break-inside: avoid; box-shadow: none; }
+  /* ---------- 3. Origen de datos ---------- */
+  function obtenerDatos() {
+    var params = new URLSearchParams(window.location.search);
+    var f = params.get('f');
+    var demo = params.get('demo');
+    var guardado = leerStorage();
 
-  .lampara, .semaforo, .barra-relleno, .res-semaforo {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    if (f !== null) {
+      return { factores: limpiarFactores(f.split(',')), vivienda: '', origen: 'enlace' };
+    }
+    if (demo && DEMOS[demo]) {
+      return { factores: DEMOS[demo].slice(), vivienda: '', origen: 'demo' };
+    }
+    if (guardado && guardado.factores) {
+      return {
+        factores: limpiarFactores(guardado.factores),
+        vivienda: typeof guardado.vivienda === 'string' ? guardado.vivienda : '',
+        origen: 'evaluacion'
+      };
+    }
+    return { factores: DEMOS.amarillo.slice(), vivienda: '', origen: 'demo' };
   }
-}
+
+  /* ---------- 4. Motor de riesgo (HU-012) ---------- */
+  function calcular(factores) {
+    var puntaje = factores.reduce(function (acc, k) { return acc + PESOS[k].pts; }, 0);
+    var nivel = 'verde';
+    if (puntaje >= UMBRAL_ROJO) nivel = 'rojo';
+    else if (puntaje >= UMBRAL_AMARILLO) nivel = 'amarillo';
+    return { puntaje: puntaje, nivel: nivel };
+  }
+
+  /* ---------- 5. Render del dashboard (HU-013) ---------- */
+  function renderResultado(datos, res) {
+    var info = NIVELES[res.nivel];
+    var card = $('#card-semaforo');
+
+    card.classList.remove('nivel-verde', 'nivel-amarillo', 'nivel-rojo');
+    card.classList.add('nivel-' + res.nivel);
+
+    $$('.lampara').forEach(function (l) {
+      l.classList.toggle('activa', l.getAttribute('data-lampara') === res.nivel);
+    });
+    $('#semaforo-visual').setAttribute('aria-label', 'Semáforo en ' + res.nivel);
+
+    $('#res-nivel').textContent = info.titulo;
+    $('#res-desc').textContent = info.desc;
+    $('#stat-puntaje').textContent = res.puntaje;
+    $('#stat-factores').textContent = datos.factores.length;
+    $('#stat-nivel').textContent = info.titulo.replace('Riesgo ', '');
+
+    // Barra de progreso CSS
+    var pct = Math.min(100, Math.round((res.puntaje / PUNTAJE_MAX_ESCALA) * 100));
+    $('#barra-relleno').style.width = pct + '%';
+    $('#barra').setAttribute('aria-valuenow', pct);
+    $('#barra-valor').textContent = res.puntaje + ' pts';
+
+    // Factores
+    var ul = $('#lista-factores');
+    ul.innerHTML = '';
+    if (!datos.factores.length) {
+      ul.appendChild(crear('li', '', 'No se registraron factores de riesgo.'));
+    } else {
+      datos.factores.forEach(function (k) {
+        var li = crear('li');
+        li.appendChild(crear('span', '', PESOS[k].label));
+        li.appendChild(crear('strong', '', '+' + PESOS[k].pts + ' pts'));
+        ul.appendChild(li);
+      });
+    }
+
+    // Recomendaciones / botón de emergencia (HU-013 CA02)
+    var slot = $('#slot-urgente');
+    var cardReco = $('#card-recomendaciones');
+    slot.innerHTML = '';
+
+    if (res.nivel === 'rojo') {
+      cardReco.hidden = true; // oculta consejos básicos
+      var urgente = crear('section', 'card res-urgente');
+      urgente.setAttribute('aria-labelledby', 'h-urgente');
+      var h = crear('h2', 'res-h2', 'Acción urgente recomendada');
+      h.id = 'h-urgente';
+      urgente.appendChild(h);
+      urgente.appendChild(crear('p', '',
+        'Tu resultado indica un riesgo alto. Contacta lo antes posible a un ingeniero civil colegiado y evita permanecer en los ambientes más afectados.'));
+      var a = crear('a', 'btn-primary res-urgente-btn', 'Contactar Ingeniero Urgente');
+      a.href = 'directorio.html';
+      urgente.appendChild(a);
+      slot.appendChild(urgente);
+    } else {
+      cardReco.hidden = false;
+      var lista = $('#lista-recomendaciones');
+      lista.innerHTML = '';
+      info.acciones.forEach(function (t) { lista.appendChild(crear('li', '', t)); });
+    }
+  }
+
+  /* ---------- 6. Subtítulo ---------- */
+  function renderSubtitulo(datos) {
+    var fecha = new Date().toLocaleDateString('es-PE', {
+      day: '2-digit', month: 'long', year: 'numeric'
+    });
+    var partes = [];
+    if (datos.vivienda) partes.push('Vivienda: ' + datos.vivienda);
+    partes.push('Fecha: ' + fecha);
+    if (datos.origen === 'demo') partes.push('Datos de prueba');
+    if (datos.origen === 'enlace') partes.push('Reporte compartido');
+    $('#res-subtitulo').textContent = partes.join(' · ');
+  }
+
+  /* ---------- 7. Modal de aceptación (HU-012 CA03) ---------- */
+  function iniciarModal(alAceptar) {
+    var dlg = $('#modal-limites');
+    var chk = $('#acepto-limites');
+    var btn = $('#btn-aceptar');
+
+    chk.checked = false;
+    btn.disabled = true;
+
+    chk.addEventListener('change', function () { btn.disabled = !chk.checked; });
+
+    // No se puede cerrar con Esc: la aceptación es obligatoria
+    dlg.addEventListener('cancel', function (e) { e.preventDefault(); });
+
+    btn.addEventListener('click', function () {
+      if (!chk.checked) return;
+      if (typeof dlg.close === 'function') dlg.close();
+      else dlg.removeAttribute('open');
+      alAceptar();
+    });
+
+    if (typeof dlg.showModal === 'function') dlg.showModal();
+    else dlg.setAttribute('open', '');
+    chk.focus();
+  }
+
+  /* ---------- 8. Descargar PDF (HU-014) ---------- */
+  function iniciarDescarga() {
+    $('#btn-descargar').addEventListener('click', function () {
+      window.print();
+    });
+  }
+
+  /* ---------- 9. Copiar enlace (HU-029) ---------- */
+  var timerCopiar = null;
+
+  function urlCompartible(datos) {
+    var base = window.location.origin + window.location.pathname;
+    if (window.location.protocol === 'file:') base = window.location.href.split(/[?#]/)[0];
+    return base + '?f=' + encodeURIComponent(datos.factores.join(','));
+  }
+
+  function copiarFallback(texto) {
+    var ta = document.createElement('textarea');
+    ta.value = texto;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function iniciarCopiar(datos) {
+    var btn = $('#btn-copiar');
+    var txt = $('#btn-copiar-texto');
+    var estado = $('#copiar-estado');
+    var original = txt.textContent;
+
+    function exito() {
+      txt.textContent = '¡Copiado!';
+      estado.textContent = 'Enlace copiado al portapapeles.';
+      clearTimeout(timerCopiar);
+      timerCopiar = setTimeout(function () {
+        txt.textContent = original;
+        estado.textContent = '';
+      }, 2000);
+    }
+
+    btn.addEventListener('click', function () {
+      var url = urlCompartible(datos);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(exito).catch(function () {
+          if (copiarFallback(url)) exito();
+          else estado.textContent = 'No se pudo copiar. Copia la dirección desde la barra del navegador.';
+        });
+      } else if (copiarFallback(url)) {
+        exito();
+      } else {
+        estado.textContent = 'No se pudo copiar. Copia la dirección desde la barra del navegador.';
+      }
+    });
+  }
+
+  /* ---------- 10. Mapa SVG (HU-024) ---------- */
+  function iniciarMapa() {
+    var zonas = $$('.zona');
+    var select = $('#select-distrito');
+    var info = $('#mapa-info');
+
+    // Colorea zonas, etiqueta para lectores de pantalla y llena el select
+    zonas.forEach(function (z) {
+      var d = DISTRITOS[z.getAttribute('data-id')];
+      if (!d) return;
+      z.classList.add('zona-' + d.riesgo);
+      z.setAttribute('aria-label', d.nombre + ', ' + TEXTO_RIESGO[d.riesgo]);
+
+      var op = document.createElement('option');
+      op.value = z.getAttribute('data-id');
+      op.textContent = d.nombre;
+      select.appendChild(op);
+    });
+
+    function seleccionar(id) {
+      var d = DISTRITOS[id];
+      if (!d) return;
+
+      zonas.forEach(function (z) {
+        z.classList.toggle('seleccionada', z.getAttribute('data-id') === id);
+      });
+      select.value = id;
+
+      info.innerHTML = '';
+      info.appendChild(crear('p', '', d.nombre));
+      info.firstChild.innerHTML = '';
+      info.firstChild.appendChild(crear('strong', '', d.nombre));
+
+      var p2 = crear('p');
+      var badge = crear('span', 'insignia');
+      badge.appendChild(crear('span', 'punto ' + COLOR_PUNTO[d.riesgo]));
+      badge.appendChild(document.createTextNode(TEXTO_RIESGO[d.riesgo]));
+      p2.appendChild(badge);
+      info.appendChild(p2);
+
+      info.appendChild(crear('p', '',
+        d.viviendas + ' viviendas evaluadas · ' + d.pctAlto + '% con riesgo alto (datos de prueba).'));
+    }
+
+    zonas.forEach(function (z) {
+      var id = z.getAttribute('data-id');
+      z.addEventListener('click', function () { seleccionar(id); });
+      z.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          seleccionar(id);
+        }
+      });
+    });
+
+    select.addEventListener('change', function () {
+      if (select.value) seleccionar(select.value);
+    });
+  }
+
+  /* ---------- 11. Arranque ---------- */
+  function init() {
+    // Marca la página activa en el sidebar sin modificar el HTML compartido
+    var link = document.querySelector('.sidebar nav a[href="resultados.html"]');
+    if (link) link.setAttribute('aria-current', 'page');
+
+    var datos = obtenerDatos();
+    var res = calcular(datos.factores); // se calcula, pero NO se muestra aún
+
+    renderSubtitulo(datos);
+    iniciarDescarga();
+    iniciarCopiar(datos);
+    iniciarMapa();
+
+    // El color final solo se renderiza tras aceptar los límites
+    iniciarModal(function () {
+      renderResultado(datos, res);
+      $('#panel-resultados').hidden = false;
+      var h1 = $('#titulo-pagina');
+      h1.focus();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
