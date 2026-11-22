@@ -4,7 +4,7 @@ const CLAVE_USUARIOS = 'ms_usuarios';
 const CLAVE_SESION = 'ms_sesion';       
 const CLAVE_ACTIVO = 'ms_usuario_activo';
 
-/* ---------- Utilidades ---------- */
+
 function leerUsuarios() {
   try { return JSON.parse(localStorage.getItem(CLAVE_USUARIOS)) || []; }
   catch (e) { return []; }
