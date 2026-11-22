@@ -1,12 +1,8 @@
-/* Acceso y navegación base: HU-001 (registro), HU-002 (login), HU-003 (logout),
-   HU-004 (términos) y HU-030 (menú móvil).
 
-   SIMULACIÓN: GitHub Pages no tiene servidor, así que los usuarios se guardan en
-   localStorage y la contraseña NO está cifrada. Solo sirve para la demo. */
 
-const CLAVE_USUARIOS = 'ms_usuarios';   // lista de usuarios registrados
-const CLAVE_SESION = 'ms_sesion';       // sessionStorage: correo con la sesión abierta
-const CLAVE_ACTIVO = 'ms_usuario_activo'; // la usa perfil.js para separar los datos por usuario
+const CLAVE_USUARIOS = 'ms_usuarios';   
+const CLAVE_SESION = 'ms_sesion';       
+const CLAVE_ACTIVO = 'ms_usuario_activo';
 
 /* ---------- Utilidades ---------- */
 function leerUsuarios() {
@@ -18,7 +14,7 @@ function correoValido(correo) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo);
 }
 
-// Muestra el mensaje bajo el campo y lo marca en rojo
+
 function mostrarError(campo, mensaje) {
   const texto = document.getElementById(campo.id + '-error');
   texto.textContent = mensaje;
@@ -35,23 +31,21 @@ function quitarError(campo) {
   campo.removeAttribute('aria-invalid');
 }
 
-// Si el campo está mal muestra el error y devuelve false
+
 function revisar(campo, mensaje) {
   if (mensaje) { mostrarError(campo, mensaje); return false; }
   quitarError(campo);
   return true;
 }
 
-/* ---------- HU-003: cerrar sesión (la usarán las páginas privadas) ---------- */
+
 function cerrarSesion() {
   sessionStorage.removeItem(CLAVE_SESION);
   localStorage.removeItem(CLAVE_ACTIVO);
   location.assign('index.html');
 }
 
-// Páginas privadas: <body data-privada>. Si no hay sesión, van al login.
-// También se revisa en "pageshow" porque al pulsar Atrás el navegador puede
-// mostrar la página guardada sin volver a cargarla (HU-003, escenario 2).
+
 function protegerPagina() {
   if (!sessionStorage.getItem(CLAVE_SESION)) location.replace('login.html');
 }
@@ -60,7 +54,6 @@ if (document.body.hasAttribute('data-privada')) {
   window.addEventListener('pageshow', protegerPagina);
 }
 
-/* ---------- HU-001 y HU-004: registro ---------- */
 const formRegistro = document.getElementById('form-registro');
 if (formRegistro) {
   const correo = document.getElementById('correo');
@@ -70,7 +63,7 @@ if (formRegistro) {
   const boton = document.getElementById('boton-registro');
   const cajaTerminos = document.getElementById('check-terminos');
 
-  // HU-004: el botón se ve inhabilitado hasta marcar el checkbox
+
   terminos.addEventListener('change', () => {
     boton.setAttribute('aria-disabled', terminos.checked ? 'false' : 'true');
     if (terminos.checked) {
@@ -79,7 +72,7 @@ if (formRegistro) {
     }
   });
 
-  // Al corregir un campo se le quita el error
+
   formRegistro.addEventListener('input', (e) => {
     if (e.target.classList.contains('is-error')) quitarError(e.target);
   });
@@ -108,7 +101,7 @@ if (formRegistro) {
     else if (clave2.value !== clave.value) msgClave2 = 'Las contraseñas no coinciden.';
     ok = revisar(clave2, msgClave2) && ok;
 
-    // HU-004 escenario 2: sin aceptar, se resalta el checkbox y no se registra
+ 
     if (!terminos.checked) {
       const texto = document.getElementById('terminos-error');
       texto.textContent = 'Debes aceptar los términos para crear tu cuenta.';
@@ -130,22 +123,19 @@ if (formRegistro) {
   });
 }
 
-/* ---------- HU-002: login ---------- */
 const formLogin = document.getElementById('form-login');
 if (formLogin) {
   const correo = document.getElementById('correo');
   const clave = document.getElementById('clave');
   const errorLogin = document.getElementById('login-error');
 
-  // Si ya tiene sesión, no tiene sentido mostrar el login
   if (sessionStorage.getItem(CLAVE_SESION)) location.replace('perfil.html');
 
-  // Mensaje de "cuenta creada" que llega desde el registro
+
   if (new URLSearchParams(location.search).get('registro') === 'ok') {
     document.getElementById('aviso-registro').hidden = false;
   }
 
-  // Botón Mostrar / Ocultar contraseña
   const verClave = document.getElementById('ver-clave');
   verClave.addEventListener('click', () => {
     const mostrar = clave.type === 'password';
@@ -174,7 +164,7 @@ if (formLogin) {
     const usuario = leerUsuarios().find((u) => u.correo === mail && u.clave === clave.value);
 
     if (!usuario) {
-      // Mensaje genérico: no dice si falló el correo o la contraseña
+   
       errorLogin.textContent = 'Correo o contraseña incorrectos.';
       errorLogin.hidden = false;
       clave.value = '';
@@ -188,7 +178,7 @@ if (formLogin) {
   });
 }
 
-/* ---------- HU-030: menú móvil ---------- */
+
 const botonMenu = document.getElementById('boton-menu');
 if (botonMenu) {
   const menu = document.getElementById('menu');
