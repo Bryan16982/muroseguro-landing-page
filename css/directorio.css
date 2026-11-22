@@ -28,12 +28,13 @@ body {
   min-height: 100vh;
 }
 
-/* Sidebar estilo índice de MuroSeguro */
+/* Sidebar estilo índice fijo en escritorio */
 .sidebar {
   width: 225px;
   height: 100vh;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   overflow-y: auto;
   background-color: var(--color-secondary);
   color: var(--bg-white);
@@ -42,7 +43,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   gap: 20px;
-  flex-shrink: 0;
+  z-index: 100;
 }
 
 .brand-box {
@@ -165,6 +166,7 @@ body {
 .main-content {
   flex: 1;
   min-width: 0;
+  margin-left: 225px;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -470,6 +472,10 @@ button:disabled {
     height: auto;
     position: static;
     overflow-y: visible;
+  }
+
+  .main-content {
+    margin-left: 0;
   }
 
   .nav-list {
