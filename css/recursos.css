@@ -34,11 +34,19 @@
 /* =========================================================
    MENÚ LATERAL (como en el mockup)
    ========================================================= */
+/* El menú queda fijo a la izquierda y ocupa todo el alto de la pantalla */
 .sidebar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   height: 100vh;
   overflow-y: auto;
+  z-index: 10;
+}
+
+/* Como el menú está fijo, el contenido deja libre su espacio (260px) */
+.main-content {
+  margin-left: 260px;
 }
 
 .logo-container {
@@ -492,6 +500,12 @@
   margin-bottom: 32px;
 }
 
+/* Línea que separa los casos de estudio de la parte de arriba */
+#casos {
+  padding-top: 24px;
+  border-top: 1px solid var(--border-neutral);
+}
+
 .etiqueta-seccion {
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -609,6 +623,10 @@
   .sidebar {
     position: static;
     height: auto;
+  }
+
+  .main-content {
+    margin-left: 0;
   }
 
   .logo-container {
