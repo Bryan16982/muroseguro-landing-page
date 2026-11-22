@@ -1,32 +1,387 @@
 /* =========================================================
    recursos.css - Integrante 6
    HU-015, HU-016, HU-017, HU-025, HU-026
+   Diseño basado en el frame "08 · Centro de recursos y foro".
    Solo usa las variables de styles.css.
    ========================================================= */
 
-/* ---------- Utilidad para ocultar elementos ---------- */
+/* ---------- Utilidades ---------- */
 .oculto {
   display: none;
 }
 
-/* ---------- Encabezado ---------- */
-.recursos-header {
-  margin-bottom: 24px;
+/* Texto que solo leen los lectores de pantalla */
+.solo-lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
-.etiqueta-seccion {
-  font-weight: 600;
-  letter-spacing: 0.5px;
+.icono {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* =========================================================
+   MENÚ LATERAL (como en el mockup)
+   ========================================================= */
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.logo-container img {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-btn);
+  background-color: var(--bg-white);
+  object-fit: contain;
+}
+
+.logo-nombre {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--bg-white);
+}
+
+.logo-lema {
+  display: block;
+  font-size: 11px;
+  color: var(--border-neutral);
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--touch-target);
+  padding: 0 16px;
+  border-radius: var(--radius-btn);
+  background-color: var(--bg-white);
   color: var(--color-secondary);
-  margin-bottom: 4px;
+  font-weight: 600;
+  text-decoration: none;
 }
 
-.recursos-seccion {
-  margin-bottom: 32px;
+.sidebar nav a:hover {
+  background-color: var(--bg-dominant);
 }
 
-.recursos-seccion .h2 {
-  margin-bottom: 12px;
+/* Opción de la página actual */
+.sidebar nav a.activo {
+  background-color: var(--color-accent);
+  color: var(--bg-white);
+}
+
+.sidebar-pie {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.sidebar-usuario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--border-neutral);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--bg-white);
+  color: var(--color-secondary);
+  font-weight: 700;
+}
+
+.sidebar-salir {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--touch-target);
+  padding: 0 16px;
+  border: 1px solid var(--border-neutral);
+  border-radius: var(--radius-btn);
+  background-color: var(--bg-white);
+  color: var(--color-secondary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sidebar-salir:hover {
+  background-color: var(--bg-dominant);
+}
+
+/* =========================================================
+   PESTAÑAS
+   ========================================================= */
+.pestanas {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1px solid var(--border-neutral);
+  margin-bottom: 20px;
+}
+
+.pestana {
+  display: inline-block;
+  padding: 10px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+}
+
+.pestana:hover {
+  color: var(--color-secondary);
+}
+
+.pestana.activa {
+  color: var(--color-secondary);
+  border-bottom-color: var(--color-secondary);
+}
+
+/* =========================================================
+   DISEÑO EN DOS COLUMNAS
+   ========================================================= */
+.recursos-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+.columna-derecha {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---------- Buscador ---------- */
+.buscador {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.buscador .icono {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  margin-top: -10px;
+  color: var(--text-muted);
+}
+
+.buscador .form-input {
+  width: 100%;
+  padding-left: 44px;
+  border: 2px solid var(--color-accent);
+  background-color: var(--bg-white);
+}
+
+/* =========================================================
+   HU-015 / HU-016: Tarjetas de recursos con imagen
+   ========================================================= */
+.grilla-recursos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.recurso {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-neutral);
+  border-radius: var(--radius-card);
+}
+
+.recurso-imagen {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-btn);
+  overflow: hidden;
+  background-color: var(--bg-dominant);
+  cursor: pointer;
+}
+
+.recurso-imagen img {
+  display: block;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  object-position: top;
+}
+
+.recurso-cuerpo {
+  padding: 12px 4px 4px;
+}
+
+.recurso-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.recurso-tipo {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Botón de guardar (marcador) */
+.btn-guardar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  margin-right: -12px;
+  border: none;
+  background: none;
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.btn-guardar.guardado .icono {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+}
+
+.recurso-titulo {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 8px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-family: var(--font-main);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.recurso-titulo:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.recurso-descripcion {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   PANELES DE LA DERECHA (Glosario y Foro)
+   ========================================================= */
+.panel {
+  padding: 20px;
+}
+
+.panel-titulo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-secondary);
+}
+
+/* HU-017: Glosario */
+.glosario {
+  max-height: 320px;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.glosario dt {
+  margin-top: 12px;
+  font-weight: 700;
+  color: var(--color-secondary);
+}
+
+.glosario dd {
+  margin: 2px 0 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-neutral);
+  font-size: 13px;
+  color: var(--text-body-alt);
+}
+
+/* Foro */
+.panel-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.btn-nuevo-tema {
+  padding: 0 12px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.foro-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.foro-lista li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-neutral);
+}
+
+.foro-lista strong {
+  display: block;
+  font-size: 14px;
+  color: var(--color-secondary);
+}
+
+.foro-lista span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.foro-mensaje {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--color-accent);
 }
 
 /* ---------- Aviso de responsabilidad (ícono + texto, no solo color) ---------- */
@@ -44,64 +399,19 @@
   font-weight: 700;
 }
 
-/* ---------- HU-015 / HU-016: Tarjetas de recursos ---------- */
-.recurso {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-/* Cuadro oscuro de la izquierda: miniatura de infografía o ícono de video */
-.recurso-miniatura {
-  flex-shrink: 0;
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-btn);
-  background-color: var(--color-secondary);
-  color: var(--bg-white);
-  font-size: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.recurso-miniatura img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.recurso h3 {
-  font-size: 15px;
+.mensaje-vacio {
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px dashed var(--border-neutral);
+  border-radius: var(--radius-card);
+  background-color: var(--bg-white);
+  text-align: center;
   color: var(--color-secondary);
-  margin-bottom: 4px;
 }
 
-.recurso p {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-
-/* Botón con aspecto de enlace: "Ver recurso →" */
-.boton-enlace {
-  min-height: var(--touch-target);
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--color-accent);
-  font-family: var(--font-main);
-  font-size: 14px;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.boton-enlace:hover {
-  color: var(--color-accent-hover);
-}
-
-/* ---------- Visor (Lightbox) ---------- */
+/* =========================================================
+   VISOR (Lightbox)
+   ========================================================= */
 .visor {
   position: fixed;
   top: 0;
@@ -175,43 +485,31 @@
   background-color: var(--border-neutral);
 }
 
-/* ---------- HU-017: Glosario ---------- */
-.glosario {
-  margin-top: 8px;
+/* =========================================================
+   HU-025 / HU-026: Casos de estudio
+   ========================================================= */
+.recursos-seccion {
+  margin-bottom: 32px;
 }
 
-.glosario dt {
+.etiqueta-seccion {
   font-weight: 600;
+  letter-spacing: 0.5px;
   color: var(--color-secondary);
-  margin-top: 12px;
+  margin-bottom: 4px;
 }
 
-.glosario dd {
-  margin: 2px 0 0;
-  color: var(--text-body-alt);
-}
-
-.mensaje-vacio {
-  margin-top: 12px;
-  padding: 16px;
-  border: 1px dashed var(--border-neutral);
-  border-radius: var(--radius-card);
-  background-color: var(--bg-white);
-  text-align: center;
-  color: var(--color-secondary);
-}
-
-/* ---------- HU-026: Tags (2 columnas, como en el mockup) ---------- */
 .tags {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  max-width: 480px;
   margin: 16px 0;
 }
 
 .tag {
+  min-width: 130px;
   min-height: var(--touch-target);
+  padding: 0 16px;
   border: 1px solid var(--color-secondary);
   border-radius: var(--radius-btn);
   background-color: var(--bg-white);
@@ -225,14 +523,12 @@
   border-color: var(--color-accent);
 }
 
-/* Tag seleccionado */
 .tag.activo {
   background-color: var(--color-accent);
   border-color: var(--color-accent);
   color: var(--bg-white);
 }
 
-/* ---------- HU-025: Tarjetas de casos ---------- */
 .caso .h3 {
   margin-bottom: 12px;
 }
@@ -251,7 +547,7 @@
 .caso-foto img {
   display: block;
   width: 100%;
-  height: 120px;
+  height: 130px;
   object-fit: cover;
   border-radius: var(--radius-btn);
   background-color: var(--bg-dominant);
@@ -290,4 +586,101 @@
   display: inline-block;
   margin-top: 12px;
   color: var(--color-accent);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+/* Tablet: el glosario y el foro bajan debajo de los recursos */
+@media (max-width: 1100px) {
+  .recursos-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .glosario {
+    max-height: none;
+  }
+}
+
+/* Móvil (mismo breakpoint que styles.css) */
+@media (max-width: 768px) {
+  /* Menú lateral arriba, compacto */
+  .sidebar {
+    position: static;
+    height: auto;
+  }
+
+  .logo-container {
+    margin-bottom: 8px;
+  }
+
+  .sidebar nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .sidebar nav a {
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 4px;
+    font-size: 12px;
+  }
+
+  .sidebar-pie {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+  }
+
+  .sidebar-usuario {
+    margin-bottom: 0;
+  }
+
+  .pestana {
+    font-size: 16px;
+  }
+
+  .pestanas {
+    gap: 20px;
+  }
+
+  /* Tarjetas en lista: imagen pequeña a la izquierda (como el mockup móvil) */
+  .grilla-recursos {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .recurso {
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .recurso-imagen {
+    align-self: flex-start;
+    width: 72px;
+    flex-shrink: 0;
+  }
+
+  .recurso-imagen img {
+    height: 72px;
+  }
+
+  .recurso-cuerpo {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+  }
+
+  .tags {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tag {
+    min-width: 0;
+  }
 }

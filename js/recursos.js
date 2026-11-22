@@ -1,6 +1,6 @@
 /* =========================================================
    recursos.js - Integrante 6
-   HU-015 Infografías con Lightbox
+   HU-015 Infografías con Lightbox (diseño: 08 · Centro de recursos y foro)
    HU-016 Video nativo con subtítulos
    HU-017 Glosario con búsqueda en tiempo real (keyup)
    HU-025 Casos de estudio desde un array
@@ -12,33 +12,41 @@
    DATOS DE PRUEBA (arrays de objetos)
    --------------------------------------------------------- */
 
-// Infografías y videos (frame: Recursos · Centro de recursos)
+// Infografías y videos (frame: 08 · Centro de recursos y foro)
 var recursos = [
   {
     tipo: "infografia",
+    etiqueta: "Infografía · 2 min",
     titulo: "Infografía: Tipos de Fisuras",
     descripcion: "Guía visual para identificar daños estructurales.",
+    miniatura: "../assets/images/infografias/tipos-fisuras.jpg",
     archivo: "../assets/images/infografias/tipos-fisuras.jpg",
     alt: "Infografía que compara fisuras leves del acabado con grietas estructurales"
   },
   {
     tipo: "video",
+    etiqueta: "Video · 30 s",
     titulo: "Guía de Video: Refuerzo de Muros",
     descripcion: "Técnicas básicas para mejorar la resistencia sísmica.",
+    miniatura: "../assets/images/videos/poster-refuerzo-muros.jpg",
     archivo: "../assets/videos/refuerzo-muros.mp4",
     subtitulos: "../assets/videos/refuerzo-muros.vtt"
   },
   {
     tipo: "infografia",
+    etiqueta: "Checklist · Infografía",
     titulo: "Infografía: Equipos de Emergencia",
-    descripcion: "Elementos esenciales para preparar su kit de emergencia.",
+    descripcion: "Lista de verificación para armar su kit de emergencia.",
+    miniatura: "../assets/images/infografias/equipos-emergencia.jpg",
     archivo: "../assets/images/infografias/equipos-emergencia.jpg",
     alt: "Infografía con los elementos de una mochila de emergencia: agua, linterna, botiquín y radio"
   },
   {
     tipo: "video",
+    etiqueta: "Video · 30 s",
     titulo: "Guía de Video: Plan de Evacuación",
-    descripcion: "Pasos para definir rutas y puntos de encuentro seguros.",
+    descripcion: "Cómo crear un plan familiar efectivo.",
+    miniatura: "../assets/images/videos/poster-plan-evacuacion.jpg",
     archivo: "../assets/videos/plan-evacuacion.mp4",
     subtitulos: "../assets/videos/plan-evacuacion.vtt"
   }
@@ -112,34 +120,51 @@ var casos = [
    HU-015 y HU-016: Lista de recursos + visor (Lightbox)
    --------------------------------------------------------- */
 
-function mostrarRecursos() {
+// Recibe la lista de recursos a mostrar (todos o los filtrados por el buscador)
+function mostrarRecursos(lista) {
   var contenedor = document.querySelector("#lista-recursos");
+  var mensajeVacio = document.querySelector("#recursos-vacio");
   var html = "";
 
-  for (var i = 0; i < recursos.length; i++) {
-    var r = recursos[i];
-    var miniatura = "";
-    var textoBoton = "";
+  for (var i = 0; i < lista.length; i++) {
+    var r = lista[i];
+    var posicion = recursos.indexOf(r);   // posición en el array original
 
-    if (r.tipo === "infografia") {
-      miniatura = '<img src="' + r.archivo + '" alt="">';   // miniatura decorativa: el título ya la describe
-      textoBoton = "Ver recurso →";
-    } else {
-      miniatura = '<span aria-hidden="true">▶</span>';
-      textoBoton = "Ver video →";
-    }
-
-    html += '<div class="card recurso">' +
-              '<div class="recurso-miniatura">' + miniatura + '</div>' +
-              '<div>' +
-                '<h3>' + r.titulo + '</h3>' +
-                '<p>' + r.descripcion + '</p>' +
-                '<button type="button" class="boton-enlace" onclick="abrirVisor(' + i + ')">' + textoBoton + '</button>' +
+    html += '<article class="recurso">' +
+              '<button type="button" class="recurso-imagen" onclick="abrirVisor(' + posicion + ')" tabindex="-1" aria-hidden="true">' +
+                '<img src="' + r.miniatura + '" alt="">' +
+              '</button>' +
+              '<div class="recurso-cuerpo">' +
+                '<div class="recurso-meta">' +
+                  '<span class="recurso-tipo">' + r.etiqueta + '</span>' +
+                  '<button type="button" class="btn-guardar" onclick="guardarRecurso(this)" aria-label="Guardar recurso">' +
+                    '<svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>' +
+                  '</button>' +
+                '</div>' +
+                '<button type="button" class="recurso-titulo" onclick="abrirVisor(' + posicion + ')">' + r.titulo + '</button>' +
+                '<p class="recurso-descripcion">' + r.descripcion + '</p>' +
               '</div>' +
-            '</div>';
+            '</article>';
   }
 
   contenedor.innerHTML = html;
+
+  if (lista.length === 0) {
+    mensajeVacio.classList.remove("oculto");
+  } else {
+    mensajeVacio.classList.add("oculto");
+  }
+}
+
+// Marca o desmarca un recurso como guardado
+function guardarRecurso(boton) {
+  boton.classList.toggle("guardado");
+
+  if (boton.classList.contains("guardado")) {
+    boton.setAttribute("aria-label", "Quitar de guardados");
+  } else {
+    boton.setAttribute("aria-label", "Guardar recurso");
+  }
 }
 
 function abrirVisor(posicion) {
@@ -161,6 +186,7 @@ function abrirVisor(posicion) {
     // HU-016: se carga el video con sus subtítulos
     document.querySelector("#visor-video-fuente").src = r.archivo;
     document.querySelector("#visor-subtitulos").src = r.subtitulos;
+    video.poster = r.miniatura;
     video.load();
     video.classList.remove("oculto");
     imagen.classList.add("oculto");
@@ -218,18 +244,34 @@ function mostrarGlosario(lista) {
   }
 }
 
+// El buscador de arriba filtra el glosario (HU-017) y también las infografías y videos
 document.querySelector("#buscador-glosario").addEventListener("keyup", function () {
   var texto = this.value.toLowerCase();
-  var resultado = [];
+  var terminosEncontrados = [];
+  var recursosEncontrados = [];
 
   for (var i = 0; i < glosario.length; i++) {
-    var palabra = glosario[i].termino.toLowerCase();
-    if (palabra.includes(texto)) {
-      resultado.push(glosario[i]);
+    if (glosario[i].termino.toLowerCase().includes(texto)) {
+      terminosEncontrados.push(glosario[i]);
     }
   }
 
-  mostrarGlosario(resultado);
+  for (var j = 0; j < recursos.length; j++) {
+    if (recursos[j].titulo.toLowerCase().includes(texto)) {
+      recursosEncontrados.push(recursos[j]);
+    }
+  }
+
+  mostrarGlosario(terminosEncontrados);
+  mostrarRecursos(recursosEncontrados);
+});
+
+
+/* ---------------------------------------------------------
+   Foro Comunitario (vista previa, no es parte de mis HU)
+   --------------------------------------------------------- */
+document.querySelector("#btn-nuevo-tema").addEventListener("click", function () {
+  document.querySelector("#foro-mensaje").textContent = "El foro comunitario estará disponible pronto.";
 });
 
 
@@ -318,6 +360,6 @@ for (var k = 0; k < botonesTag.length; k++) {
 /* ---------------------------------------------------------
    Al cargar la página se pintan las secciones
    --------------------------------------------------------- */
-mostrarRecursos();
+mostrarRecursos(recursos);
 mostrarGlosario(glosario);
 mostrarCasos(casos);
