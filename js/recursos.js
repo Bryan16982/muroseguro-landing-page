@@ -1,18 +1,3 @@
-/* =========================================================
-   recursos.js - Integrante 6
-   HU-015 Infografías con Lightbox (diseño: 08 · Centro de recursos y foro)
-   HU-016 Video nativo con subtítulos
-   HU-017 Glosario con búsqueda en tiempo real (keyup)
-   HU-025 Casos de estudio desde un array
-   HU-026 Filtro por tags con .filter()
-   ========================================================= */
-
-
-/* ---------------------------------------------------------
-   DATOS DE PRUEBA (arrays de objetos)
-   --------------------------------------------------------- */
-
-// Infografías y videos (frame: 08 · Centro de recursos y foro)
 var recursos = [
   {
     tipo: "infografia",
@@ -52,7 +37,6 @@ var recursos = [
   }
 ];
 
-// Glosario (ordenado alfabéticamente)
 var glosario = [
   { termino: "Aislamiento sísmico", definicion: "Sistema que reduce la vibración que llega a un edificio durante un sismo." },
   { termino: "Asentamiento", definicion: "Hundimiento del suelo bajo la vivienda. Puede causar grietas en diagonal y puertas que no cierran." },
@@ -67,7 +51,6 @@ var glosario = [
   { termino: "Tarrajeo", definicion: "Capa de mortero que cubre el muro como acabado. Si se cae, no siempre indica daño estructural." }
 ];
 
-// Casos de estudio (frame: Prevención · Casos de estudio)
 var casos = [
   {
     id: 1,
@@ -115,12 +98,6 @@ var casos = [
   }
 ];
 
-
-/* ---------------------------------------------------------
-   HU-015 y HU-016: Lista de recursos + visor (Lightbox)
-   --------------------------------------------------------- */
-
-// Recibe la lista de recursos a mostrar (todos o los filtrados por el buscador)
 function mostrarRecursos(lista) {
   var contenedor = document.querySelector("#lista-recursos");
   var mensajeVacio = document.querySelector("#recursos-vacio");
@@ -128,7 +105,7 @@ function mostrarRecursos(lista) {
 
   for (var i = 0; i < lista.length; i++) {
     var r = lista[i];
-    var posicion = recursos.indexOf(r);   // posición en el array original
+    var posicion = recursos.indexOf(r);
 
     html += '<article class="recurso">' +
               '<button type="button" class="recurso-imagen" onclick="abrirVisor(' + posicion + ')" tabindex="-1" aria-hidden="true">' +
@@ -156,7 +133,6 @@ function mostrarRecursos(lista) {
   }
 }
 
-// Marca o desmarca un recurso como guardado
 function guardarRecurso(boton) {
   boton.classList.toggle("guardado");
 
@@ -176,14 +152,14 @@ function abrirVisor(posicion) {
   document.querySelector("#visor-titulo").textContent = r.titulo;
 
   if (r.tipo === "infografia") {
-    // HU-015: se muestra la imagen grande
+
     imagen.src = r.archivo;
     imagen.alt = r.alt;
     imagen.classList.remove("oculto");
     video.classList.add("oculto");
     aviso.textContent = "Material educativo. No reemplaza el diseño estructural de un ingeniero.";
   } else {
-    // HU-016: se carga el video con sus subtítulos
+
     document.querySelector("#visor-video-fuente").src = r.archivo;
     document.querySelector("#visor-subtitulos").src = r.subtitulos;
     video.poster = r.miniatura;
@@ -202,27 +178,19 @@ function cerrarVisor() {
   document.querySelector("#visor").classList.add("oculto");
 }
 
-// Cerrar con la X
 document.querySelector("#btn-cerrar-visor").addEventListener("click", cerrarVisor);
 
-// Cerrar al hacer clic fuera de la caja (en el fondo oscuro)
 document.querySelector("#visor").addEventListener("click", function (event) {
   if (event.target.id === "visor") {
     cerrarVisor();
   }
 });
 
-// Cerrar con la tecla Escape (navegación por teclado)
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
     cerrarVisor();
   }
 });
-
-
-/* ---------------------------------------------------------
-   HU-017: Glosario con búsqueda en tiempo real (keyup)
-   --------------------------------------------------------- */
 
 function mostrarGlosario(lista) {
   var contenedor = document.querySelector("#lista-glosario");
@@ -236,7 +204,6 @@ function mostrarGlosario(lista) {
 
   contenedor.innerHTML = html;
 
-  // Si no hay resultados, se muestra el mensaje
   if (lista.length === 0) {
     mensajeVacio.classList.remove("oculto");
   } else {
@@ -244,7 +211,6 @@ function mostrarGlosario(lista) {
   }
 }
 
-// El buscador de arriba filtra el glosario (HU-017) y también las infografías y videos
 document.querySelector("#buscador-glosario").addEventListener("keyup", function () {
   var texto = this.value.toLowerCase();
   var terminosEncontrados = [];
@@ -266,19 +232,9 @@ document.querySelector("#buscador-glosario").addEventListener("keyup", function 
   mostrarRecursos(recursosEncontrados);
 });
 
-
-/* ---------------------------------------------------------
-   Foro Comunitario (vista previa, no es parte de mis HU)
-   --------------------------------------------------------- */
 document.querySelector("#btn-nuevo-tema").addEventListener("click", function () {
   document.querySelector("#foro-mensaje").textContent = "El foro comunitario estará disponible pronto.";
 });
-
-
-/* ---------------------------------------------------------
-   HU-025: Muro de casos de estudio (desde el array)
-   HU-026: Filtro por tags con .filter()
-   --------------------------------------------------------- */
 
 function mostrarCasos(lista) {
   var grilla = document.querySelector("#grilla-casos");
@@ -320,7 +276,6 @@ function mostrarCasos(lista) {
   }
 }
 
-// "Ver detalles" muestra u oculta el texto extra del caso
 function verDetalles(id, boton) {
   var detalle = document.querySelector("#detalle-" + id);
   detalle.classList.toggle("oculto");
@@ -338,13 +293,11 @@ for (var k = 0; k < botonesTag.length; k++) {
   botonesTag[k].addEventListener("click", function () {
     var tagElegido = this.getAttribute("data-tag");
 
-    // Marcar visualmente el tag seleccionado
     for (var m = 0; m < botonesTag.length; m++) {
       botonesTag[m].classList.remove("activo");
     }
     this.classList.add("activo");
 
-    // "Todos" limpia el filtro
     if (tagElegido === "Todos") {
       mostrarCasos(casos);
     } else {
@@ -356,10 +309,6 @@ for (var k = 0; k < botonesTag.length; k++) {
   });
 }
 
-
-/* ---------------------------------------------------------
-   Al cargar la página se pintan las secciones
-   --------------------------------------------------------- */
 mostrarRecursos(recursos);
 mostrarGlosario(glosario);
 mostrarCasos(casos);

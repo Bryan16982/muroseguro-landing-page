@@ -1,16 +1,7 @@
-/* =========================================================
-   recursos.css - Integrante 6
-   HU-015, HU-016, HU-017, HU-025, HU-026
-   Diseño basado en el frame "08 · Centro de recursos y foro".
-   Solo usa las variables de styles.css.
-   ========================================================= */
-
-/* ---------- Utilidades ---------- */
 .oculto {
   display: none;
 }
 
-/* Texto que solo leen los lectores de pantalla */
 .solo-lector {
   position: absolute;
   width: 1px;
@@ -31,10 +22,6 @@
   stroke-linejoin: round;
 }
 
-/* =========================================================
-   MENÚ LATERAL (como en el mockup)
-   ========================================================= */
-/* El menú queda fijo a la izquierda y ocupa todo el alto de la pantalla */
 .sidebar {
   position: fixed;
   top: 0;
@@ -44,7 +31,6 @@
   z-index: 10;
 }
 
-/* Como el menú está fijo, el contenido deja libre su espacio (260px) */
 .main-content {
   margin-left: 260px;
 }
@@ -100,7 +86,6 @@
   background-color: var(--bg-dominant);
 }
 
-/* Opción de la página actual */
 .sidebar nav a.activo {
   background-color: var(--color-accent);
   color: var(--bg-white);
@@ -150,9 +135,6 @@
   background-color: var(--bg-dominant);
 }
 
-/* =========================================================
-   PESTAÑAS
-   ========================================================= */
 .pestanas {
   display: flex;
   gap: 28px;
@@ -180,9 +162,6 @@
   border-bottom-color: var(--color-secondary);
 }
 
-/* =========================================================
-   DISEÑO EN DOS COLUMNAS
-   ========================================================= */
 .recursos-layout {
   display: grid;
   grid-template-columns: 1fr 320px;
@@ -197,7 +176,6 @@
   gap: 20px;
 }
 
-/* ---------- Buscador ---------- */
 .buscador {
   position: relative;
   margin-bottom: 20px;
@@ -218,9 +196,6 @@
   background-color: var(--bg-white);
 }
 
-/* =========================================================
-   HU-015 / HU-016: Tarjetas de recursos con imagen
-   ========================================================= */
 .grilla-recursos {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -271,7 +246,6 @@
   color: var(--color-accent);
 }
 
-/* Botón de guardar (marcador) */
 .btn-guardar {
   display: flex;
   align-items: center;
@@ -315,9 +289,6 @@
   color: var(--text-muted);
 }
 
-/* =========================================================
-   PANELES DE LA DERECHA (Glosario y Foro)
-   ========================================================= */
 .panel {
   padding: 20px;
 }
@@ -328,7 +299,6 @@
   color: var(--color-secondary);
 }
 
-/* HU-017: Glosario */
 .glosario {
   max-height: 320px;
   overflow-y: auto;
@@ -349,7 +319,6 @@
   color: var(--text-body-alt);
 }
 
-/* Foro */
 .panel-cabecera {
   display: flex;
   justify-content: space-between;
@@ -392,7 +361,6 @@
   color: var(--color-accent);
 }
 
-/* ---------- Aviso de responsabilidad (ícono + texto, no solo color) ---------- */
 .aviso {
   margin-top: 12px;
   padding: 10px 12px;
@@ -417,9 +385,6 @@
   color: var(--color-secondary);
 }
 
-/* =========================================================
-   VISOR (Lightbox)
-   ========================================================= */
 .visor {
   position: fixed;
   top: 0;
@@ -431,7 +396,7 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background-color: rgba(30, 27, 75, 0.85); /* --color-secondary con transparencia */
+  background-color: rgba(30, 27, 75, 0.85);
 }
 
 .visor.oculto {
@@ -493,14 +458,10 @@
   background-color: var(--border-neutral);
 }
 
-/* =========================================================
-   HU-025 / HU-026: Casos de estudio
-   ========================================================= */
 .recursos-seccion {
   margin-bottom: 32px;
 }
 
-/* Línea que separa los casos de estudio de la parte de arriba */
 #casos {
   padding-top: 24px;
   border-top: 1px solid var(--border-neutral);
@@ -602,11 +563,6 @@
   color: var(--color-accent);
 }
 
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-
-/* Tablet: el glosario y el foro bajan debajo de los recursos */
 @media (max-width: 1100px) {
   .recursos-layout {
     grid-template-columns: 1fr;
@@ -617,9 +573,8 @@
   }
 }
 
-/* Móvil (mismo breakpoint que styles.css) */
 @media (max-width: 768px) {
-  /* Menú lateral arriba, compacto */
+
   .sidebar {
     position: static;
     height: auto;
@@ -666,7 +621,6 @@
     gap: 20px;
   }
 
-  /* Tarjetas en lista: imagen pequeña a la izquierda (como el mockup móvil) */
   .grilla-recursos {
     grid-template-columns: 1fr;
     gap: 12px;
