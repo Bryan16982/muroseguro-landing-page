@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<!-- pages/evaluacion.html -->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evaluación – Paso 1: Entorno de la vivienda | MuroSeguro</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/evaluacion.css">
+</head>
+<body>
+
+  <aside class="sidebar eval-sb" id="eval-sidebar" aria-label="Navegación principal" hidden>
+    <div class="eval-sb__brand">
+      <div class="eval-sb__logo-box">
+        <img src="../assets/images/logo-muroseguro.png" alt="Logo MuroSeguro">
+      </div>
+      <div class="eval-sb__brand-text">
+        <span class="eval-sb__title">MuroSeguro</span>
+        <span class="eval-sb__subtitle">Seguridad estructural ciudadana</span>
+      </div>
+    </div>
+
+    <nav class="eval-sb__nav" aria-label="Menú principal">
+      <a class="eval-sb__link" href="index.html">
+        <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+        <span>Inicio</span>
+      </a>
+      <a class="eval-sb__link is-active" href="evaluacion.html" aria-current="page">
+        <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Evaluar</span>
+      </a>
+      <a class="eval-sb__link" href="resultados.html">
+        <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect width="6" height="4" x="9" y="3" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+        <span>Resultados</span>
+      </a>
+      <a class="eval-sb__link" href="directorio.html">
+        <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Directorio</span>
+      </a>
+      <a class="eval-sb__link" href="recursos.html">
+        <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span>Recursos</span>
+      </a>
+      <a class="eval-sb__link" href="perfil.html">
+        <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+        <span>Perfil</span>
+      </a>
+    </nav>
+
+    <div class="eval-sb__footer">
+      <div class="eval-sb__user">
+        <span class="eval-sb__avatar" aria-hidden="true">JR</span>
+        <span class="eval-sb__role">Administrador</span>
+      </div>
+      <a class="eval-sb__logout" href="index.html">
+        <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        <span>Cerrar sesión</span>
+      </a>
+    </div>
+  </aside>
+
+  <main>
+    <section id="paso-1" aria-labelledby="paso-1-titulo">
+      <form id="form-paso-1" class="eval-layout" novalidate>
+
+        <!-- Cabecera: logo + progreso -->
+        <header class="eval-header">
+          <div class="eval-brand">
+            <img class="eval-logo" src="../assets/images/logo-muroseguro.png" alt="Logotipo de MuroSeguro">
+            <span class="eval-brand-name">MuroSeguro</span>
+          </div>
+          <div class="eval-progress" role="progressbar" aria-label="Avance del asistente de evaluación"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="33" aria-valuetext="Paso 1 de 3, 33% de avance">
+            <span>Avance: 33%</span>
+            <span>Paso 1 de 3</span>
+          </div>
+        </header>
+
+        <!-- Columna izquierda: preguntas -->
+        <div class="eval-questions">
+
+          <!-- HU-007: tipo de terreno (obligatorio) -->
+          <div class="card eval-card" id="card-terreno">
+            <fieldset class="eval-fieldset" aria-describedby="terreno-ayuda error-terreno">
+              <legend class="eval-title">¿Cuál es la condición del terreno?<span class="eval-sr"> (obligatorio)</span></legend>
+              <p class="eval-help" id="terreno-ayuda">Por favor, seleccione la opción que mejor describa la zona donde se encuentra su construcción.</p>
+
+              <div class="eval-options">
+                <input class="eval-sr" type="radio" id="terreno-plano" name="terreno" value="plano" required>
+                <label class="radio-option eval-option" for="terreno-plano">
+                  <span class="eval-radio" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  <span>Plano (Firme)</span>
+                </label>
+
+                <input class="eval-sr" type="radio" id="terreno-ladera" name="terreno" value="ladera" required>
+                <label class="radio-option eval-option" for="terreno-ladera">
+                  <span class="eval-radio" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  <span>Ladera (Inclinado)</span>
+                </label>
+
+                <input class="eval-sr" type="radio" id="terreno-blando" name="terreno" value="blando" required>
+                <label class="radio-option eval-option" for="terreno-blando">
+                  <span class="eval-radio" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                  <span>Blando (Relleno o humedad)</span>
+                </label>
+              </div>
+
+              <p class="eval-error-msg" id="error-terreno" role="alert" hidden>Debes seleccionar la condición del terreno antes de continuar.</p>
+            </fieldset>
+          </div>
+
+          <!-- Exposición climática -->
+          <div class="card eval-card">
+            <fieldset class="eval-fieldset">
+              <legend class="eval-title">Exposición climática</legend>
+              <div class="grid-3 eval-tiles">
+
+                <div class="eval-tile">
+                  <input class="eval-sr" type="checkbox" id="clima-viento" name="clima" value="viento">
+                  <label class="eval-tile__label" for="clima-viento">
+                    <span class="eval-tile__head">
+                      <span class="eval-check" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                      <span>Viento</span>
+                    </span>
+                    <span class="eval-tile__icon" aria-hidden="true">
+                      <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>
+                    </span>
+                  </label>
+                </div>
+
+                <div class="eval-tile">
+                  <input class="eval-sr" type="checkbox" id="clima-lluvia" name="clima" value="lluvia">
+                  <label class="eval-tile__label" for="clima-lluvia">
+                    <span class="eval-tile__head">
+                      <span class="eval-check" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                      <span>Lluvia</span>
+                    </span>
+                    <span class="eval-tile__icon" aria-hidden="true">
+                      <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>
+                    </span>
+                  </label>
+                </div>
+
+                <div class="eval-tile">
+                  <input class="eval-sr" type="checkbox" id="clima-sol" name="clima" value="sol">
+                  <label class="eval-tile__label" for="clima-sol">
+                    <span class="eval-tile__head">
+                      <span class="eval-check" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                      <span>Sol</span>
+                    </span>
+                    <span class="eval-tile__icon" aria-hidden="true">
+                      <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                    </span>
+                  </label>
+                </div>
+
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- HU-008: patologías visuales + pregunta condicional -->
+          <div class="card eval-card">
+            <fieldset class="eval-fieldset">
+              <legend class="eval-title">Patologías visuales en muros</legend>
+
+              <!-- Oculta por defecto (display: none). Aparece con Lluvia o Humedad -->
+              <div class="eval-conditional" id="pregunta-humedad" role="group" aria-labelledby="pregunta-humedad-texto">
+                <p class="eval-question" id="pregunta-humedad-texto">¿Observa humedad o moho en la base de sus paredes?</p>
+                <div class="eval-yesno">
+                  <input class="eval-sr" type="radio" id="humedad-si" name="humedad_base" value="si">
+                  <label class="eval-yn" for="humedad-si"><span class="eval-dot" aria-hidden="true"></span>Sí</label>
+                  <input class="eval-sr" type="radio" id="humedad-no" name="humedad_base" value="no">
+                  <label class="eval-yn" for="humedad-no"><span class="eval-dot" aria-hidden="true"></span>No</label>
+                </div>
+              </div>
+
+              <div class="grid-3 eval-tiles">
+
+                <div class="eval-tile">
+                  <input class="eval-sr" type="checkbox" id="patologia-grietas" name="patologia" value="grietas">
+                  <label class="eval-tile__label" for="patologia-grietas">
+                    <span class="eval-tile__head">
+                      <span class="eval-check" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                      <span>Grietas / Fisuras</span>
+                    </span>
+                    <span class="eval-tile__icon" aria-hidden="true">
+                      <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 9v6"/><path d="M16 15v6"/><path d="M16 3v6"/><path d="M3 15h18"/><path d="M3 9h18"/><path d="M8 15v6"/><path d="M8 3v6"/></svg>
+                    </span>
+                  </label>
+                </div>
+
+                <div class="eval-tile">
+                  <input class="eval-sr" type="checkbox" id="patologia-humedad" name="patologia" value="humedad">
+                  <label class="eval-tile__label" for="patologia-humedad">
+                    <span class="eval-tile__head">
+                      <span class="eval-check" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                      <span>Humedad</span>
+                    </span>
+                    <span class="eval-tile__icon" aria-hidden="true">
+                      <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+                    </span>
+                  </label>
+                </div>
+
+                <div class="eval-tile">
+                  <input class="eval-sr" type="checkbox" id="patologia-desplome" name="patologia" value="desplome">
+                  <label class="eval-tile__label" for="patologia-desplome">
+                    <span class="eval-tile__head">
+                      <span class="eval-check" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                      <span>Desplome / Inclinación</span>
+                    </span>
+                    <span class="eval-tile__icon" aria-hidden="true">
+                      <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+                    </span>
+                  </label>
+                </div>
+
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- Columna derecha: información + aceptación obligatoria -->
+        <aside class="eval-aside" aria-label="Información del paso">
+          <div class="card eval-aside-card">
+            <h1 class="eval-aside-title" id="paso-1-titulo">Paso 1: Entorno de la vivienda</h1>
+            <p class="eval-help">El tipo de suelo y el clima calibran la vulnerabilidad previa al análisis estructural.</p>
+          </div>
+
+          <div class="card eval-aside-card eval-accept" id="card-aceptacion">
+            <div class="eval-accept__head">
+              <span class="eval-accept__icon" aria-hidden="true">
+                <svg class="eval-icon eval-icon--help" viewBox="0 0 24 24" width="24" height="24" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                <svg class="eval-icon eval-icon--alert" viewBox="0 0 24 24" width="24" height="24" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+              </span>
+              <h2 class="eval-accept__title">Aceptación obligatoria</h2>
+            </div>
+
+            <div class="eval-accept__row">
+              <input class="eval-sr" type="checkbox" id="aceptacion" name="aceptacion" required aria-required="true" aria-describedby="error-aceptacion">
+              <label class="eval-accept__label" for="aceptacion">
+                <span class="eval-check" aria-hidden="true"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <span>Comprendo que este diagnóstico es referencial y no certifica la seguridad estructural</span>
+              </label>
+            </div>
+
+            <p class="eval-accept__msg" id="error-aceptacion">Debes aceptar esta condición antes de continuar.</p>
+          </div>
+        </aside>
+
+        <!-- Navegación -->
+        <nav class="eval-nav" aria-label="Navegación del asistente">
+          <a class="btn-secondary eval-btn" href="index.html">
+            <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Atrás
+          </a>
+          <div class="eval-next-wrap" id="siguiente-wrap">
+            <button type="submit" class="btn-primary eval-btn" id="btn-siguiente" disabled>
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              Siguiente
+            </button>
+          </div>
+        </nav>
+
+        <p class="eval-sr" id="estado-formulario" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- Aquí se agregarán <section id="paso-2" hidden> y <section id="paso-4" hidden> -->
+    <section id="paso-2" aria-labelledby="paso-2-titulo" hidden>
+      <div class="p2-layout">
+
+        <!-- Columna izquierda: croquis interactivo -->
+        <div class="card p2-card">
+          <svg class="p2-svg" viewBox="0 0 400 392" role="group" aria-label="Croquis isométrico de una vivienda de tres pisos con tres zonas seleccionables: techo, muros y columnas" focusable="false">
+            <defs>
+              <g id="p2-col">
+                <polygon points="176.9,208.5 183,212 183,50 176.9,46.5"/>
+                <polygon points="183,212 189.1,208.5 189.1,46.5 183,50"/>
+                <polygon points="183,43 189.1,46.5 183,50 176.9,46.5"/>
+              </g>
+            </defs>
+            <g class="p2-deco" aria-hidden="true">
+              <polygon class="p2-ground" points="183,189 357.9,290 217.6,371 42.7,270"/>
+              <polygon class="p2-ground-side" points="42.7,270 217.6,371 217.6,379 42.7,278"/>
+              <polygon class="p2-ground-side" points="217.6,371 357.9,290 357.9,298 217.6,379"/>
+            </g>
+            <g class="p2-zone" id="p2-svg-muros" data-zona="muros" role="button" tabindex="0" aria-pressed="false" aria-label="Muros">
+              <polygon class="p2-shape" points="183,205 70.4,270 70.4,108 183,43"/>
+              <polygon class="p2-shape" points="183,205 330.2,290 330.2,128 183,43"/>
+              <path class="p2-line" d="M183,196 L70.4,261 M183,196 L330.2,281 M183,187 L70.4,252 M183,187 L330.2,272 M183,178 L70.4,243 M183,178 L330.2,263 M183,169 L70.4,234 M183,169 L330.2,254 M183,160 L70.4,225 M183,160 L330.2,245 M183,151 L70.4,216 M183,151 L330.2,236 M183,142 L70.4,207 M183,142 L330.2,227 M183,133 L70.4,198 M183,133 L330.2,218 M183,124 L70.4,189 M183,124 L330.2,209 M183,115 L70.4,180 M183,115 L330.2,200 M183,106 L70.4,171 M183,106 L330.2,191 M183,97 L70.4,162 M183,97 L330.2,182 M183,88 L70.4,153 M183,88 L330.2,173 M183,79 L70.4,144 M183,79 L330.2,164 M183,70 L70.4,135 M183,70 L330.2,155 M183,61 L70.4,126 M183,61 L330.2,146 M183,52 L70.4,117 M183,52 L330.2,137"/>
+              <path class="p2-line p2-line--soft" d="M169.1,213 L169.1,204 M155.3,221 L155.3,212 M141.4,229 L141.4,220 M127.6,237 L127.6,228 M113.7,245 L113.7,236 M99.9,253 L99.9,244 M86,261 L86,252 M72.2,269 L72.2,260 M196.9,213 L196.9,204 M210.7,221 L210.7,212 M224.6,229 L224.6,220 M238.4,237 L238.4,228 M252.3,245 L252.3,236 M266.1,253 L266.1,244 M280,261 L280,252 M293.8,269 L293.8,260 M307.7,277 L307.7,268 M321.6,285 L321.6,276 M162.2,208 L162.2,199 M148.4,216 L148.4,207 M134.5,224 L134.5,215 M120.6,232 L120.6,223 M106.8,240 L106.8,231 M92.9,248 L92.9,239 M79.1,256 L79.1,247 M203.8,208 L203.8,199 M217.6,216 L217.6,207 M231.5,224 L231.5,215 M245.4,232 L245.4,223 M259.2,240 L259.2,231 M273.1,248 L273.1,239 M286.9,256 L286.9,247 M300.8,264 L300.8,255 M314.6,272 L314.6,263 M328.5,280 L328.5,271 M169.1,195 L169.1,186 M155.3,203 L155.3,194 M141.4,211 L141.4,202 M127.6,219 L127.6,210 M113.7,227 L113.7,218 M99.9,235 L99.9,226 M86,243 L86,234 M72.2,251 L72.2,242 M196.9,195 L196.9,186 M210.7,203 L210.7,194 M224.6,211 L224.6,202 M238.4,219 L238.4,210 M252.3,227 L252.3,218 M266.1,235 L266.1,226 M280,243 L280,234 M293.8,251 L293.8,242 M307.7,259 L307.7,250 M321.6,267 L321.6,258 M162.2,190 L162.2,181 M148.4,198 L148.4,189 M134.5,206 L134.5,197 M120.6,214 L120.6,205 M106.8,222 L106.8,213 M92.9,230 L92.9,221 M79.1,238 L79.1,229 M203.8,190 L203.8,181 M217.6,198 L217.6,189 M231.5,206 L231.5,197 M245.4,214 L245.4,205 M259.2,222 L259.2,213 M273.1,230 L273.1,221 M286.9,238 L286.9,229 M300.8,246 L300.8,237 M314.6,254 L314.6,245 M328.5,262 L328.5,253 M169.1,177 L169.1,168 M155.3,185 L155.3,176 M141.4,193 L141.4,184 M127.6,201 L127.6,192 M113.7,209 L113.7,200 M99.9,217 L99.9,208 M86,225 L86,216 M72.2,233 L72.2,224 M196.9,177 L196.9,168 M210.7,185 L210.7,176 M224.6,193 L224.6,184 M238.4,201 L238.4,192 M252.3,209 L252.3,200 M266.1,217 L266.1,208 M280,225 L280,216 M293.8,233 L293.8,224 M307.7,241 L307.7,232 M321.6,249 L321.6,240 M162.2,172 L162.2,163 M148.4,180 L148.4,171 M134.5,188 L134.5,179 M120.6,196 L120.6,187 M106.8,204 L106.8,195 M92.9,212 L92.9,203 M79.1,220 L79.1,211 M203.8,172 L203.8,163 M217.6,180 L217.6,171 M231.5,188 L231.5,179 M245.4,196 L245.4,187 M259.2,204 L259.2,195 M273.1,212 L273.1,203 M286.9,220 L286.9,211 M300.8,228 L300.8,219 M314.6,236 L314.6,227 M328.5,244 L328.5,235 M169.1,159 L169.1,150 M155.3,167 L155.3,158 M141.4,175 L141.4,166 M127.6,183 L127.6,174 M113.7,191 L113.7,182 M99.9,199 L99.9,190 M86,207 L86,198 M72.2,215 L72.2,206 M196.9,159 L196.9,150 M210.7,167 L210.7,158 M224.6,175 L224.6,166 M238.4,183 L238.4,174 M252.3,191 L252.3,182 M266.1,199 L266.1,190 M280,207 L280,198 M293.8,215 L293.8,206 M307.7,223 L307.7,214 M321.6,231 L321.6,222 M162.2,154 L162.2,145 M148.4,162 L148.4,153 M134.5,170 L134.5,161 M120.6,178 L120.6,169 M106.8,186 L106.8,177 M92.9,194 L92.9,185 M79.1,202 L79.1,193 M203.8,154 L203.8,145 M217.6,162 L217.6,153 M231.5,170 L231.5,161 M245.4,178 L245.4,169 M259.2,186 L259.2,177 M273.1,194 L273.1,185 M286.9,202 L286.9,193 M300.8,210 L300.8,201 M314.6,218 L314.6,209 M328.5,226 L328.5,217 M169.1,141 L169.1,132 M155.3,149 L155.3,140 M141.4,157 L141.4,148 M127.6,165 L127.6,156 M113.7,173 L113.7,164 M99.9,181 L99.9,172 M86,189 L86,180 M72.2,197 L72.2,188 M196.9,141 L196.9,132 M210.7,149 L210.7,140 M224.6,157 L224.6,148 M238.4,165 L238.4,156 M252.3,173 L252.3,164 M266.1,181 L266.1,172 M280,189 L280,180 M293.8,197 L293.8,188 M307.7,205 L307.7,196 M321.6,213 L321.6,204 M162.2,136 L162.2,127 M148.4,144 L148.4,135 M134.5,152 L134.5,143 M120.6,160 L120.6,151 M106.8,168 L106.8,159 M92.9,176 L92.9,167 M79.1,184 L79.1,175 M203.8,136 L203.8,127 M217.6,144 L217.6,135 M231.5,152 L231.5,143 M245.4,160 L245.4,151 M259.2,168 L259.2,159 M273.1,176 L273.1,167 M286.9,184 L286.9,175 M300.8,192 L300.8,183 M314.6,200 L314.6,191 M328.5,208 L328.5,199 M169.1,123 L169.1,114 M155.3,131 L155.3,122 M141.4,139 L141.4,130 M127.6,147 L127.6,138 M113.7,155 L113.7,146 M99.9,163 L99.9,154 M86,171 L86,162 M72.2,179 L72.2,170 M196.9,123 L196.9,114 M210.7,131 L210.7,122 M224.6,139 L224.6,130 M238.4,147 L238.4,138 M252.3,155 L252.3,146 M266.1,163 L266.1,154 M280,171 L280,162 M293.8,179 L293.8,170 M307.7,187 L307.7,178 M321.6,195 L321.6,186 M162.2,118 L162.2,109 M148.4,126 L148.4,117 M134.5,134 L134.5,125 M120.6,142 L120.6,133 M106.8,150 L106.8,141 M92.9,158 L92.9,149 M79.1,166 L79.1,157 M203.8,118 L203.8,109 M217.6,126 L217.6,117 M231.5,134 L231.5,125 M245.4,142 L245.4,133 M259.2,150 L259.2,141 M273.1,158 L273.1,149 M286.9,166 L286.9,157 M300.8,174 L300.8,165 M314.6,182 L314.6,173 M328.5,190 L328.5,181 M169.1,105 L169.1,96 M155.3,113 L155.3,104 M141.4,121 L141.4,112 M127.6,129 L127.6,120 M113.7,137 L113.7,128 M99.9,145 L99.9,136 M86,153 L86,144 M72.2,161 L72.2,152 M196.9,105 L196.9,96 M210.7,113 L210.7,104 M224.6,121 L224.6,112 M238.4,129 L238.4,120 M252.3,137 L252.3,128 M266.1,145 L266.1,136 M280,153 L280,144 M293.8,161 L293.8,152 M307.7,169 L307.7,160 M321.6,177 L321.6,168 M162.2,100 L162.2,91 M148.4,108 L148.4,99 M134.5,116 L134.5,107 M120.6,124 L120.6,115 M106.8,132 L106.8,123 M92.9,140 L92.9,131 M79.1,148 L79.1,139 M203.8,100 L203.8,91 M217.6,108 L217.6,99 M231.5,116 L231.5,107 M245.4,124 L245.4,115 M259.2,132 L259.2,123 M273.1,140 L273.1,131 M286.9,148 L286.9,139 M300.8,156 L300.8,147 M314.6,164 L314.6,155 M328.5,172 L328.5,163 M169.1,87 L169.1,78 M155.3,95 L155.3,86 M141.4,103 L141.4,94 M127.6,111 L127.6,102 M113.7,119 L113.7,110 M99.9,127 L99.9,118 M86,135 L86,126 M72.2,143 L72.2,134 M196.9,87 L196.9,78 M210.7,95 L210.7,86 M224.6,103 L224.6,94 M238.4,111 L238.4,102 M252.3,119 L252.3,110 M266.1,127 L266.1,118 M280,135 L280,126 M293.8,143 L293.8,134 M307.7,151 L307.7,142 M321.6,159 L321.6,150 M162.2,82 L162.2,73 M148.4,90 L148.4,81 M134.5,98 L134.5,89 M120.6,106 L120.6,97 M106.8,114 L106.8,105 M92.9,122 L92.9,113 M79.1,130 L79.1,121 M203.8,82 L203.8,73 M217.6,90 L217.6,81 M231.5,98 L231.5,89 M245.4,106 L245.4,97 M259.2,114 L259.2,105 M273.1,122 L273.1,113 M286.9,130 L286.9,121 M300.8,138 L300.8,129 M314.6,146 L314.6,137 M328.5,154 L328.5,145 M169.1,69 L169.1,60 M155.3,77 L155.3,68 M141.4,85 L141.4,76 M127.6,93 L127.6,84 M113.7,101 L113.7,92 M99.9,109 L99.9,100 M86,117 L86,108 M72.2,125 L72.2,116 M196.9,69 L196.9,60 M210.7,77 L210.7,68 M224.6,85 L224.6,76 M238.4,93 L238.4,84 M252.3,101 L252.3,92 M266.1,109 L266.1,100 M280,117 L280,108 M293.8,125 L293.8,116 M307.7,133 L307.7,124 M321.6,141 L321.6,132 M162.2,64 L162.2,55 M148.4,72 L148.4,63 M134.5,80 L134.5,71 M120.6,88 L120.6,79 M106.8,96 L106.8,87 M92.9,104 L92.9,95 M79.1,112 L79.1,103 M203.8,64 L203.8,55 M217.6,72 L217.6,63 M231.5,80 L231.5,71 M245.4,88 L245.4,79 M259.2,96 L259.2,87 M273.1,104 L273.1,95 M286.9,112 L286.9,103 M300.8,120 L300.8,111 M314.6,128 L314.6,119 M328.5,136 L328.5,127"/>
+              <polygon class="p2-win" points="160.5,202 139.7,214 139.7,190 160.5,178"/>
+              <polygon class="p2-win" points="113.7,229 92.9,241 92.9,217 113.7,205"/>
+              <polygon class="p2-win" points="212.4,206 236.7,220 236.7,196 212.4,182"/>
+              <polygon class="p2-win" points="276.5,243 300.8,257 300.8,233 276.5,219"/>
+              <polygon class="p2-win" points="160.5,148 139.7,160 139.7,136 160.5,124"/>
+              <polygon class="p2-win" points="113.7,175 92.9,187 92.9,163 113.7,151"/>
+              <polygon class="p2-win" points="212.4,152 236.7,166 236.7,142 212.4,128"/>
+              <polygon class="p2-win" points="276.5,189 300.8,203 300.8,179 276.5,165"/>
+              <polygon class="p2-win" points="160.5,94 139.7,106 139.7,82 160.5,70"/>
+              <polygon class="p2-win" points="113.7,121 92.9,133 92.9,109 113.7,97"/>
+              <polygon class="p2-win" points="212.4,98 236.7,112 236.7,88 212.4,74"/>
+              <polygon class="p2-win" points="276.5,135 300.8,149 300.8,125 276.5,111"/>
+            </g>
+            <g class="p2-deco" aria-hidden="true">
+              <polygon class="p2-slab" points="183,151 330.2,236 217.6,301 70.4,216"/>
+              <polygon class="p2-slab" points="183,97 330.2,182 217.6,247 70.4,162"/>
+              <polygon class="p2-slab" points="183,43 330.2,128 217.6,193 70.4,108"/>
+            </g>
+            <g class="p2-zone" id="p2-svg-columnas" data-zona="columnas" role="button" tabindex="0" aria-pressed="false" aria-label="Columnas">
+              <path class="p2-beam" d="M183,151 L330.2,236 M183,151 L70.4,216 M70.4,216 L217.6,301 M330.2,236 L217.6,301 M183,97 L330.2,182 M183,97 L70.4,162 M70.4,162 L217.6,247 M330.2,182 L217.6,247 M183,43 L330.2,128 M183,43 L70.4,108 M70.4,108 L217.6,193 M330.2,128 L217.6,193"/>
+              <use class="p2-shape" href="#p2-col" x="0" y="0"/>
+              <use class="p2-shape" href="#p2-col" x="-53.3" y="30.8"/>
+              <use class="p2-shape" href="#p2-col" x="70.6" y="40.8"/>
+              <use class="p2-shape" href="#p2-col" x="-106.5" y="61.5"/>
+              <use class="p2-shape" href="#p2-col" x="141.2" y="81.5"/>
+              <use class="p2-shape" href="#p2-col" x="34.6" y="143"/>
+            </g>
+            <g class="p2-zone" id="p2-svg-techo" data-zona="techo" role="button" tabindex="0" aria-pressed="false" aria-label="Techo">
+              <polygon class="p2-shape" points="183,33 347.5,128 282.6,127.5 118,32.5"/>
+              <polygon class="p2-shape" points="347.5,128 217.6,203 282.6,127.5"/>
+              <polygon class="p2-shape p2-glass" points="118,32.5 282.6,127.5 217.6,203 53.1,108"/>
+              <path class="p2-line" d="M118,32.5 L53.1,108 M118,32.5 L183,33 M145.5,48.3 L80.5,123.8 M145.5,48.3 L210.4,48.8 M172.9,64.2 L107.9,139.7 M172.9,64.2 L237.8,64.7 M200.3,80 L135.4,155.5 M200.3,80 L265.3,80.5 M227.7,95.8 L162.8,171.3 M227.7,95.8 L292.7,96.3 M255.2,111.7 L190.2,187.2 M255.2,111.7 L320.1,112.2 M282.6,127.5 L217.6,203 M282.6,127.5 L347.5,128 M96.6,57.4 L261.2,152.4 M139.5,32.7 L304,127.7 M75.2,82.3 L239.7,177.3 M160.9,32.8 L325.5,127.8"/>
+              <path class="p2-ridge" d="M118,32.5 L282.6,127.5"/>
+            </g>
+          </svg>
+          <p class="p2-pildora" id="p2-pildora" aria-hidden="true">
+            <span class="p2-pildora__punto"></span>
+            <span id="p2-pildora-texto">Selecciona una zona de la estructura</span>
+          </p>
+        </div>
+
+        <!-- Columna derecha: panel de selección -->
+        <form id="form-paso-2" class="p2-panel" novalidate>
+          <div class="eval-progress p2-progress" role="progressbar" aria-label="Avance del asistente de evaluación"
+              aria-valuemin="0" aria-valuemax="100" aria-valuenow="67" aria-valuetext="Paso 2 de 3, 67% de avance">
+            <span>Avance: 67%</span>
+            <span>Paso 2 de 3</span>
+          </div>
+
+          <h2 class="p2-title" id="paso-2-titulo">¿Dónde se ubica el daño?</h2>
+          <p class="p2-subtitle" id="p2-subtitulo">Selecciona la zona de la estructura para continuar.</p>
+
+          <fieldset class="p2-fieldset" aria-describedby="p2-subtitulo">
+            <legend class="eval-sr">Zona de la estructura donde se ubica el daño</legend>
+            <div class="p2-options">
+              <input class="eval-sr" type="radio" id="p2-zona-techo" name="zona" value="techo" required>
+              <label class="p2-option" for="p2-zona-techo">
+                <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
+                <span class="p2-option__text">Techo</span>
+                <span class="p2-option__check"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg></span>
+              </label>
+              <input class="eval-sr" type="radio" id="p2-zona-muros" name="zona" value="muros" required>
+              <label class="p2-option" for="p2-zona-muros">
+                <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 9v6"/><path d="M16 15v6"/><path d="M16 3v6"/><path d="M3 15h18"/><path d="M3 9h18"/><path d="M8 15v6"/><path d="M8 3v6"/></svg>
+                <span class="p2-option__text">Muros</span>
+                <span class="p2-option__check"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg></span>
+              </label>
+              <input class="eval-sr" type="radio" id="p2-zona-columnas" name="zona" value="columnas" required>
+              <label class="p2-option" for="p2-zona-columnas">
+                <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+                <span class="p2-option__text">Columnas</span>
+                <span class="p2-option__check"><svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="btn-primary eval-btn p2-btn" id="p2-continuar" aria-describedby="p2-ayuda" disabled>
+            <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            Continuar
+          </button>
+          <p class="p2-ayuda" id="p2-ayuda" aria-live="polite">Selecciona una opción para habilitar el botón.</p>
+
+          <p class="eval-sr" id="p2-estado" role="status" aria-live="polite"></p>
+        </form>
+
+      </div>
+    </section>
+
+    <section id="paso-3" aria-labelledby="paso-3-titulo" hidden>
+      <div class="p3-layout">
+        <div class="p3-contenedor">
+
+          <header class="p3-header">
+            <h2 class="p3-title" id="paso-3-titulo">Aprende a diferenciar: Falla vs. Grieta</h2>
+            <p class="p3-subtitle">Observa la diferencia entre una falla superficial y una grieta estructural profunda.</p>
+          </header>
+
+          <div class="eval-progress p3-progress" role="progressbar" aria-label="Avance del asistente de evaluación"
+              aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="Avance: 100%">
+            <span>Avance: 100%</span>
+          </div>
+
+          <!-- Comparador interactivo -->
+          <div class="card p3-card">
+            <div class="p3-stage" id="p3-stage">
+
+              <div class="p3-layers">
+                <!-- Capa inferior: daño profundo (se ve a la derecha del divisor) -->
+                <div class="p3-capa p3-capa--base">
+                  <div class="p3-fallback" aria-hidden="true" role="img" aria-label="Muro de ladrillo con grieta estructural profunda">
+                    <svg class="p3-fallback__svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" focusable="false">
+                      <defs>
+                        <pattern id="p3-patron-ladrillo" width="80" height="40" patternUnits="userSpaceOnUse">
+                          <rect class="p3-fb-ladrillo" width="80" height="40"/>
+                          <path class="p3-fb-mortero" d="M0 0H80M0 20H80M40 0V20M0 20V40M80 20V40"/>
+                        </pattern>
+                      </defs>
+                      <rect width="400" height="300" fill="url(#p3-patron-ladrillo)"/>
+                      <path class="p3-fb-grieta" d="M150 0 L170 60 L146 110 L196 170 L180 230 L232 300 M196 170 L252 192"/>
+                    </svg>
+                  </div>
+                  <img class="p3-img" src="../assets/images/grieta-estructural.png" alt="Muro de ladrillo con grieta estructural profunda" draggable="false">
+                </div>
+
+                <!-- Capa superior: daño superficial (su ancho sigue al control deslizante) -->
+                <div class="p3-capa p3-capa--top" id="p3-capa-superior">
+                  <div class="p3-capa__interior">
+                    <div class="p3-fallback" aria-hidden="true" role="img" aria-label="Muro con fisuras superficiales en el tarrajeo">
+                      <svg class="p3-fallback__svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <rect class="p3-fb-fondo" width="400" height="300"/>
+                        <rect class="p3-fb-panel" x="28" y="24" width="344" height="252" rx="6"/>
+                        <path class="p3-fb-fisura" d="M60 70 L98 92 L90 128 L132 150 M98 92 L140 74 L176 98 M176 98 L170 140 L214 164 M214 164 L260 150 L292 182 M132 150 L124 196 L168 218 M168 218 L214 206 L240 240 M292 182 L330 170 M260 150 L268 108 L310 92 M240 240 L286 252 M60 70 L52 110 L84 168 M310 92 L344 120"/>
+                      </svg>
+                    </div>
+                    <img class="p3-img" src="../assets/images/falla-tarrajeo.png" alt="Muro con fisuras superficiales en el tarrajeo" draggable="false">
+                  </div>
+                </div>
+              </div>
+
+              <div class="p3-etiquetas" aria-hidden="true">
+                <span class="p3-etiqueta">Daño superficial</span>
+                <span class="p3-etiqueta">Daño profundo</span>
+              </div>
+
+              <span class="p3-divisor" aria-hidden="true"></span>
+
+              <label class="eval-sr" for="p3-slider">Mover el divisor para comparar el daño superficial con el daño profundo</label>
+              <input class="eval-sr p3-range" type="range" id="p3-slider" name="comparador" min="0" max="100" step="1" value="50" aria-describedby="p3-aviso">
+
+              <span class="p3-tirador" id="p3-tirador" aria-hidden="true">
+                <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><path d="m8 8-4 4 4 4"/><path d="m16 8 4 4-4 4"/><path d="M4 12h16"/></svg>
+              </span>
+            </div>
+
+            <div class="p3-leyendas">
+              <div class="p3-leyenda">
+                <h3 class="p3-leyenda__titulo">Falla superficial de tarrajeo</h3>
+                <p class="p3-leyenda__texto">Afecta el acabado; no atraviesa el elemento estructural.</p>
+              </div>
+              <div class="p3-leyenda">
+                <h3 class="p3-leyenda__titulo">Grieta estructural profunda</h3>
+                <p class="p3-leyenda__texto">Puede indicar movimiento del muro y requiere evaluación profesional.</p>
+              </div>
+            </div>
+
+            <!-- CA03: etiqueta fija -->
+            <p class="p3-aviso" id="p3-aviso">
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>
+              <span>Esta herramienta visual no asegura un diagnóstico oficial</span>
+            </p>
+          </div>
+
+          <div class="p3-acciones">
+            <button type="button" class="btn-primary eval-btn p3-btn-principal" id="p3-continuar">
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              Entendido, continuar
+            </button>
+            <button type="button" class="btn-secondary eval-btn" id="p3-volver">
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              Volver al Paso 2
+            </button>
+          </div>
+
+          <p class="eval-sr" id="p3-estado" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="paso-4" aria-labelledby="paso-4-titulo" hidden>
+      <div class="p4-layout">
+
+        <!-- Vista A: formulario "Adjuntar Evidencia" -->
+        <div id="p4-vista-form">
+          <header class="p4-header">
+            <h2 class="p4-title" id="paso-4-titulo">Adjuntar Evidencia</h2>
+            <p class="p4-subtitle">Sube las fotos o documentos que respaldan tu evaluación.</p>
+          </header>
+
+          <form id="p4-form" class="p4-grid" novalidate>
+
+            <!-- Columna izquierda -->
+            <div class="p4-col">
+
+              <div class="card p4-card">
+                <h3 class="p4-card__title">Archivos</h3>
+
+                <div class="p4-drop" id="p4-drop" role="group" aria-label="Zona para arrastrar y soltar imágenes">
+                  <span class="p4-drop__icon" aria-hidden="true">
+                    <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                  </span>
+                  <p class="p4-drop__title">Arrastra y suelta tus archivos aquí</p>
+                  <p class="p4-drop__hint" id="p4-ayuda-archivos">PNG o JPG · Máximo 5 MB por imagen</p>
+                  <input class="eval-sr" type="file" id="p4-archivos" name="archivos" accept="image/png,image/jpeg,.jpg,.jpeg,.png" multiple aria-describedby="p4-ayuda-archivos p4-error">
+                  <label class="btn-primary eval-btn p4-seleccionar" for="p4-archivos">Seleccionar archivos</label>
+                </div>
+
+                <div class="p4-error" id="p4-error" role="alert" hidden>
+                  <ul class="p4-error__lista" id="p4-error-lista"></ul>
+                </div>
+              </div>
+
+              <div class="card p4-card">
+                <h3 class="p4-card__title">Detalles de la evidencia</h3>
+                <div class="p4-fields">
+                  <div class="form-group">
+                    <label class="form-label" for="p4-campo-titulo">Título</label>
+                    <input class="form-input" type="text" id="p4-campo-titulo" name="titulo" placeholder="Ej. Foto del área revisada" maxlength="80" autocomplete="off">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="p4-campo-categoria">Categoría</label>
+                    <select class="form-select" id="p4-campo-categoria" name="categoria">
+                      <option value="">Seleccionar categoría</option>
+                      <option value="grietas">Grietas / Fisuras</option>
+                      <option value="humedad">Humedad</option>
+                      <option value="desplome">Desplome / Inclinación</option>
+                      <option value="techo">Techo</option>
+                      <option value="muros">Muros</option>
+                      <option value="columnas">Columnas</option>
+                    </select>
+                  </div>
+                  <div class="form-group p4-field--full">
+                    <label class="form-label" for="p4-campo-descripcion">Descripción</label>
+                    <textarea class="form-textarea" id="p4-campo-descripcion" name="descripcion" rows="4" maxlength="500" placeholder="Describe brevemente la evidencia..."></textarea>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Columna derecha -->
+            <div class="p4-col">
+
+              <div class="card p4-card">
+                <h3 class="p4-card__title">Evidencias adjuntas <span id="p4-contador">(0)</span></h3>
+                <ul class="p4-lista" id="p4-lista" hidden></ul>
+                <p class="p4-vacio" id="p4-vacio">Todavía no has adjuntado archivos.</p>
+              </div>
+
+              <div class="card p4-card p4-actions">
+                <button type="submit" class="btn-primary eval-btn p4-btn" id="p4-guardar">Guardar evidencia</button>
+                <button type="button" class="btn-secondary eval-btn p4-btn" id="p4-cancelar">Cancelar</button>
+              </div>
+
+            </div>
+          </form>
+        </div>
+
+        <!-- Vista B: confirmación -->
+        <div id="p4-vista-ok" hidden>
+          <header class="p4-header">
+            <h2 class="p4-title" id="p4-ok-titulo">Hola, Juan</h2>
+            <p class="p4-subtitle">Revisa y confirma la evidencia antes de continuar con la evaluación.</p>
+          </header>
+
+          <div class="card p4-ok-card">
+            <span class="p4-ok-icon" aria-hidden="true">
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <div>
+              <p class="p4-ok-texto">Evidencia cargada correctamente</p>
+              <p class="p4-ok-detalle" id="p4-ok-detalle"></p>
+            </div>
+          </div>
+
+          <div class="p4-ok-acciones">
+            <button type="button" class="btn-secondary eval-btn" id="p4-editar">Editar evidencia</button>
+            <button type="button" class="btn-primary eval-btn" id="p4-continuar">Continuar</button>
+          </div>
+        </div>
+
+        <p class="eval-sr" id="p4-estado" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/evaluacion.js"></script>
+</body>
+</html>
