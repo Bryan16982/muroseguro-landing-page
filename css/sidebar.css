@@ -1,0 +1,212 @@
+/* ==========================================================================
+   sidebar.css - Menú lateral compartido (diseño de Figma)
+   Lo usan: inicio, perfil, resultados, directorio y recursos.
+   (evaluacion.html trae el mismo diseño en evaluacion.css con #eval-sidebar)
+   Cargar DESPUÉS del CSS propio de cada página.
+   ========================================================================== */
+
+.ms-sb {
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 230px;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1rem 0.875rem 0;
+  background: var(--color-secondary);
+  color: var(--bg-white);
+}
+
+/* El contenido deja libre el espacio del menú fijo */
+.app-layout .ms-sb ~ .main-content {
+  margin-left: 230px;
+}
+
+/* --- Logo + nombre --- */
+.ms-sb__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ms-sb__logo {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0.25rem;
+  background: var(--bg-white);
+  border-radius: 0.625rem;
+}
+
+.ms-sb__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.ms-sb__brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ms-sb__title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--bg-white);
+}
+
+.ms-sb__subtitle {
+  font-size: 0.6875rem;
+  line-height: 1.25;
+  color: color-mix(in srgb, var(--bg-white) 55%, var(--color-secondary));
+}
+
+/* --- Navegación: botones blancos con ícono --- */
+.ms-sb__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ms-sb .ms-sb__link,
+.ms-sb .ms-sb__logout {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 44px;
+  padding: 0.375rem 0.75rem;
+  font-family: var(--font-main);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-secondary);
+  background: var(--bg-white);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--color-secondary) 25%, transparent);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.ms-sb__icon {
+  flex: 0 0 auto;
+  width: 1.125rem;
+  height: 1.125rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: color-mix(in srgb, var(--color-secondary) 70%, var(--bg-white));
+}
+
+.ms-sb .ms-sb__link:hover,
+.ms-sb .ms-sb__logout:hover {
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--bg-white));
+}
+
+/* Página actual: azul */
+.ms-sb .ms-sb__link[aria-current="page"] {
+  background: var(--color-accent);
+  color: var(--bg-white);
+}
+
+.ms-sb .ms-sb__link[aria-current="page"] .ms-sb__icon {
+  color: var(--bg-white);
+}
+
+.ms-sb .ms-sb__link:focus-visible,
+.ms-sb .ms-sb__logout:focus-visible {
+  outline: 3px solid var(--bg-white);
+  outline-offset: 2px;
+}
+
+/* --- Pie: usuario + cerrar sesión --- */
+.ms-sb__footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 0 1.25rem;
+  background: var(--color-secondary);
+}
+
+.ms-sb__user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.ms-sb__avatar {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--color-secondary);
+  background: var(--bg-white);
+  border-radius: 50%;
+}
+
+.ms-sb__role {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--bg-white) 55%, var(--color-secondary));
+}
+
+.ms-sb .ms-sb__logout {
+  font-weight: 700;
+}
+
+/* --- Móvil: el menú pasa arriba, en flujo normal --- */
+@media (max-width: 768px) {
+  .ms-sb {
+    position: static;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    gap: 1rem;
+    padding: 1rem 1rem 0;
+  }
+
+  .app-layout .ms-sb ~ .main-content {
+    margin-left: 0;
+  }
+
+  .ms-sb__nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ms-sb__footer {
+    position: static;
+  }
+}
+
+/* --- Impresión (PDF de resultados): sin menú --- */
+@media print {
+  .ms-sb {
+    display: none !important;
+  }
+
+  .app-layout .ms-sb ~ .main-content {
+    margin-left: 0 !important;
+  }
+}
