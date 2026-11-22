@@ -1,1 +1,85 @@
 <!-- Página principal de MuroSeguro -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MuroSeguro - Seguridad sísmica de tu vivienda</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body class="auth">
+
+  <!-- HU-030: encabezado con menú que en móvil se abre con el botón ☰ -->
+  <header class="topbar">
+    <a class="marca" href="index.html">
+      <img src="../assets/images/logo-muroseguro.png" alt="" width="32" height="39">
+      MuroSeguro
+    </a>
+
+    <button class="icon-btn" id="boton-menu" type="button"
+            aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">☰</button>
+
+    <nav id="menu" class="menu" aria-label="Principal">
+      <a href="#inicio">Inicio</a>
+      <a href="#registro">Crear cuenta</a>
+      <a class="btn-secondary" href="login.html">Iniciar sesión</a>
+    </nav>
+  </header>
+
+  <main id="inicio" class="hero">
+    <div class="hero-texto">
+      <p class="etiqueta">Orientación preliminar sísmica</p>
+      <h1>Evalúa la seguridad sísmica de tu vivienda y toma decisiones informadas</h1>
+      <p>Aprende a reconocer grietas, humedad y otras señales visibles en tu casa, y descubre cuándo llamar a un ingeniero civil colegiado.</p>
+      <p class="caption">MuroSeguro es una herramienta de orientación. No certifica la seguridad de tu vivienda ni reemplaza la evaluación de un profesional.</p>
+    </div>
+
+    <!-- HU-001: registro · HU-004: aceptación de términos -->
+    <section class="card tarjeta" id="registro" aria-labelledby="titulo-registro">
+      <h2 id="titulo-registro">Crea tu cuenta</h2>
+
+      <form id="form-registro" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="correo">Correo electrónico</label>
+          <input class="form-input" id="correo" type="email" autocomplete="email"
+                 placeholder="nombre@correo.com" aria-describedby="correo-error">
+          <p class="error-texto" id="correo-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="clave">Contraseña</label>
+          <input class="form-input" id="clave" type="password" autocomplete="new-password"
+                 aria-describedby="clave-ayuda clave-error">
+          <p class="caption" id="clave-ayuda">Mínimo 8 caracteres, con letras y números.</p>
+          <p class="error-texto" id="clave-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="clave2">Confirmar contraseña</label>
+          <input class="form-input" id="clave2" type="password" autocomplete="new-password"
+                 aria-describedby="clave2-error">
+          <p class="error-texto" id="clave2-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label class="check" id="check-terminos" for="terminos">
+            <input type="checkbox" id="terminos" aria-describedby="terminos-error">
+            <span>Acepto los <strong>Términos y Condiciones</strong> y entiendo que el diagnóstico de MuroSeguro es <strong>referencial</strong> y <strong>no certifica</strong> la seguridad de mi vivienda.</span>
+          </label>
+          <p class="error-texto" id="terminos-error" hidden></p>
+        </div>
+
+        <!-- aria-disabled (y no "disabled") para que el clic siga funcionando y se muestre el error -->
+        <button class="btn-primary" id="boton-registro" type="submit" aria-disabled="true">Crear cuenta</button>
+      </form>
+
+      <p class="pie-tarjeta">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+    </section>
+  </main>
+
+  <script src="../js/auth.js"></script>
+</body>
+</html>
+
