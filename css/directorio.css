@@ -31,6 +31,10 @@ body {
 /* Sidebar estilo índice de MuroSeguro */
 .sidebar {
   width: 225px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
   background-color: var(--color-secondary);
   color: var(--bg-white);
   padding: 16px 14px;
@@ -156,6 +160,7 @@ body {
   text-decoration: none;
   font-weight: 600;
 }
+
 /* Contenido principal */
 .main-content {
   flex: 1;
@@ -462,6 +467,9 @@ button:disabled {
 
   .sidebar {
     width: 100%;
+    height: auto;
+    position: static;
+    overflow-y: visible;
   }
 
   .nav-list {
