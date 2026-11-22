@@ -10,6 +10,14 @@
   proteger();
   window.addEventListener('pageshow', proteger);
 
+  // Usuario del menú lateral: iniciales y correo de la sesión
+  var correo = sessionStorage.getItem(CLAVE_SESION) || '';
+  if (correo) {
+    var iniciales = correo.split('@')[0].replace(/[^a-zA-Z]/g, '').slice(0, 2).toUpperCase() || 'US';
+    document.querySelectorAll('[data-usuario-iniciales]').forEach(function (el) { el.textContent = iniciales; });
+    document.querySelectorAll('[data-usuario-nombre]').forEach(function (el) { el.textContent = correo; el.title = correo; });
+  }
+
   // Los enlaces con data-cerrar-sesion cierran la sesión antes de ir a index.html
   document.addEventListener('click', function (e) {
     var enlace = e.target.closest('[data-cerrar-sesion]');
