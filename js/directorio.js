@@ -214,9 +214,13 @@ function renderizarTodo() {
 
   for (let i = 0; i < visibles.length; i++) {
     const ing = visibles[i];
-    const rutaFoto = ing.foto
-      ? "../recursos/images/ingeniero/" + encodeURI(ing.foto)
-      : avatarSvg;
+    const rutasPosibles = ing.foto
+      ? [
+          "../recursos/images/ingeniero/" + encodeURI(ing.foto),
+          "../assets/imágenes/ingeniero/" + encodeURI(ing.foto),
+          "../assets/images/ingenieros/" + encodeURI(ing.foto)
+        ]
+      : [avatarSvg];
     const urlWhatsapp =
       "https://wa.me/" + ing.telefono + "?text=" + encodeURIComponent(mensajeBase);
 
@@ -225,7 +229,7 @@ function renderizarTodo() {
     card.innerHTML =
       "<div>" +
         '<div class="ing-top">' +
-          '<img src="' + rutaFoto + '" alt="Foto de ' + ing.nombre + '" class="ing-foto">' +
+          '<img src="' + rutasPosibles[0] + '" alt="Foto de ' + ing.nombre + '" class="ing-foto">' +
           "<div>" +
             '<h3 class="ing-nombre">' + ing.nombre + "</h3>" +
             '<span class="ing-cip">CIP ' + ing.cip + "</span>" +
@@ -238,9 +242,19 @@ function renderizarTodo() {
 
     const imgElemento = card.querySelector(".ing-foto");
     if (imgElemento) {
-      imgElemento.addEventListener("error", function () {
+      if (!ing.foto) {
         imgElemento.src = avatarSvg;
-      });
+      } else {
+        let idxRuta = 0;
+        imgElemento.addEventListener("error", function () {
+          idxRuta += 1;
+          if (idxRuta < rutasPosibles.length) {
+            imgElemento.src = rutasPosibles[idxRuta];
+          } else {
+            imgElemento.src = avatarSvg;
+          }
+        });
+      }
     }
 
     gridIngenieros.appendChild(card);
