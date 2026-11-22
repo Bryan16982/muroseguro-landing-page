@@ -1,1 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión - MuroSeguro</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body class="auth">
+
+  <header class="topbar">
+    <a class="marca" href="index.html">
+      <img src="../assets/images/logo-muroseguro.png" alt="" width="32" height="39">
+      MuroSeguro
+    </a>
+    <p class="topbar-enlace">¿No tienes cuenta? <a href="index.html#registro">Regístrate</a></p>
+  </header>
+
+  <main class="centrado">
+    <section class="card tarjeta" aria-labelledby="titulo-login">
+      <h1 id="titulo-login">Iniciar sesión</h1>
+
+      <p class="aviso aviso-ok" id="aviso-registro" role="status" hidden>Tu cuenta fue creada. Inicia sesión para continuar.</p>
+      <p class="aviso aviso-error" id="login-error" role="alert" hidden></p>
+
+      <form id="form-login" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="correo">Correo electrónico</label>
+          <input class="form-input" id="correo" type="email" autocomplete="email"
+                 placeholder="nombre@correo.com" aria-describedby="correo-error">
+          <p class="error-texto" id="correo-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="clave">Contraseña</label>
+          <div class="campo-clave">
+            <input class="form-input" id="clave" type="password" autocomplete="current-password"
+                   aria-describedby="clave-error">
+            <button class="ver-clave" id="ver-clave" type="button"
+                    aria-controls="clave" aria-pressed="false">Mostrar</button>
+          </div>
+          <p class="error-texto" id="clave-error" hidden></p>
+        </div>
+
+        <button class="btn-primary" type="submit">Ingresar</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="../js/auth.js"></script>
+</body>
+</html>
 
