@@ -54,6 +54,15 @@ if (document.body.hasAttribute('data-privada')) {
   window.addEventListener('pageshow', protegerPagina);
 }
 
+// Con sesión iniciada no se muestra la pantalla de registro
+function saltarSiHaySesion() {
+  if (sessionStorage.getItem(CLAVE_SESION)) location.replace('inicio.html');
+}
+if (document.getElementById('form-registro')) {
+  saltarSiHaySesion();
+  window.addEventListener('pageshow', saltarSiHaySesion);
+}
+
 const formRegistro = document.getElementById('form-registro');
 if (formRegistro) {
   const correo = document.getElementById('correo');
@@ -129,7 +138,7 @@ if (formLogin) {
   const clave = document.getElementById('clave');
   const errorLogin = document.getElementById('login-error');
 
-  if (sessionStorage.getItem(CLAVE_SESION)) location.replace('perfil.html');
+  if (sessionStorage.getItem(CLAVE_SESION)) location.replace('inicio.html');
 
 
   if (new URLSearchParams(location.search).get('registro') === 'ok') {
@@ -174,7 +183,7 @@ if (formLogin) {
 
     sessionStorage.setItem(CLAVE_SESION, usuario.correo);
     localStorage.setItem(CLAVE_ACTIVO, usuario.correo);
-    location.replace('perfil.html');
+    location.replace('inicio.html');
   });
 }
 
