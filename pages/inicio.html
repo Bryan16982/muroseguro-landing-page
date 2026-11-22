@@ -6,6 +6,7 @@
   <title>Inicio - MuroSeguro</title>
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/perfil.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
   <style>
     .inicio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 24px; }
@@ -17,18 +18,54 @@
 <body>
 <div class="app-layout">
 
-  <aside class="sidebar">
-    <div class="logo-container">
-      <img src="../assets/images/logo-muroseguro.png" alt="Logo MuroSeguro">
+  <aside class="ms-sb" aria-label="Menú lateral">
+    <div class="ms-sb__brand">
+      <div class="ms-sb__logo">
+        <img src="../assets/images/logo-muroseguro.png" alt="Logo MuroSeguro">
+      </div>
+      <div class="ms-sb__brand-text">
+        <span class="ms-sb__title">MuroSeguro</span>
+        <span class="ms-sb__subtitle">Seguridad estructural ciudadana</span>
+      </div>
     </div>
-    <nav>
-      <a href="inicio.html" class="active" aria-current="page">Inicio</a>
-      <a href="evaluacion.html">Evaluar</a>
-      <a href="resultados.html">Resultados</a>
-      <a href="directorio.html">Directorio</a>
-      <a href="recursos.html">Recursos</a>
-      <a href="perfil.html">Perfil</a>
+
+    <nav class="ms-sb__nav" aria-label="Menú principal">
+      <a class="ms-sb__link" href="inicio.html" aria-current="page">
+        <svg class="ms-sb__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+        <span>Inicio</span>
+      </a>
+      <a class="ms-sb__link" href="evaluacion.html">
+        <svg class="ms-sb__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Evaluar</span>
+      </a>
+      <a class="ms-sb__link" href="resultados.html">
+        <svg class="ms-sb__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect width="6" height="4" x="9" y="3" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+        <span>Resultados</span>
+      </a>
+      <a class="ms-sb__link" href="directorio.html">
+        <svg class="ms-sb__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Directorio</span>
+      </a>
+      <a class="ms-sb__link" href="recursos.html">
+        <svg class="ms-sb__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span>Recursos</span>
+      </a>
+      <a class="ms-sb__link" href="perfil.html">
+        <svg class="ms-sb__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+        <span>Perfil</span>
+      </a>
     </nav>
+
+    <div class="ms-sb__footer">
+      <div class="ms-sb__user">
+        <span class="ms-sb__avatar" data-usuario-iniciales aria-hidden="true">US</span>
+        <span class="ms-sb__role" data-usuario-nombre>Usuario</span>
+      </div>
+      <a class="ms-sb__logout" href="index.html" data-cerrar-sesion>
+        <svg class="ms-sb__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        <span>Cerrar sesión</span>
+      </a>
+    </div>
   </aside>
 
   <main class="main-content">
@@ -61,8 +98,6 @@
     </section>
 
     <p class="caption" style="margin-top:24px">MuroSeguro es una herramienta de orientación. No certifica la seguridad de tu vivienda ni reemplaza la evaluación de un profesional.</p>
-
-    <p style="margin-top:16px"><a href="index.html" data-cerrar-sesion>Cerrar sesión</a></p>
   </main>
 </div>
 
