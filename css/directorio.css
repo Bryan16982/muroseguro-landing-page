@@ -37,24 +37,13 @@ html, body {
   line-height: 1.45;
 }
 
-.icono {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 .app-layout {
   display: flex;
   min-height: 100vh;
 }
 
 /* =========================================================
-   MENÚ LATERAL (misma estructura del índice de Perfil)
+   MENÚ LATERAL FIJO (alineado a la imagen de referencia)
    ========================================================= */
 .app-layout .sidebar {
   position: fixed;
@@ -85,16 +74,17 @@ html, body {
 
 .sidebar .logo-container {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .sidebar .logo-container img {
   width: 44px;
   height: 44px;
   padding: 4px;
-  border-radius: var(--radius-btn);
+  border-radius: 10px;
   background-color: var(--bg-white);
   object-fit: contain;
   flex-shrink: 0;
@@ -110,24 +100,33 @@ html, body {
   color: var(--bg-white);
   font-weight: 700;
   font-size: 1.05rem;
+  line-height: 1.2;
 }
 
 .sidebar .logo-sub {
   color: var(--border-neutral);
-  font-size: .7rem;
-  line-height: 1.2;
+  font-size: 0.72rem;
+  line-height: 1.25;
 }
 
-.sidebar nav {
+.sidebar nav,
+.sidebar nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+.sidebar nav li {
+  list-style: none;
+}
+
 .sidebar nav a {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: var(--touch-target);
   padding: 10px 14px;
   border-radius: var(--radius-btn);
@@ -149,7 +148,14 @@ html, body {
 }
 
 .sidebar .nav-icon {
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .sidebar-footer {
@@ -162,52 +168,64 @@ html, body {
 
 .sidebar-user {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
-  color: var(--border-neutral);
 }
 
-.user-avatar {
+.sidebar .user-avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--bg-white);
+  background-color: var(--bg-white);
   color: var(--color-secondary);
   font-weight: 700;
-  font-size: .85rem;
+  font-size: 0.85rem;
   flex-shrink: 0;
 }
 
-.user-rol {
-  color: var(--border-neutral);
-  font-size: .85rem;
+.sidebar .user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.sidebar-logout {
+.sidebar .user-nombre {
+  color: var(--bg-white);
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.sidebar .user-rol {
+  color: var(--border-neutral);
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.sidebar .sidebar-logout {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   width: 100%;
   min-height: var(--touch-target);
   padding: 0 14px;
-  background: var(--bg-white);
-  color: var(--color-secondary);
   border: 0;
   border-radius: var(--radius-btn);
-  font: inherit;
+  background-color: var(--bg-white);
+  color: var(--color-secondary);
   font-weight: 600;
+  font-size: 0.9375rem;
   text-decoration: none;
   cursor: pointer;
 }
 
-.sidebar-logout:hover,
-.sidebar-logout:focus-visible {
+.sidebar .sidebar-logout:hover {
   background-color: var(--bg-dominant);
-  outline: 2px solid var(--color-accent);
 }
 
 /* =========================================================
