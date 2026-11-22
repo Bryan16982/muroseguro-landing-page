@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil - MuroSeguro</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/perfil.css">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body>
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <div class="logo-container">
+      <img src="../assets/images/logo-muroseguro.png" alt="Logo MuroSeguro">
+    </div>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="evaluacion.html">Evaluar</a>
+      <a href="resultados.html">Resultados</a>
+      <a href="directorio.html">Directorio</a>
+      <a href="recursos.html">Recursos</a>
+      <a href="perfil.html" class="active" aria-current="page">Perfil</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="perfil-header">
+      <h1>Hola, <span id="saludo-nombre">Juan</span></h1>
+      <p>Bienvenido a tu panel de perfil.</p>
+      <nav class="perfil-anchors" aria-label="Secciones del perfil">
+        <a href="#perfil">Mi perfil</a>
+        <a href="#viviendas">Mis viviendas</a>
+        <a href="#checklist">Checklist</a>
+        <a href="#bitacora">Bitácora</a>
+        <a href="#soporte">Soporte</a>
+      </nav>
+    </header>
+
+    <!-- HU-005 Perfil -->
+    <section id="perfil" class="perfil-section" aria-labelledby="t-perfil">
+      <h2 id="t-perfil">Mi perfil</h2>
+      <form id="form-perfil" class="card" novalidate>
+        <h3>Tus datos</h3>
+        <div class="form-group">
+          <label class="form-label" for="p-nombres">Nombres</label>
+          <input class="form-input" id="p-nombres" type="text" placeholder="Ingresa tus nombres" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-apellidos">Apellidos</label>
+          <input class="form-input" id="p-apellidos" type="text" placeholder="Ingresa tus apellidos" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-telefono">Teléfono (máx. 9 dígitos)</label>
+          <input class="form-input" id="p-telefono" type="tel" inputmode="numeric" maxlength="9" pattern="[0-9]{1,9}" placeholder="987654321" required>
+        </div>
+        <button class="btn-primary" type="submit">Guardar perfil</button>
+      </form>
+    </section>
+
+    <!-- HU-006 Viviendas -->
+    <section id="viviendas" class="perfil-section" aria-labelledby="t-viv">
+      <h2 id="t-viv">Mis viviendas registradas <small id="viv-total"></small></h2>
+      <ul id="lista-viviendas" class="viv-grid"></ul>
+      <button class="btn-primary" id="btn-nueva-vivienda" type="button" aria-expanded="false" aria-controls="form-vivienda">+ Registrar nueva vivienda</button>
+
+      <form id="form-vivienda" class="card" hidden novalidate>
+        <h3>Ubicación del inmueble</h3>
+        <div class="form-group">
+          <label class="form-label" for="v-dep">Departamento</label>
+          <select class="form-select" id="v-dep" required><option value="">Seleccionar departamento</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="v-prov">Provincia</label>
+          <select class="form-select" id="v-prov" required disabled><option value="">Seleccionar provincia</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="v-dist">Distrito</label>
+          <select class="form-select" id="v-dist" required disabled><option value="">Seleccionar distrito</option></select>
+        </div>
+        <fieldset class="radio-group" id="v-dt">
+          <legend class="form-label">¿La construcción tuvo dirección técnica inicial?</legend>
+          <label class="radio-option" for="v-si"><input type="radio" id="v-si" name="dt" value="Sí" required> Sí</label>
+          <label class="radio-option" for="v-no"><input type="radio" id="v-no" name="dt" value="No"> No</label>
+        </fieldset>
+        <div class="btn-row">
+          <button class="btn-primary" type="submit">Guardar inmueble</button>
+          <button class="btn-secondary" type="button" id="btn-cancelar-viv">Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- HU-021 Checklist -->
+    <section id="checklist" class="perfil-section" aria-labelledby="t-check">
+      <h2 id="t-check">Preparación pre-inspección</h2>
+      <div class="card">
+        <p>Completa los requisitos para agendar la visita técnica.</p>
+        <label for="progreso" class="progress-label">
+          Documentación: <strong id="progreso-texto">0% completado</strong>
+        </label>
+        <progress id="progreso" max="100" value="0">0%</progress>
+        <ul class="check-list" id="check-list">
+          <li><label for="c1"><input type="checkbox" id="c1" value="c1"> Planos de arquitectura</label></li>
+          <li><label for="c2"><input type="checkbox" id="c2" value="c2"> Planos de estructuras</label></li>
+          <li><label for="c3"><input type="checkbox" id="c3" value="c3"> DNI del propietario</label></li>
+          <li><label for="c4"><input type="checkbox" id="c4" value="c4"> Fotos históricas de la autoconstrucción</label></li>
+          <li><label for="c5"><input type="checkbox" id="c5" value="c5"> Permiso municipal o constancia de posesión</label></li>
+        </ul>
+        <button class="btn-primary" type="button" id="btn-confirmar" disabled>Confirmar preparación</button>
+      </div>
+    </section>
+
+    <!-- HU-028 Bitácora -->
+    <section id="bitacora" class="perfil-section" aria-labelledby="t-bit">
+      <h2 id="t-bit">Bitácora histórica del inmueble</h2>
+      <p class="aviso" role="note"><strong>Nota:</strong> el registro en esta bitácora es de carácter informativo y no valida la calidad de las obras realizadas en el pasado.</p>
+      <form id="form-bitacora" class="card" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="b-anio">Año</label>
+          <input class="form-input" id="b-anio" type="number" min="1900" max="2100" placeholder="Ej. 2018" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="b-desc">Descripción</label>
+          <textarea class="form-textarea" id="b-desc" rows="3" placeholder="Ej. Ampliación a 2do piso" required></textarea>
+        </div>
+        <button class="btn-primary" type="submit">Añadir nuevo hito</button>
+      </form>
+      <ol class="timeline" id="timeline" aria-label="Línea de tiempo de la vivienda"></ol>
+    </section>
+
+    <!-- HU-022 Soporte -->
+    <section id="soporte" class="perfil-section" aria-labelledby="t-sop">
+      <h2 id="t-sop">¿No encontraste respuesta? Escríbenos</h2>
+      <form id="form-soporte" class="card" novalidate>
+        <p class="req-nota">* Campos obligatorios</p>
+        <div class="form-group">
+          <label class="form-label" for="s-nombres">Nombres *</label>
+          <input class="form-input" id="s-nombres" type="text" placeholder="Ingresa tus nombres" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="s-correo">Correo electrónico *</label>
+          <input class="form-input" id="s-correo" type="email" placeholder="nombre@ejemplo.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="s-celular">Celular *</label>
+          <input class="form-input" id="s-celular" type="tel" inputmode="numeric" maxlength="9" pattern="[0-9]{9}" placeholder="987654321" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="s-mensaje">Mensaje *</label>
+          <textarea class="form-textarea" id="s-mensaje" rows="4" placeholder="Describe tu consulta con el mayor detalle posible." required></textarea>
+        </div>
+        <p class="aviso" role="note"><strong>Aviso importante:</strong> este canal no brinda diagnósticos estructurales a distancia. Si sospechas un daño crítico, contacta a un profesional local.</p>
+        <button class="btn-primary" type="submit">Enviar mensaje</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="../js/main.js"></script>
+<script src="../js/perfil.js"></script>
+</body>
+</html>
