@@ -54,6 +54,17 @@
     input.addEventListener('input', () => { input.value = input.value.replace(/\D/g, '').slice(0, 9); });
   }
 
+  function setSaludo(nombres) {
+    const n = (nombres || '').trim().split(' ')[0];
+    $('saludo-nombre').textContent = n ? ', ' + n : '';
+  }
+
+  /* ---------- Cerrar sesión (respaldo si main.js no lo maneja) ---------- */
+  $('btn-cerrar-sesion').addEventListener('click', () => {
+    try { localStorage.removeItem('ms_usuario_activo'); } catch (e) { /* sin storage */ }
+    window.location.href = 'index.html';
+  });
+
   /* ---------- HU-005 Perfil ---------- */
   const fPerfil = $('form-perfil');
   const perfil = load('perfil', null);
@@ -61,7 +72,7 @@
     $('p-nombres').value = perfil.nombres || '';
     $('p-apellidos').value = perfil.apellidos || '';
     $('p-telefono').value = perfil.telefono || '';
-    if (perfil.nombres) $('saludo-nombre').textContent = perfil.nombres.split(' ')[0];
+    setSaludo(perfil.nombres);
   }
   onlyDigits($('p-telefono'));
   clearOnInput(fPerfil);
@@ -74,7 +85,7 @@
       telefono: $('p-telefono').value
     };
     save('perfil', data);
-    $('saludo-nombre').textContent = data.nombres.split(' ')[0];
+    setSaludo(data.nombres);
     toast('Perfil actualizado correctamente.');
   });
 
@@ -86,14 +97,7 @@
   };
   const fViv = $('form-vivienda');
   const selDep = $('v-dep'), selProv = $('v-prov'), selDist = $('v-dist');
-  let viviendas = load('viviendas', null);
-  if (!viviendas) {
-    viviendas = [
-      { depto: 'Lima', prov: 'Lima', dist: 'Miraflores', dt: 'Sí' },
-      { depto: 'Lima', prov: 'Lima', dist: 'Barranco', dt: 'No' }
-    ];
-    save('viviendas', viviendas);
-  }
+  let viviendas = load('viviendas', []);
 
   function fillSelect(sel, items, placeholder) {
     sel.innerHTML = '';
@@ -126,6 +130,7 @@
       ul.appendChild(li);
     });
     $('viv-total').textContent = '(Total: ' + viviendas.length + ')';
+    $('viv-vacio').hidden = viviendas.length > 0;
   }
   renderViviendas();
 
@@ -182,17 +187,11 @@
 
   /* ---------- HU-028 Bitácora ---------- */
   const fBit = $('form-bitacora');
-  let hitos = load('bitacora', null);
-  if (!hitos) {
-    hitos = [
-      { anio: 2015, desc: 'Construcción de 1er piso, muros de albañilería.' },
-      { anio: 2018, desc: 'Ampliación a 2do piso sin supervisión técnica.' }
-    ];
-    save('bitacora', hitos);
-  }
+  let hitos = load('bitacora', []);
   function renderTimeline() {
     const ol = $('timeline');
     ol.innerHTML = '';
+    $('tl-vacio').hidden = hitos.length > 0;
     hitos.slice().sort((a, b) => a.anio - b.anio).forEach((h) => {
       const li = el('li', 'tl-item');
       const card = el('div', 'tl-card');
