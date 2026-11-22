@@ -22,6 +22,25 @@
     return n;
   }
 
+  /* Limpieza única: borra los datos de ejemplo que guardó una versión anterior de esta pantalla */
+  (function limpiarEjemplos() {
+    const ejemplos = {
+      viviendas: [
+        { depto: 'Lima', prov: 'Lima', dist: 'Miraflores', dt: 'Sí' },
+        { depto: 'Lima', prov: 'Lima', dist: 'Barranco', dt: 'No' }
+      ],
+      bitacora: [
+        { anio: 2015, desc: 'Construcción de 1er piso, muros de albañilería.' },
+        { anio: 2018, desc: 'Ampliación a 2do piso sin supervisión técnica.' }
+      ]
+    };
+    Object.keys(ejemplos).forEach((n) => {
+      try {
+        if (localStorage.getItem(key(n)) === JSON.stringify(ejemplos[n])) localStorage.removeItem(key(n));
+      } catch (e) { /* sin storage */ }
+    });
+  })();
+
   let toastTimer;
   function toast(msg, isError) {
     const t = $('toast');
