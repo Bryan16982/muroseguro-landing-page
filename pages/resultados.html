@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MuroSeguro</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../css/resultados.css">
+</head>
+<body>
+  <div class="app-layout">
+
+    <aside class="sidebar">
+  <div class="logo-container">
+    <img src="../assets/images/logo-muroseguro.png" alt="Logo MuroSeguro">
+  </div>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="evaluacion.html">Evaluar</a>
+    <a href="resultados.html">Resultados</a>
+    <a href="directorio.html">Directorio</a>
+    <a href="recursos.html">Recursos</a>
+    <a href="perfil.html">Perfil</a>
+  </nav>
+</aside>
+
+    <main class="main-content resultados" id="contenido">
+
+      <!-- HU-014 CA03: cabecera obligatoria, visible solo al imprimir -->
+      <div class="print-header" role="note">
+        Documento referencial, requiere validación técnica en campo
+      </div>
+
+      <header class="res-header">
+        <h1 id="titulo-pagina" tabindex="-1">Resultados del diagnóstico</h1>
+        <p class="res-subtitulo" id="res-subtitulo">Calculando tu diagnóstico…</p>
+      </header>
+
+      <!-- Se muestra solo después de aceptar el modal (HU-012 CA03) -->
+      <div id="panel-resultados" hidden>
+
+        <!-- HU-012: Semáforo + HU-013: Dashboard -->
+        <section class="card res-semaforo nivel-amarillo" id="card-semaforo" aria-labelledby="h-semaforo">
+          <h2 id="h-semaforo" class="res-h2">Semáforo de riesgo</h2>
+
+          <div class="res-semaforo-cuerpo">
+            <div class="semaforo" role="img" id="semaforo-visual" aria-label="Semáforo de riesgo">
+              <span class="lampara lampara-rojo" data-lampara="rojo"></span>
+              <span class="lampara lampara-amarillo" data-lampara="amarillo"></span>
+              <span class="lampara lampara-verde" data-lampara="verde"></span>
+            </div>
+
+            <div class="res-semaforo-texto">
+              <p class="res-etiqueta">Nivel de riesgo identificado</p>
+              <p class="res-nivel" id="res-nivel">—</p>
+              <p class="res-desc" id="res-desc"></p>
+            </div>
+          </div>
+
+          <!-- HU-013 CA01: barra de progreso CSS -->
+          <div class="res-barra-bloque">
+            <div class="res-barra-info">
+              <span id="barra-label">Puntaje de vulnerabilidad</span>
+              <strong id="barra-valor">0 pts</strong>
+            </div>
+            <div class="barra" role="progressbar" aria-labelledby="barra-label"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barra">
+              <div class="barra-relleno" id="barra-relleno"></div>
+            </div>
+            <div class="barra-escala" aria-hidden="true">
+              <span>Bajo</span><span>Medio</span><span>Alto</span>
+            </div>
+          </div>
+
+          <!-- HU-013 CA03: texto estático obligatorio -->
+          <p class="res-aviso" id="res-aviso">
+            Este sistema no evalúa la resistencia interna de los materiales. Busque a un especialista.
+          </p>
+        </section>
+
+        <!-- HU-013 CA02: se inyecta solo cuando el semáforo es Rojo -->
+        <div id="slot-urgente"></div>
+
+        <div class="grid-3 res-stats">
+          <div class="card res-stat">
+            <p class="res-etiqueta">Puntaje total</p>
+            <p class="res-stat-valor" id="stat-puntaje">0</p>
+          </div>
+          <div class="card res-stat">
+            <p class="res-etiqueta">Factores detectados</p>
+            <p class="res-stat-valor" id="stat-factores">0</p>
+          </div>
+          <div class="card res-stat">
+            <p class="res-etiqueta">Nivel</p>
+            <p class="res-stat-valor" id="stat-nivel">—</p>
+          </div>
+        </div>
+
+        <section class="card" id="card-recomendaciones" aria-labelledby="h-reco">
+          <h2 id="h-reco" class="res-h2">Qué debo hacer</h2>
+          <ul class="res-lista" id="lista-recomendaciones"></ul>
+        </section>
+
+        <section class="card" aria-labelledby="h-factores">
+          <h2 id="h-factores" class="res-h2">Factores considerados</h2>
+          <ul class="res-factores" id="lista-factores"></ul>
+        </section>
+
+        <!-- HU-014 y HU-029: acciones -->
+        <section class="card no-print" aria-labelledby="h-acciones">
+          <h2 id="h-acciones" class="res-h2">Compartir tu reporte</h2>
+          <div class="res-acciones">
+            <button type="button" class="btn-primary" id="btn-descargar">
+              Descargar Reporte
+            </button>
+            <button type="button" class="btn-secondary" id="btn-copiar">
+              <svg class="icono-copiar" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                   stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                <path d="M5 15V6a2 2 0 0 1 2-2h9"></path>
+              </svg>
+              <span id="btn-copiar-texto">Copiar Enlace</span>
+            </button>
+          </div>
+          <p class="res-nota" id="copiar-estado" role="status" aria-live="polite"></p>
+        </section>
+
+        <!-- HU-024: Mapa SVG -->
+        <section class="card no-print" id="card-mapa" aria-labelledby="h-mapa">
+          <h2 id="h-mapa" class="res-h2">Vulnerabilidad zonal</h2>
+          <p class="res-nota">Datos de prueba ilustrativos. Selecciona un distrito en el mapa o en la lista.</p>
+
+          <div class="form-group">
+            <label class="form-label" for="select-distrito">Buscar distrito</label>
+            <select class="form-select" id="select-distrito">
+              <option value="">Selecciona un distrito…</option>
+            </select>
+          </div>
+
+          <div class="mapa-contenedor">
+            <svg class="mapa-svg" viewBox="0 0 400 320" role="group"
+                 aria-labelledby="h-mapa" id="mapa-svg">
+              <path class="zona" data-id="laredo" tabindex="0" role="button"
+                    d="M20,60 L130,20 L150,110 L60,150 Z"></path>
+              <path class="zona" data-id="alto-trujillo" tabindex="0" role="button"
+                    d="M130,20 L250,30 L260,120 L150,110 Z"></path>
+              <path class="zona" data-id="moche" tabindex="0" role="button"
+                    d="M250,30 L370,70 L350,160 L260,120 Z"></path>
+              <path class="zona" data-id="la-esperanza" tabindex="0" role="button"
+                    d="M60,150 L150,110 L130,220 L30,240 Z"></path>
+              <path class="zona" data-id="el-porvenir" tabindex="0" role="button"
+                    d="M150,110 L260,120 L240,230 L130,220 Z"></path>
+              <path class="zona" data-id="florencia-de-mora" tabindex="0" role="button"
+                    d="M260,120 L350,160 L330,250 L240,230 Z"></path>
+              <path class="zona" data-id="trujillo-centro" tabindex="0" role="button"
+                    d="M30,240 L130,220 L170,290 L60,295 Z"></path>
+              <path class="zona" data-id="huanchaco" tabindex="0" role="button"
+                    d="M130,220 L240,230 L260,300 L170,290 Z"></path>
+              <path class="zona" data-id="victor-larco" tabindex="0" role="button"
+                    d="M240,230 L330,250 L370,285 L260,300 Z"></path>
+
+              <g class="mapa-etiquetas" aria-hidden="true">
+                <text x="88" y="88">Laredo</text>
+                <text x="200" y="70">Alto Trujillo</text>
+                <text x="308" y="98">Moche</text>
+                <text x="92" y="184">La Esperanza</text>
+                <text x="195" y="170">El Porvenir</text>
+                <text x="295" y="186">Florencia</text>
+                <text x="295" y="202">de Mora</text>
+                <text x="97" y="262">Trujillo</text>
+                <text x="200" y="262">Huanchaco</text>
+                <text x="305" y="268">V. Larco</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="mapa-info" id="mapa-info" role="status" aria-live="polite">
+            <p>Selecciona una zona para ver sus datos de riesgo.</p>
+          </div>
+
+          <ul class="mapa-leyenda" aria-label="Leyenda del mapa">
+            <li><span class="punto punto-verde"></span> Riesgo bajo</li>
+            <li><span class="punto punto-amarillo"></span> Riesgo medio</li>
+            <li><span class="punto punto-rojo"></span> Riesgo alto</li>
+          </ul>
+          <!-- HU-024 CA03 -->
+          <p class="res-aviso">
+            Los colores representan estadísticas zonales y no certifican el estado individual de ninguna vivienda.
+          </p>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- HU-012 CA03: modal obligatorio de aceptación de límites -->
+  <dialog class="modal-limites" id="modal-limites"
+          aria-labelledby="modal-titulo" aria-describedby="modal-desc">
+    <h2 id="modal-titulo">Aceptación de límites de diagnóstico</h2>
+    <p id="modal-desc">
+      El resultado que verás es solo <strong>orientativo</strong>. No certifica la seguridad
+      estructural de tu vivienda ni reemplaza la evaluación presencial de un ingeniero civil colegiado.
+    </p>
+    <div class="modal-check">
+      <input type="checkbox" id="acepto-limites">
+      <label for="acepto-limites">
+        Comprendo que este diagnóstico es referencial y no certifica la seguridad estructural.
+      </label>
+    </div>
+    <div class="modal-acciones">
+      <a class="btn-secondary" href="evaluacion.html">Volver a evaluar</a>
+      <button type="button" class="btn-primary" id="btn-aceptar" disabled>Aceptar y ver resultado</button>
+    </div>
+  </dialog>
+
+  <script src="../js/resultados.js"></script>
+</body>
+</html>
