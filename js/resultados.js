@@ -430,7 +430,7 @@
     });
   }
 
-  /* ---------- 11. Arranque ---------- */
+/* ---------- 11. Arranque ---------- */
   function init() {
     // El mapa es información zonal: siempre disponible
     iniciarMapa();
@@ -443,18 +443,34 @@
       return;
     }
 
-    var res = calcular(datos.factores); // se calcula, pero NO se muestra aún
+    var res = calcular(datos.factores);
 
     renderSubtitulo(datos);
     iniciarDescarga();
     iniciarCopiar(datos);
 
-    // El color final solo se renderiza tras aceptar los límites
-    iniciarModal(function () {
+    function mostrarPanel() {
       renderResultado(datos, res);
       $('#panel-resultados').hidden = false;
       $('#titulo-pagina').focus();
-    });
+    }
+
+    // Solo abre el modal si viene recién de completar evaluacion.html
+    var params = new URLSearchParams(window.location.search);
+    var vieneDeEvaluacion = params.get('desde') === 'evaluacion';
+
+    if (vieneDeEvaluacion) {
+      iniciarModal(function () {
+        mostrarPanel();
+        // Limpia "?desde=evaluacion" de la URL al aceptar para que no vuelva a salir si recarga
+        try {
+          window.history.replaceState({}, '', window.location.pathname);
+        } catch (e) {}
+      });
+    } else {
+      // Si viene desde Perfil, Inicio o el sidebar, muestra los resultados directo sin modal
+      mostrarPanel();
+    }
   }
 
   if (document.readyState === 'loading') {
