@@ -1,9 +1,10 @@
-// Catálogo de ingenieros colegiados en Lima
+// Catálogo de ingenieros colegiados (ubicación actualizada a Lima)
 const ingenieros = [
   {
     nombre: "Ing. Carlos Paredes Quispe",
     cip: "148920",
     especialidad: "Estructuras y sismorresistencia",
+    departamento: "Lima",
     distrito: "San Juan de Lurigancho",
     telefono: "51987111222",
     foto: "CarlosParedes.jpg"
@@ -12,6 +13,7 @@ const ingenieros = [
     nombre: "Ing. Elena Mendoza Vargas",
     cip: "162345",
     especialidad: "Patología y refuerzo estructural",
+    departamento: "Lima",
     distrito: "Villa El Salvador",
     telefono: "51987111223",
     foto: "ElenaMendoza.jpg"
@@ -20,6 +22,7 @@ const ingenieros = [
     nombre: "Ing. Roberto Salazar Huamán",
     cip: "175410",
     especialidad: "Albañilería confinada",
+    departamento: "Lima",
     distrito: "Comas",
     telefono: "51987111224",
     foto: "RobertoSalazar.jpg"
@@ -28,6 +31,7 @@ const ingenieros = [
     nombre: "Ing. Patricia Chávez León",
     cip: "183902",
     especialidad: "Viviendas autoconstruidas",
+    departamento: "Lima",
     distrito: "San Martín de Porres",
     telefono: "51987111225",
     foto: "PatriciaChávez.jpg"
@@ -36,6 +40,7 @@ const ingenieros = [
     nombre: "Ing. Miguel Torres Ríos",
     cip: "190441",
     especialidad: "Concreto armado",
+    departamento: "Lima",
     distrito: "San Juan de Lurigancho",
     telefono: "51987111226",
     foto: "MiguelTorres.jpg"
@@ -44,6 +49,7 @@ const ingenieros = [
     nombre: "Ing. Lucía Castro Díaz",
     cip: "194882",
     especialidad: "Vulnerabilidad sísmica",
+    departamento: "Lima",
     distrito: "Villa El Salvador",
     telefono: "51987111227",
     foto: "LucíaCastro.jpg"
@@ -52,6 +58,7 @@ const ingenieros = [
     nombre: "Ing. Jorge Navarro Rojas",
     cip: "201155",
     especialidad: "Muros y losas",
+    departamento: "Lima",
     distrito: "Comas",
     telefono: "51987111228",
     foto: ""
@@ -60,6 +67,7 @@ const ingenieros = [
     nombre: "Ing. Valeria Montes Cruz",
     cip: "208774",
     especialidad: "Geotecnia y cimentaciones",
+    departamento: "Lima",
     distrito: "San Martín de Porres",
     telefono: "51987111229",
     foto: ""
@@ -127,27 +135,35 @@ function poblarDistritos() {
   }
 }
 
-selectDistrito.addEventListener("change", function () {
-  ampliarCercanos = false;
-  paginaActual = 1;
-  renderizarTodo();
-});
+if (selectDistrito) {
+  selectDistrito.addEventListener("change", function () {
+    ampliarCercanos = false;
+    paginaActual = 1;
+    renderizarTodo();
+  });
+}
 
-btnCercanos.addEventListener("click", function () {
-  ampliarCercanos = true;
-  paginaActual = 1;
-  renderizarTodo();
-});
+if (btnCercanos) {
+  btnCercanos.addEventListener("click", function () {
+    ampliarCercanos = true;
+    paginaActual = 1;
+    renderizarTodo();
+  });
+}
 
-btnLimpiar.addEventListener("click", function () {
-  selectDistrito.value = "";
-  ampliarCercanos = false;
-  paginaActual = 1;
-  renderizarTodo();
-});
+if (btnLimpiar) {
+  btnLimpiar.addEventListener("click", function () {
+    if (selectDistrito) {
+      selectDistrito.value = "";
+    }
+    ampliarCercanos = false;
+    paginaActual = 1;
+    renderizarTodo();
+  });
+}
 
 function obtenerFiltrados() {
-  const dist = selectDistrito.value;
+  const dist = selectDistrito ? selectDistrito.value : "";
   const filtrados = [];
 
   for (let i = 0; i < ingenieros.length; i++) {
@@ -161,6 +177,8 @@ function obtenerFiltrados() {
 }
 
 function renderizarTodo() {
+  if (!gridIngenieros) return;
+
   const lista = obtenerFiltrados();
   const totalPaginas = Math.max(1, Math.ceil(lista.length / limitePorPagina));
 
@@ -171,14 +189,21 @@ function renderizarTodo() {
   const inicio = (paginaActual - 1) * limitePorPagina;
   const visibles = lista.slice(inicio, inicio + limitePorPagina);
 
-  contadorResultados.textContent = lista.length + " profesional(es)";
+  if (contadorResultados) {
+    contadorResultados.textContent = lista.length + " profesional(es)";
+  }
 
-  if (lista.length === 0 && selectDistrito.value !== "" && !ampliarCercanos) {
-    textoCercanos.textContent =
-      "No hay ingenieros registrados en " + selectDistrito.value + ", Lima.";
-    panelCercanos.style.display = "flex";
-  } else {
-    panelCercanos.style.display = "none";
+  const distSeleccionado = selectDistrito ? selectDistrito.value : "";
+  if (panelCercanos) {
+    if (lista.length === 0 && distSeleccionado !== "" && !ampliarCercanos) {
+      if (textoCercanos) {
+        textoCercanos.textContent =
+          "No hay ingenieros registrados en " + distSeleccionado + ", Lima.";
+      }
+      panelCercanos.style.display = "flex";
+    } else {
+      panelCercanos.style.display = "none";
+    }
   }
 
   gridIngenieros.innerHTML = "";
@@ -204,7 +229,7 @@ function renderizarTodo() {
           "</div>" +
         "</div>" +
         '<p class="ing-meta"><strong>Especialidad:</strong> ' + ing.especialidad + "</p>" +
-        '<p class="ing-meta"><strong>Ubicación:</strong> ' + ing.distrito + ", Lima</p>" +
+        '<p class="ing-meta"><strong>Ubicación:</strong> ' + ing.distrito + ", " + ing.departamento + "</p>" +
       "</div>" +
       '<a href="' + urlWhatsapp + '" target="_blank" rel="noopener noreferrer" class="btn-primary">Contactar por WhatsApp</a>';
 
@@ -218,27 +243,40 @@ function renderizarTodo() {
     gridIngenieros.appendChild(card);
   }
 
-  infoPagina.textContent = "Página " + paginaActual + " de " + totalPaginas;
-  btnAnterior.disabled = paginaActual <= 1;
-  btnSiguiente.disabled = paginaActual >= totalPaginas;
+  if (infoPagina) {
+    infoPagina.textContent = "Página " + paginaActual + " de " + totalPaginas;
+  }
+  if (btnAnterior) {
+    btnAnterior.disabled = paginaActual <= 1;
+  }
+  if (btnSiguiente) {
+    btnSiguiente.disabled = paginaActual >= totalPaginas;
+  }
 }
 
-btnAnterior.addEventListener("click", function () {
-  if (paginaActual > 1) {
-    paginaActual--;
-    renderizarTodo();
-  }
-});
+if (btnAnterior) {
+  btnAnterior.addEventListener("click", function () {
+    if (paginaActual > 1) {
+      paginaActual--;
+      renderizarTodo();
+    }
+  });
+}
 
-btnSiguiente.addEventListener("click", function () {
-  const totalPaginas = Math.max(1, Math.ceil(obtenerFiltrados().length / limitePorPagina));
-  if (paginaActual < totalPaginas) {
-    paginaActual++;
-    renderizarTodo();
-  }
-});
+if (btnSiguiente) {
+  btnSiguiente.addEventListener("click", function () {
+    const totalPaginas = Math.max(1, Math.ceil(obtenerFiltrados().length / limitePorPagina));
+    if (paginaActual < totalPaginas) {
+      paginaActual++;
+      renderizarTodo();
+    }
+  });
+}
 
+// Acordeón FAQ con cierre automático de otras preguntas (HU-023)
 function renderizarFaq() {
+  if (!contenedorFaq) return;
+
   contenedorFaq.innerHTML = "";
 
   for (let i = 0; i < preguntasFaq.length; i++) {
@@ -269,7 +307,10 @@ function renderizarFaq() {
 
       if (!yaAbierto) {
         item.classList.add("open");
-        boton.querySelector(".faq-sign").textContent = "−";
+        const signoActual = boton.querySelector(".faq-sign");
+        if (signoActual) {
+          signoActual.textContent = "−";
+        }
       }
     });
 
