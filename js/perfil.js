@@ -1,7 +1,6 @@
 (function () {
   'use strict';
 
-  /* ---------- Utilidades ---------- */
   const $ = (id) => document.getElementById(id);
   const USER = (function () {
     try { return localStorage.getItem('ms_usuario_activo') || 'demo'; } catch (e) { return 'demo'; }
@@ -13,7 +12,7 @@
     catch (e) { return fallback; }
   }
   function save(name, value) {
-    try { localStorage.setItem(key(name), JSON.stringify(value)); } catch (e) { /* sin storage */ }
+    try { localStorage.setItem(key(name), JSON.stringify(value)); } catch (e) {  }
   }
   function el(tag, cls, text) {
     const n = document.createElement(tag);
@@ -22,7 +21,6 @@
     return n;
   }
 
-  /* Limpieza única: borra los datos de ejemplo que guardó una versión anterior de esta pantalla */
   (function limpiarEjemplos() {
     const ejemplos = {
       viviendas: [
@@ -37,7 +35,7 @@
     Object.keys(ejemplos).forEach((n) => {
       try {
         if (localStorage.getItem(key(n)) === JSON.stringify(ejemplos[n])) localStorage.removeItem(key(n));
-      } catch (e) { /* sin storage */ }
+      } catch (e) {  }
     });
   })();
 
@@ -50,7 +48,6 @@
     toastTimer = setTimeout(() => { t.className = 'toast'; }, 3000);
   }
 
-  /* Valida campos required: marca borde rojo en los inválidos */
   function validate(form) {
     let ok = true;
     form.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]), select, textarea').forEach((f) => {
@@ -78,13 +75,11 @@
     $('saludo-nombre').textContent = n ? ', ' + n : '';
   }
 
-  /* ---------- Cerrar sesión (respaldo si main.js no lo maneja) ---------- */
   $('btn-cerrar-sesion').addEventListener('click', () => {
-    try { localStorage.removeItem('ms_usuario_activo'); } catch (e) { /* sin storage */ }
+    try { localStorage.removeItem('ms_usuario_activo'); } catch (e) {  }
     window.location.href = 'index.html';
   });
 
-  /* ---------- HU-005 Perfil ---------- */
   const fPerfil = $('form-perfil');
   const perfil = load('perfil', null);
   if (perfil) {
@@ -108,7 +103,6 @@
     toast('Perfil actualizado correctamente.');
   });
 
-  /* ---------- HU-006 Viviendas ---------- */
   const UBIGEO = {
     'Lima': { 'Lima': ['Miraflores', 'Surquillo', 'Barranco', 'San Isidro'], 'Huaral': ['Huaral', 'Chancay'] },
     'Arequipa': { 'Arequipa': ['Cercado', 'Yanahuara', 'Cayma'], 'Camaná': ['Camaná', 'Samuel Pastor'] },
@@ -172,7 +166,7 @@
     $('v-dt').classList.toggle('input-error', !dt);
     if (!okCampos || !dt) { toast('Completa todos los campos obligatorios.', true); return; }
     viviendas.push({ depto: selDep.value, prov: selProv.value, dist: selDist.value, dt: dt.value });
-    save('viviendas', viviendas); // asociado al usuario activo (clave con USER)
+    save('viviendas', viviendas);
     renderViviendas();
     fViv.reset();
     fillSelect(selProv, [], 'Seleccionar provincia');
@@ -181,7 +175,6 @@
     toast('Vivienda guardada y asociada a tu cuenta.');
   });
 
-  /* ---------- HU-021 Checklist ---------- */
   const checks = Array.from(document.querySelectorAll('#check-list input[type="checkbox"]'));
   const progreso = $('progreso');
   const estado = load('checklist', {});
@@ -204,7 +197,6 @@
   $('btn-confirmar').addEventListener('click', () => toast('Preparación confirmada.'));
   actualizarProgreso();
 
-  /* ---------- HU-028 Bitácora ---------- */
   const fBit = $('form-bitacora');
   let hitos = load('bitacora', []);
   function renderTimeline() {
@@ -232,7 +224,6 @@
     toast('Hito añadido a la bitácora.');
   });
 
-  /* ---------- HU-022 Soporte ---------- */
   const fSop = $('form-soporte');
   onlyDigits($('s-celular'));
   clearOnInput(fSop);
