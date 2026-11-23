@@ -91,7 +91,7 @@
 .error-texto { color: #B91C1C; font-weight: 500; }
 .form-input.is-error { border-width: 2px; }
 
-/* HU-004: botón con aspecto de inhabilitado pero que sigue recibiendo el clic */
+
 .btn-primary[aria-disabled="true"] {
   background-color: var(--border-neutral);
   color: #fff;
