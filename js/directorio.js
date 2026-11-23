@@ -1,11 +1,10 @@
-// Catálogo de ingenieros colegiados de prueba
+// Catálogo de ingenieros colegiados en Lima
 const ingenieros = [
   {
     nombre: "Ing. Carlos Paredes Quispe",
     cip: "148920",
     especialidad: "Estructuras y sismorresistencia",
-    departamento: "La Libertad",
-    distrito: "Alto Trujillo",
+    distrito: "San Juan de Lurigancho",
     telefono: "51987111222",
     foto: "CarlosParedes.jpg"
   },
@@ -13,8 +12,7 @@ const ingenieros = [
     nombre: "Ing. Elena Mendoza Vargas",
     cip: "162345",
     especialidad: "Patología y refuerzo estructural",
-    departamento: "La Libertad",
-    distrito: "Alto Trujillo",
+    distrito: "Villa El Salvador",
     telefono: "51987111223",
     foto: "ElenaMendoza.jpg"
   },
@@ -22,8 +20,7 @@ const ingenieros = [
     nombre: "Ing. Roberto Salazar Huamán",
     cip: "175410",
     especialidad: "Albañilería confinada",
-    departamento: "La Libertad",
-    distrito: "Trujillo",
+    distrito: "Comas",
     telefono: "51987111224",
     foto: "RobertoSalazar.jpg"
   },
@@ -31,8 +28,7 @@ const ingenieros = [
     nombre: "Ing. Patricia Chávez León",
     cip: "183902",
     especialidad: "Viviendas autoconstruidas",
-    departamento: "La Libertad",
-    distrito: "El Porvenir",
+    distrito: "San Martín de Porres",
     telefono: "51987111225",
     foto: "PatriciaChávez.jpg"
   },
@@ -40,7 +36,6 @@ const ingenieros = [
     nombre: "Ing. Miguel Torres Ríos",
     cip: "190441",
     especialidad: "Concreto armado",
-    departamento: "Lima",
     distrito: "San Juan de Lurigancho",
     telefono: "51987111226",
     foto: "MiguelTorres.jpg"
@@ -49,7 +44,6 @@ const ingenieros = [
     nombre: "Ing. Lucía Castro Díaz",
     cip: "194882",
     especialidad: "Vulnerabilidad sísmica",
-    departamento: "Lima",
     distrito: "Villa El Salvador",
     telefono: "51987111227",
     foto: "LucíaCastro.jpg"
@@ -58,7 +52,6 @@ const ingenieros = [
     nombre: "Ing. Jorge Navarro Rojas",
     cip: "201155",
     especialidad: "Muros y losas",
-    departamento: "Lima",
     distrito: "Comas",
     telefono: "51987111228",
     foto: ""
@@ -67,17 +60,19 @@ const ingenieros = [
     nombre: "Ing. Valeria Montes Cruz",
     cip: "208774",
     especialidad: "Geotecnia y cimentaciones",
-    departamento: "Lima",
     distrito: "San Martín de Porres",
     telefono: "51987111229",
     foto: ""
   }
 ];
 
-const distritosPorDepartamento = {
-  "La Libertad": ["Alto Trujillo", "Trujillo", "El Porvenir", "Huanchaco"],
-  "Lima": ["San Juan de Lurigancho", "Villa El Salvador", "Comas", "San Martín de Porres", "Puente Piedra"]
-};
+const distritosLima = [
+  "San Juan de Lurigancho",
+  "Villa El Salvador",
+  "Comas",
+  "San Martín de Porres",
+  "Puente Piedra"
+];
 
 const preguntasFaq = [
   {
@@ -102,7 +97,6 @@ const limitePorPagina = 6;
 let paginaActual = 1;
 let ampliarCercanos = false;
 
-const selectDepartamento = document.getElementById("filtro-departamento");
 const selectDistrito = document.getElementById("filtro-distrito");
 const btnLimpiar = document.getElementById("btn-limpiar");
 const contadorResultados = document.getElementById("contador-resultados");
@@ -121,28 +115,17 @@ const avatarSvg =
     '<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="60" height="60" rx="30" fill="#E3E6E8"/><circle cx="30" cy="23" r="10" fill="#1E1B4B"/><path d="M13 52c2-9 9-14 17-14s15 5 17 14" fill="#1E1B4B"/></svg>'
   );
 
-// Selectores encadenados de departamento y distrito (HU-019)
-selectDepartamento.addEventListener("change", function () {
-  const depto = selectDepartamento.value;
+function poblarDistritos() {
+  if (!selectDistrito) return;
+  selectDistrito.disabled = false;
   selectDistrito.innerHTML = '<option value="">Todos los distritos</option>';
-  ampliarCercanos = false;
-  paginaActual = 1;
-
-  if (depto === "") {
-    selectDistrito.disabled = true;
-  } else {
-    selectDistrito.disabled = false;
-    const listaDistritos = distritosPorDepartamento[depto] || [];
-    for (let i = 0; i < listaDistritos.length; i++) {
-      const opcion = document.createElement("option");
-      opcion.value = listaDistritos[i];
-      opcion.textContent = listaDistritos[i];
-      selectDistrito.appendChild(opcion);
-    }
+  for (let i = 0; i < distritosLima.length; i++) {
+    const opcion = document.createElement("option");
+    opcion.value = distritosLima[i];
+    opcion.textContent = distritosLima[i];
+    selectDistrito.appendChild(opcion);
   }
-
-  renderizarTodo();
-});
+}
 
 selectDistrito.addEventListener("change", function () {
   ampliarCercanos = false;
@@ -157,30 +140,19 @@ btnCercanos.addEventListener("click", function () {
 });
 
 btnLimpiar.addEventListener("click", function () {
-  selectDepartamento.value = "";
-  selectDistrito.innerHTML = '<option value="">Todos los distritos</option>';
-  selectDistrito.disabled = true;
+  selectDistrito.value = "";
   ampliarCercanos = false;
   paginaActual = 1;
   renderizarTodo();
 });
 
 function obtenerFiltrados() {
-  const depto = selectDepartamento.value;
   const dist = selectDistrito.value;
   const filtrados = [];
 
   for (let i = 0; i < ingenieros.length; i++) {
     const ing = ingenieros[i];
-    let ok = true;
-
-    if (depto !== "" && ing.departamento !== depto) {
-      ok = false;
-    }
-    if (!ampliarCercanos && dist !== "" && ing.distrito !== dist) {
-      ok = false;
-    }
-    if (ok) {
+    if (ampliarCercanos || dist === "" || ing.distrito === dist) {
       filtrados.push(ing);
     }
   }
@@ -203,7 +175,7 @@ function renderizarTodo() {
 
   if (lista.length === 0 && selectDistrito.value !== "" && !ampliarCercanos) {
     textoCercanos.textContent =
-      "No hay ingenieros registrados en " + selectDistrito.value + ", " + selectDepartamento.value + ".";
+      "No hay ingenieros registrados en " + selectDistrito.value + ", Lima.";
     panelCercanos.style.display = "flex";
   } else {
     panelCercanos.style.display = "none";
@@ -232,7 +204,7 @@ function renderizarTodo() {
           "</div>" +
         "</div>" +
         '<p class="ing-meta"><strong>Especialidad:</strong> ' + ing.especialidad + "</p>" +
-        '<p class="ing-meta"><strong>Ubicación:</strong> ' + ing.distrito + ", " + ing.departamento + "</p>" +
+        '<p class="ing-meta"><strong>Ubicación:</strong> ' + ing.distrito + ", Lima</p>" +
       "</div>" +
       '<a href="' + urlWhatsapp + '" target="_blank" rel="noopener noreferrer" class="btn-primary">Contactar por WhatsApp</a>';
 
@@ -266,7 +238,6 @@ btnSiguiente.addEventListener("click", function () {
   }
 });
 
-// Acordeón FAQ con cierre automático de otras preguntas (HU-023)
 function renderizarFaq() {
   contenedorFaq.innerHTML = "";
 
@@ -308,5 +279,6 @@ function renderizarFaq() {
   }
 }
 
+poblarDistritos();
 renderizarTodo();
 renderizarFaq();
