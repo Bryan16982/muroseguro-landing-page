@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MuroSeguro</title>
+  <title>Resultados - MuroSeguro</title>
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
   <link rel="stylesheet" href="../css/resultados.css">
@@ -71,14 +71,21 @@
 
       <header class="res-header">
         <h1 id="titulo-pagina" tabindex="-1">Resultados del diagnóstico</h1>
-        <p class="res-subtitulo" id="res-subtitulo">Calculando tu diagnóstico…</p>
+        <p class="res-subtitulo" id="res-subtitulo">Revisando tu evaluación…</p>
       </header>
+
+      <!-- Sin evaluación completa: se muestra este aviso en lugar de un resultado -->
+      <section class="card res-vacio" id="estado-vacio" aria-labelledby="vacio-titulo" hidden>
+        <h2 id="vacio-titulo" class="res-h2">Aún no tienes resultados</h2>
+        <p id="vacio-texto">Completa la evaluación de tu vivienda para ver tu semáforo de riesgo.</p>
+        <a class="btn-primary" id="vacio-boton" href="evaluacion.html">Ir a Evaluar</a>
+      </section>
 
       <!-- Se muestra solo después de aceptar el modal (HU-012 CA03) -->
       <div id="panel-resultados" hidden>
 
         <!-- HU-012: Semáforo + HU-013: Dashboard -->
-        <section class="card res-semaforo nivel-amarillo" id="card-semaforo" aria-labelledby="h-semaforo">
+        <section class="card res-semaforo" id="card-semaforo" aria-labelledby="h-semaforo">
           <h2 id="h-semaforo" class="res-h2">Semáforo de riesgo</h2>
 
           <div class="res-semaforo-cuerpo">
@@ -164,71 +171,78 @@
           <p class="res-nota" id="copiar-estado" role="status" aria-live="polite"></p>
         </section>
 
-        <!-- HU-024: Mapa SVG -->
-        <section class="card no-print" id="card-mapa" aria-labelledby="h-mapa">
-          <h2 id="h-mapa" class="res-h2">Vulnerabilidad zonal</h2>
-          <p class="res-nota">Datos de prueba ilustrativos. Selecciona un distrito en el mapa o en la lista.</p>
-
-          <div class="form-group">
-            <label class="form-label" for="select-distrito">Buscar distrito</label>
-            <select class="form-select" id="select-distrito">
-              <option value="">Selecciona un distrito…</option>
-            </select>
-          </div>
-
-          <div class="mapa-contenedor">
-            <svg class="mapa-svg" viewBox="0 0 400 320" role="group"
-                 aria-labelledby="h-mapa" id="mapa-svg">
-              <path class="zona" data-id="laredo" tabindex="0" role="button"
-                    d="M20,60 L130,20 L150,110 L60,150 Z"></path>
-              <path class="zona" data-id="alto-trujillo" tabindex="0" role="button"
-                    d="M130,20 L250,30 L260,120 L150,110 Z"></path>
-              <path class="zona" data-id="moche" tabindex="0" role="button"
-                    d="M250,30 L370,70 L350,160 L260,120 Z"></path>
-              <path class="zona" data-id="la-esperanza" tabindex="0" role="button"
-                    d="M60,150 L150,110 L130,220 L30,240 Z"></path>
-              <path class="zona" data-id="el-porvenir" tabindex="0" role="button"
-                    d="M150,110 L260,120 L240,230 L130,220 Z"></path>
-              <path class="zona" data-id="florencia-de-mora" tabindex="0" role="button"
-                    d="M260,120 L350,160 L330,250 L240,230 Z"></path>
-              <path class="zona" data-id="trujillo-centro" tabindex="0" role="button"
-                    d="M30,240 L130,220 L170,290 L60,295 Z"></path>
-              <path class="zona" data-id="huanchaco" tabindex="0" role="button"
-                    d="M130,220 L240,230 L260,300 L170,290 Z"></path>
-              <path class="zona" data-id="victor-larco" tabindex="0" role="button"
-                    d="M240,230 L330,250 L370,285 L260,300 Z"></path>
-
-              <g class="mapa-etiquetas" aria-hidden="true">
-                <text x="88" y="88">Laredo</text>
-                <text x="200" y="70">Alto Trujillo</text>
-                <text x="308" y="98">Moche</text>
-                <text x="92" y="184">La Esperanza</text>
-                <text x="195" y="170">El Porvenir</text>
-                <text x="295" y="186">Florencia</text>
-                <text x="295" y="202">de Mora</text>
-                <text x="97" y="262">Trujillo</text>
-                <text x="200" y="262">Huanchaco</text>
-                <text x="305" y="268">V. Larco</text>
-              </g>
-            </svg>
-          </div>
-
-          <div class="mapa-info" id="mapa-info" role="status" aria-live="polite">
-            <p>Selecciona una zona para ver sus datos de riesgo.</p>
-          </div>
-
-          <ul class="mapa-leyenda" aria-label="Leyenda del mapa">
-            <li><span class="punto punto-verde"></span> Riesgo bajo</li>
-            <li><span class="punto punto-amarillo"></span> Riesgo medio</li>
-            <li><span class="punto punto-rojo"></span> Riesgo alto</li>
-          </ul>
-          <!-- HU-024 CA03 -->
-          <p class="res-aviso">
-            Los colores representan estadísticas zonales y no certifican el estado individual de ninguna vivienda.
-          </p>
+        <!-- Historial de evaluaciones (se muestra si hay 2 o más) -->
+        <section class="card no-print" id="card-historial" aria-labelledby="h-historial" hidden>
+          <h2 id="h-historial" class="res-h2">Historial de evaluaciones</h2>
+          <p class="res-nota">Elige una evaluación para ver su detalle.</p>
+          <ul class="hist-lista" id="hist-lista"></ul>
         </section>
 
       </div>
+
+      <!-- HU-024: Mapa SVG (distritos de Lima). No depende de la evaluación personal -->
+      <section class="card no-print" id="card-mapa" aria-labelledby="h-mapa">
+        <h2 id="h-mapa" class="res-h2">Vulnerabilidad zonal · Lima</h2>
+        <p class="res-nota">Mapa esquemático con datos de prueba ilustrativos. Selecciona un distrito en el mapa o en la lista.</p>
+
+        <div class="form-group">
+          <label class="form-label" for="select-distrito">Buscar distrito</label>
+          <select class="form-select" id="select-distrito">
+            <option value="">Selecciona un distrito…</option>
+          </select>
+        </div>
+
+        <div class="mapa-contenedor">
+          <svg class="mapa-svg" viewBox="0 0 400 320" role="group"
+               aria-labelledby="h-mapa" id="mapa-svg">
+            <path class="zona" data-id="comas" tabindex="0" role="button"
+                  d="M20,60 L130,20 L150,110 L60,150 Z"></path>
+            <path class="zona" data-id="rimac" tabindex="0" role="button"
+                  d="M130,20 L250,30 L260,120 L150,110 Z"></path>
+            <path class="zona" data-id="san-juan-de-lurigancho" tabindex="0" role="button"
+                  d="M250,30 L370,70 L350,160 L260,120 Z"></path>
+            <path class="zona" data-id="lima-cercado" tabindex="0" role="button"
+                  d="M60,150 L150,110 L130,220 L30,240 Z"></path>
+            <path class="zona" data-id="miraflores" tabindex="0" role="button"
+                  d="M150,110 L260,120 L240,230 L130,220 Z"></path>
+            <path class="zona" data-id="ate" tabindex="0" role="button"
+                  d="M260,120 L350,160 L330,250 L240,230 Z"></path>
+            <path class="zona" data-id="villa-el-salvador" tabindex="0" role="button"
+                  d="M30,240 L130,220 L170,290 L60,295 Z"></path>
+            <path class="zona" data-id="san-juan-de-miraflores" tabindex="0" role="button"
+                  d="M130,220 L240,230 L260,300 L170,290 Z"></path>
+            <path class="zona" data-id="villa-maria-del-triunfo" tabindex="0" role="button"
+                  d="M240,230 L330,250 L370,285 L260,300 Z"></path>
+
+            <g class="mapa-etiquetas" aria-hidden="true">
+              <text x="88" y="90">Comas</text>
+              <text x="200" y="72">Rímac</text>
+              <text x="308" y="92"><tspan x="308">San Juan de</tspan><tspan x="308" dy="14">Lurigancho</tspan></text>
+              <text x="92" y="178"><tspan x="92">Lima</tspan><tspan x="92" dy="14">(Cercado)</tspan></text>
+              <text x="195" y="172">Miraflores</text>
+              <text x="295" y="192">Ate</text>
+              <text x="97" y="258"><tspan x="97">Villa El</tspan><tspan x="97" dy="14">Salvador</tspan></text>
+              <text x="200" y="256"><tspan x="200">San Juan de</tspan><tspan x="200" dy="14">Miraflores</tspan></text>
+              <text x="305" y="262"><tspan x="305">Villa María</tspan><tspan x="305" dy="14">del Triunfo</tspan></text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="mapa-info" id="mapa-info" role="status" aria-live="polite">
+          <p>Selecciona una zona para ver sus datos de riesgo.</p>
+        </div>
+
+        <ul class="mapa-leyenda" aria-label="Leyenda del mapa">
+          <li><span class="punto punto-verde"></span> Riesgo bajo</li>
+          <li><span class="punto punto-amarillo"></span> Riesgo medio</li>
+          <li><span class="punto punto-rojo"></span> Riesgo alto</li>
+        </ul>
+        <!-- HU-024 CA03 -->
+        <p class="res-aviso">
+          Los colores representan estadísticas zonales y no certifican el estado individual de ninguna vivienda.
+        </p>
+      </section>
+
     </main>
   </div>
 
@@ -253,7 +267,6 @@
   </dialog>
 
   <script src="../js/sesion.js"></script>
-
   <script src="../js/resultados.js"></script>
 </body>
 </html>
