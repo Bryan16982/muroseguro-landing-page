@@ -309,6 +309,44 @@ for (var k = 0; k < botonesTag.length; k++) {
   });
 }
 
+function mostrarUsuario() {
+  var nombre = "Invitado";
+  var iniciales = "?";
+  var correo = null;
+  var perfil = null;
+
+  try {
+    correo = localStorage.getItem("ms_usuario_activo");
+    if (correo) {
+      perfil = JSON.parse(localStorage.getItem("ms_perfil_" + correo));
+    }
+  } catch (e) {
+    perfil = null;
+  }
+
+  if (perfil && perfil.nombres) {
+    var primerNombre = perfil.nombres.trim().split(" ")[0];
+    var primerApellido = perfil.apellidos ? perfil.apellidos.trim().split(" ")[0] : "";
+    nombre = (primerNombre + " " + primerApellido).trim();
+    iniciales = primerNombre.charAt(0) + primerApellido.charAt(0);
+  } else if (correo) {
+    nombre = correo.split("@")[0];
+    iniciales = nombre.substring(0, 2);
+  }
+
+  document.querySelector("#nombre-usuario").textContent = nombre;
+  document.querySelector("#avatar-usuario").textContent = iniciales.toUpperCase();
+}
+
+document.querySelector("#btn-salir").addEventListener("click", function () {
+  try {
+    localStorage.removeItem("ms_usuario_activo");
+    sessionStorage.removeItem("ms_sesion");
+  } catch (e) {
+  }
+});
+
+mostrarUsuario();
 mostrarRecursos(recursos);
 mostrarGlosario(glosario);
 mostrarCasos(casos);

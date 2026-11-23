@@ -105,6 +105,18 @@
   color: var(--border-neutral);
 }
 
+.sidebar-usuario {
+  min-width: 0;
+}
+
+.nombre-usuario {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--bg-white);
+  font-weight: 600;
+}
+
 .avatar {
   display: flex;
   align-items: center;
