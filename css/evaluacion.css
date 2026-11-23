@@ -1,5 +1,4 @@
-/* css/evaluacion.css — Paso 1 del asistente (HU-007 / HU-008)
-   Solo usa las variables de styles.css. Prefijo .eval- para no tocar las clases base. */
+/* css/evaluacion.css — Paso 1 del asistente (HU-007 / HU-008)*/
 
 .eval-layout {
   --eval-pad: clamp(1rem, 4vw, 2rem);
@@ -19,7 +18,6 @@
 
 .eval-layout [hidden] { display: none !important; }
 
-/* Oculto accesible (inputs nativos y mensajes para lector de pantalla) */
 .eval-sr {
   position: absolute;
   width: 1px;
@@ -492,7 +490,6 @@
   border: 1px solid var(--color-accent);
 }
 
-/* Bloqueado (CA03). pointer-events:none deja que el contenedor reciba el clic para mostrar errores */
 .eval-btn.btn-primary:disabled {
   color: var(--bg-white);
   background: var(--border-neutral);
@@ -547,12 +544,10 @@
   line-height: 1;
 }
 
-/* Oculta por completo el sidebar cuando tiene el atributo hidden (Paso 1) */
 #eval-sidebar[hidden] {
   display: none !important;
 }
 
-/* Cuando se activa en Paso 2, 3 y 4: deja 230px libres al sidebar fijo */
 body.eval-con-sidebar main {
   margin-left: 230px;
   min-width: 0;
@@ -567,7 +562,6 @@ body.eval-con-sidebar main {
 
 /* ==========================================================
    PASO 2 — Ubicación del daño (HU-009)
-   Prefijo .p2- ; reutiliza .eval-sr, .eval-icon, .eval-progress y .eval-btn
    ========================================================== */
 
 #paso-2[hidden] { display: none; }
@@ -636,7 +630,6 @@ body.eval-con-sidebar main {
   opacity: 0.45;
 }
 
-/* Zonas clicables */
 .p2-zone {
   cursor: pointer;
   outline: none;
@@ -685,7 +678,6 @@ body.eval-con-sidebar main {
 .p2-beam { stroke-width: 3.5; }
 .p2-ridge { stroke-width: 2.5; pointer-events: none; }
 
-/* Hover / foco por teclado */
 .p2-zone:hover .p2-shape,
 .p2-zone:focus-visible .p2-shape { fill: var(--p2-tinte); }
 
@@ -740,7 +732,6 @@ body.eval-con-sidebar main {
 
 .p2-pildora.active .p2-pildora__punto { background: var(--color-accent); }
 
-/* Móvil: la píldora va debajo del dibujo para no taparlo */
 @media (max-width: 1023px) {
   .p2-card { padding-bottom: 4rem; }
 }
@@ -845,7 +836,6 @@ body.eval-con-sidebar main {
 
 /* ==========================================================
    PASO 3 — Comparador Falla vs. Grieta (HU-011)
-   Prefijo .p3- ; reutiliza .eval-sr, .eval-icon, .eval-btn y .eval-progress
    ========================================================== */
 
 #paso-3[hidden],
@@ -892,7 +882,6 @@ body.eval-con-sidebar main {
   margin-bottom: 1.25rem;
 }
 
-/* ---------- Tarjeta del comparador ---------- */
 .p3-card {
   min-width: 0;
   margin: 0;
@@ -930,14 +919,12 @@ body.eval-con-sidebar main {
   inset: 0;
 }
 
-/* CA02: el ancho de la capa superior sigue a --p3-pos (y JS lo actualiza en tiempo real) */
 .p3-capa--top {
   inset: 0 auto 0 0;
   width: var(--p3-pos);
   overflow: hidden;
 }
 
-/* La imagen superior mantiene el ancho total del escenario para no deformarse */
 .p3-capa__interior {
   position: absolute;
   inset: 0 auto 0 0;
@@ -1069,7 +1056,6 @@ body.eval-con-sidebar main {
 .p3-stage.is-dragging,
 .p3-stage.is-dragging .p3-tirador { cursor: grabbing; }
 
-/* Foco por teclado: el <input type="range"> es el control accesible */
 .p3-range:focus-visible ~ .p3-tirador {
   outline: 3px solid var(--color-secondary);
   outline-offset: 3px;
