@@ -11,6 +11,7 @@
   /* ---------- 1. Configuración del motor (HU-012 CA01) ---------- */
   var STORAGE_KEY = 'muroseguro_evaluacion';
   var PASOS_TOTALES = 4;
+  var MAX_HISTORIAL = 20;
 
   // Suma ponderada: clave -> puntos + texto visible
   var PESOS = {
@@ -137,27 +138,13 @@
     return limpiarFactores(f);
   }
 
-  // Devuelve { estado: 'ok' | 'vacio' | 'incompleto', ... }
-  function obtenerDatos() {
-    var params = new URLSearchParams(window.location.search);
-    var f = params.get('f');
-    var demo = params.get('demo');
-
-    // Enlace compartido (HU-029)
-    if (f !== null) {
-      var lista = limpiarFactores(f.split(','));
-      return { estado: 'ok', factores: lista, detalle: [], origen: 'enlace', fecha: null };
-    }
-    // Datos de prueba, solo si se piden explícitamente
-    if (demo && DEMOS.hasOwnProperty(demo)) {
-      return { estado: 'ok', factores: DEMOS[demo].slice(), detalle: [], origen: 'demo', fecha: null };
-    }
-
+  // Evaluación actual guardada por evaluacion.js
+  // -> { estado: 'ok' | 'vacio' | 'incompleto', entrada?, paso? }
+  function leerEvaluacionActual() {
     var a = leerStorage();
     if (!a || typeof a !== 'object' || (!a.paso1 && !a.pasoCompletado)) {
       return { estado: 'vacio' };
     }
-
     var paso = Number(a.pasoCompletado) || 0;
     if (paso < PASOS_TOTALES || !a.paso1) {
       return { estado: 'incompleto', paso: paso };
@@ -167,13 +154,48 @@
     if (a.paso1.terrenoEtiqueta) detalle.push('Terreno: ' + a.paso1.terrenoEtiqueta);
     if (a.paso2 && a.paso2.zonaEtiqueta) detalle.push('Zona del daño: ' + a.paso2.zonaEtiqueta);
 
+    var fecha = (a.paso4 && a.paso4.guardadoEn) || new Date().toISOString();
     return {
       estado: 'ok',
-      factores: factoresDeEvaluacion(a),
-      detalle: detalle,
-      origen: 'evaluacion',
-      fecha: (a.paso4 && a.paso4.guardadoEn) || null
+      entrada: {
+        id: String(fecha),
+        fecha: fecha,
+        factores: factoresDeEvaluacion(a),
+        detalle: detalle
+      }
     };
+  }
+
+  /* ---------- Historial de resultados (por usuario) ---------- */
+  function claveHistorial() {
+    var usuario = 'demo';
+    try { usuario = localStorage.getItem('ms_usuario_activo') || 'demo'; } catch (e) { /* sin storage */ }
+    return 'muroseguro_historial_' + usuario;
+  }
+
+  function leerHistorial() {
+    var lista;
+    try { lista = JSON.parse(localStorage.getItem(claveHistorial())); } catch (e) { lista = null; }
+    if (!Array.isArray(lista)) return [];
+    return lista.filter(function (e) {
+      return e && typeof e === 'object' && e.id;
+    }).map(function (e) {
+      return {
+        id: String(e.id),
+        fecha: e.fecha,
+        factores: limpiarFactores(e.factores),
+        detalle: (Array.isArray(e.detalle) ? e.detalle : []).map(String)
+      };
+    });
+  }
+
+  function guardarEnHistorial(entrada) {
+    var lista = leerHistorial().filter(function (e) { return e.id !== entrada.id; });
+    lista.unshift(entrada); // la más reciente primero
+    try {
+      localStorage.setItem(claveHistorial(), JSON.stringify(lista.slice(0, MAX_HISTORIAL)));
+    } catch (e) { /* sin storage: igual se muestra en pantalla */ }
+    return leerHistorial();
   }
 
   /* ---------- 4. Motor de riesgo (HU-012) ---------- */
@@ -250,32 +272,75 @@
     }
   }
 
-  /* ---------- 6. Subtítulo y estado vacío ---------- */
-  function renderSubtitulo(datos) {
-    var fecha = new Date(datos.fecha || Date.now());
-    if (isNaN(fecha.getTime())) fecha = new Date();
-    var partes = datos.detalle.slice();
-    partes.push('Fecha: ' + fecha.toLocaleDateString('es-PE', {
-      day: '2-digit', month: 'long', year: 'numeric'
-    }));
-    if (datos.origen === 'demo') partes.push('Datos de prueba');
-    if (datos.origen === 'enlace') partes.push('Reporte compartido');
+  /* ---------- 6. Subtítulo, historial y estado vacío ---------- */
+  function formatoFecha(iso) {
+    var f = new Date(iso || Date.now());
+    if (isNaN(f.getTime())) f = new Date();
+    return f.toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' });
+  }
+
+  function renderSubtitulo(entrada) {
+    var partes = entrada.detalle.slice();
+    partes.push('Fecha: ' + formatoFecha(entrada.fecha));
+    if (entrada.origen === 'demo') partes.push('Datos de prueba');
+    if (entrada.origen === 'enlace') partes.push('Reporte compartido');
     $('#res-subtitulo').textContent = partes.join(' · ');
   }
 
-  function renderVacio(datos) {
+  var CLASE_NIVEL = { verde: 'punto-verde', amarillo: 'punto-amarillo', rojo: 'punto-rojo' };
+
+  function renderHistorial(lista, idSeleccionado, alElegir) {
+    var card = $('#card-historial');
+    var ul = $('#hist-lista');
+    ul.innerHTML = '';
+
+    if (lista.length < 2) { // con un solo resultado no hace falta lista
+      card.hidden = true;
+      return;
+    }
+    card.hidden = false;
+
+    lista.forEach(function (e) {
+      var res = calcular(e.factores);
+      var li = crear('li');
+      var btn = crear('button', 'hist-item' + (e.id === idSeleccionado ? ' seleccionado' : ''));
+      btn.type = 'button';
+      btn.setAttribute('aria-pressed', e.id === idSeleccionado ? 'true' : 'false');
+
+      var cab = crear('span', 'hist-nivel');
+      cab.appendChild(crear('span', 'punto ' + CLASE_NIVEL[res.nivel]));
+      cab.appendChild(document.createTextNode(NIVELES[res.nivel].titulo));
+      btn.appendChild(cab);
+      btn.appendChild(crear('span', 'hist-fecha', formatoFecha(e.fecha)));
+      btn.appendChild(crear('span', 'hist-pts', res.puntaje + ' pts'));
+
+      btn.addEventListener('click', function () { alElegir(e); });
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+  }
+
+  // tipo: 'vacio' | 'incompleto' | 'pendiente'
+  function renderVacio(estado) {
     var sub = $('#res-subtitulo');
     var texto = $('#vacio-texto');
     var boton = $('#vacio-boton');
 
-    if (datos.estado === 'incompleto') {
-      sub.textContent = 'Tu evaluación está incompleta (paso ' + datos.paso + ' de ' + PASOS_TOTALES + ').';
+    if (estado.estado === 'incompleto') {
+      sub.textContent = 'Tu evaluación está incompleta (paso ' + estado.paso + ' de ' + PASOS_TOTALES + ').';
       texto.textContent = 'Termina los ' + PASOS_TOTALES + ' pasos de la evaluación para ver tu semáforo de riesgo.';
       boton.textContent = 'Continuar evaluación';
+      boton.href = 'evaluacion.html';
+    } else if (estado.estado === 'pendiente') {
+      sub.textContent = 'Tu evaluación terminó y está lista para mostrarse.';
+      texto.textContent = 'Revisa tu resultado: antes verás un aviso con los límites del diagnóstico.';
+      boton.textContent = 'Ver mi resultado';
+      boton.href = 'resultados.html?desde=evaluacion';
     } else {
       sub.textContent = 'Todavía no hay una evaluación registrada.';
       texto.textContent = 'Completa la evaluación de tu vivienda (terreno, zona del daño, guía visual y evidencia) para ver tu semáforo de riesgo.';
       boton.textContent = 'Ir a Evaluar';
+      boton.href = 'evaluacion.html';
     }
     $('#estado-vacio').hidden = false;
   }
@@ -316,10 +381,10 @@
   /* ---------- 9. Copiar enlace (HU-029) ---------- */
   var timerCopiar = null;
 
-  function urlCompartible(datos) {
+  function urlCompartible(entrada) {
     var base = window.location.origin + window.location.pathname;
     if (window.location.protocol === 'file:') base = window.location.href.split(/[?#]/)[0];
-    return base + '?f=' + encodeURIComponent(datos.factores.join(','));
+    return base + '?f=' + encodeURIComponent(entrada.factores.join(','));
   }
 
   function copiarFallback(texto) {
@@ -336,7 +401,7 @@
     return ok;
   }
 
-  function iniciarCopiar(datos) {
+  function iniciarCopiar(obtenerEntrada) {
     var btn = $('#btn-copiar');
     var txt = $('#btn-copiar-texto');
     var estado = $('#copiar-estado');
@@ -357,7 +422,7 @@
     }
 
     btn.addEventListener('click', function () {
-      var url = urlCompartible(datos);
+      var url = urlCompartible(obtenerEntrada());
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(exito).catch(function () {
           if (copiarFallback(url)) exito(); else fallo();
@@ -430,47 +495,84 @@
     });
   }
 
-/* ---------- 11. Arranque ---------- */
+  /* ---------- 11. Arranque ---------- */
+  var actual = null; // entrada que se está mostrando
+
+  function mostrar(entrada, historial) {
+    actual = entrada;
+    renderSubtitulo(entrada);
+    renderResultado(entrada, calcular(entrada.factores));
+    $('#panel-resultados').hidden = false;
+    renderHistorial(historial || [], entrada.id, function (e) {
+      e.origen = 'historial';
+      mostrar(e, historial);
+    });
+  }
+
+  function limpiarUrl() {
+    try { window.history.replaceState({}, '', window.location.pathname); } catch (e) { /* file:// */ }
+  }
+
   function init() {
     // El mapa es información zonal: siempre disponible
     iniciarMapa();
+    iniciarDescarga();
+    iniciarCopiar(function () { return actual; });
 
-    var datos = obtenerDatos();
+    var params = new URLSearchParams(window.location.search);
+    var f = params.get('f');
+    var demo = params.get('demo');
+    var vieneDeEvaluacion = params.get('desde') === 'evaluacion';
 
-    // Sin evaluación completa: se muestra el aviso, sin modal ni semáforo
-    if (datos.estado !== 'ok') {
-      renderVacio(datos);
+    // A) Enlace compartido (HU-029) o datos de prueba: modal y un solo resultado
+    if (f !== null || (demo && DEMOS.hasOwnProperty(demo))) {
+      var entrada = f !== null
+        ? { id: 'enlace', fecha: null, factores: limpiarFactores(f.split(',')), detalle: [], origen: 'enlace' }
+        : { id: 'demo', fecha: null, factores: DEMOS[demo].slice(), detalle: [], origen: 'demo' };
+      renderSubtitulo(entrada);
+      iniciarModal(function () {
+        mostrar(entrada, []);
+        $('#titulo-pagina').focus();
+      });
       return;
     }
 
-    var res = calcular(datos.factores);
+    var historial = leerHistorial();
+    var evaluacion = leerEvaluacionActual();
 
-    renderSubtitulo(datos);
-    iniciarDescarga();
-    iniciarCopiar(datos);
-
-    function mostrarPanel() {
-      renderResultado(datos, res);
-      $('#panel-resultados').hidden = false;
-      $('#titulo-pagina').focus();
-    }
-
-    // Solo abre el modal si viene recién de completar evaluacion.html
-    var params = new URLSearchParams(window.location.search);
-    var vieneDeEvaluacion = params.get('desde') === 'evaluacion';
-
+    // B) Llega desde Evaluar: modal obligatorio y se guarda en el historial
     if (vieneDeEvaluacion) {
+      if (evaluacion.estado !== 'ok') {
+        limpiarUrl();
+        renderVacio(evaluacion);
+        return;
+      }
+      var nueva = evaluacion.entrada;
+      var yaAceptada = historial.some(function (e) { return e.id === nueva.id; });
+
+      if (yaAceptada) { // ya vio el aviso con esta misma evaluación (p. ej. recarga)
+        limpiarUrl();
+        mostrar(historial.filter(function (e) { return e.id === nueva.id; })[0], historial);
+        return;
+      }
+      renderSubtitulo(nueva);
       iniciarModal(function () {
-        mostrarPanel();
-        // Limpia "?desde=evaluacion" de la URL al aceptar para que no vuelva a salir si recarga
-        try {
-          window.history.replaceState({}, '', window.location.pathname);
-        } catch (e) {}
+        var lista = guardarEnHistorial(nueva);
+        limpiarUrl(); // así, al recargar, el modal no vuelve a saltar
+        mostrar(nueva, lista);
+        $('#titulo-pagina').focus();
       });
-    } else {
-      // Si viene desde Perfil, Inicio o el sidebar, muestra los resultados directo sin modal
-      mostrarPanel();
+      return;
     }
+
+    // C) Llega desde Perfil, Inicio, el menú, etc.: sin modal, historial directo
+    if (historial.length) {
+      mostrar(historial[0], historial);
+      return;
+    }
+
+    // Sin historial: evaluación terminada pero aún no vista / incompleta / vacío
+    renderVacio(evaluacion.estado === 'ok' ? { estado: 'pendiente' } : evaluacion);
   }
 
   if (document.readyState === 'loading') {
