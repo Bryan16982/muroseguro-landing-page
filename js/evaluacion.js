@@ -3,7 +3,7 @@
   'use strict';
 
   const CLAVE_ALMACEN = 'muroseguro_evaluacion';
-  const RESTAURAR_AL_CARGAR = true; // útil cuando el usuario vuelve desde el Paso 2
+  const RESTAURAR_AL_CARGAR = true; 
 
   /* ---------- Datos de prueba / catálogo ---------- */
   const TERRENOS = [
@@ -18,9 +18,8 @@
     { valor: 'humedad', etiqueta: 'Humedad', puntaje: 2 },
     { valor: 'desplome', etiqueta: 'Desplome / Inclinación', puntaje: 5 }
   ];
-  const PUNTAJE_HUMEDAD_BASE = 2; // respuesta "Sí" en la pregunta condicional
+  const PUNTAJE_HUMEDAD_BASE = 2; 
 
-  /* ---------- Referencias al DOM ---------- */
   const form = document.getElementById('form-paso-1');
   if (!form) return;
 
@@ -161,7 +160,7 @@
     if (p1.terreno) marcar('terreno', p1.terreno);
     (p1.clima || []).forEach((v) => marcar('clima', v));
     (p1.patologias || []).forEach((v) => marcar('patologia', v));
-    actualizarPreguntaCondicional(); // la pregunta debe estar visible antes de restaurar Sí/No
+    actualizarPreguntaCondicional(); 
     if (p1.humedadBase) marcar('humedad_base', p1.humedadBase);
     chkAceptacion.checked = p1.aceptacion === true;
   }
@@ -190,10 +189,8 @@
     }
   }
 
-  /* ---------- Eventos ---------- */
   form.addEventListener('change', () => { actualizarEstado(); });
 
-  // El botón disabled no emite clics: el contenedor los recibe (pointer-events: none en el botón)
   envoltorioSiguiente.addEventListener('click', () => {
     if (!btnSiguiente.disabled) return;
 
@@ -237,15 +234,12 @@
   const CLAVE_ALMACEN = 'muroseguro_evaluacion';
 
   // CA03: el clic en una zona se traduce a una categoría de daño.
-  // Es una tabla local (la plataforma es estática, no hay backend).
-  // Ajusta aquí las categorías si tu catálogo cambia (p. ej. columnas → 'Tabique').
   const ZONAS = {
     techo:    { etiqueta: 'Techo',    categoria: 'Losa' },
     muros:    { etiqueta: 'Muros',    categoria: 'Muro portante' },
     columnas: { etiqueta: 'Columnas', categoria: 'Columna' }
   };
 
-  /* ---------- Referencias al DOM ---------- */
   const seccion = document.getElementById('paso-2');
   const form = document.getElementById('form-paso-2');
   if (!seccion || !form) return;
@@ -272,7 +266,6 @@
     }
   }
 
-  /* ---------- Sincronización radio ⇄ croquis ⇄ píldora ⇄ botón ---------- */
   function seleccionar(zona) {
     const info = ZONAS[zona] || null;
 
@@ -302,7 +295,7 @@
   /* ---------- Guardado ---------- */
   function guardarPaso2(zona) {
     const info = ZONAS[zona];
-    const almacen = leerAlmacen(); // conserva almacen.paso1 intacto
+    const almacen = leerAlmacen(); 
 
     almacen.paso2 = {
       zona,
@@ -426,8 +419,8 @@
     const pos = limitar(valor, 0, 100);
     ultimaPosicion = Math.round(pos);
 
-    stage.style.setProperty('--p3-pos', `${pos}%`);   // divisor y tirador
-    capaSuperior.style.width = `${pos}%`;             // CA02: ancho de la imagen superior en tiempo real
+    stage.style.setProperty('--p3-pos', `${pos}%`); 
+    capaSuperior.style.width = `${pos}%`;             
     slider.value = String(ultimaPosicion);
     slider.setAttribute(
       'aria-valuetext',
@@ -441,19 +434,17 @@
     return ((evento.clientX - caja.left) / caja.width) * 100;
   }
 
-  // Teclado y lectores de pantalla: el <input type="range"> es el control accesible
   slider.addEventListener('input', () => {
     interactuo = true;
     aplicarPosicion(Number(slider.value));
   });
 
-  // Ratón, lápiz y táctil: arrastre del tirador (o clic en la imagen con ratón)
   stage.addEventListener('pointerdown', (evento) => {
     const tactil = evento.pointerType === 'touch';
     const sobreTirador = Boolean(evento.target.closest && evento.target.closest('.p3-tirador'));
 
     if (evento.pointerType === 'mouse' && evento.button !== 0) return;
-    if (tactil && !sobreTirador) return; // en móvil solo el tirador arrastra; el resto desplaza la página
+    if (tactil && !sobreTirador) return; 
 
     arrastrando = true;
     interactuo = true;
@@ -486,7 +477,7 @@
     const contenedor = img.parentElement;
     contenedor.classList.add('is-fallback');
     const respaldo = contenedor.querySelector('.p3-fallback');
-    if (respaldo) respaldo.removeAttribute('aria-hidden'); // conserva su aria-label descriptivo
+    if (respaldo) respaldo.removeAttribute('aria-hidden'); 
   }
 
   seccion.querySelectorAll('.p3-img').forEach((img) => {
@@ -496,7 +487,7 @@
 
   /* ---------- Acciones ---------- */
   btnContinuar.addEventListener('click', () => {
-    const almacen = leerAlmacen(); // conserva paso1 y paso2 intactos
+    const almacen = leerAlmacen();
 
     almacen.paso3 = {
       guiaRevisada: true,
@@ -504,7 +495,6 @@
       ultimaPosicionSlider: ultimaPosicion,
       guardadoEn: new Date().toISOString()
     };
-    // Nunca retrocede si el usuario ya había llegado más lejos (p. ej. al Paso 4)
     almacen.pasoCompletado = Math.max(Number(almacen.pasoCompletado) || 0, 3);
 
     try {
@@ -584,7 +574,6 @@
   const detalleOk = $('p4-ok-detalle');
   const estado = $('p4-estado');
 
-  // { id, nombre, tipo, tamanoBytes, tamanoTexto, url }  (url = null si viene de localStorage)
   let archivos = [];
   let siguienteId = 0;
 
@@ -660,12 +649,12 @@
     thumb.className = 'p4-item__thumb';
     if (a.url) {
       const img = document.createElement('img');
-      img.src = a.url; // miniatura generada con la File API (URL.createObjectURL)
+      img.src = a.url; 
       img.alt = `Miniatura de ${a.nombre}`;
       img.addEventListener('error', () => { thumb.innerHTML = ICONO_IMAGEN; });
       thumb.appendChild(img);
     } else {
-      thumb.innerHTML = ICONO_IMAGEN; // archivo restaurado: solo se guardaron metadatos
+      thumb.innerHTML = ICONO_IMAGEN; 
     }
 
     const info = document.createElement('div');
@@ -713,7 +702,7 @@
         errores.push(`${file.name}: ya está adjunto.`);
         return;
       }
-      if (repetido) { // venía de localStorage sin miniatura: se completa con el archivo real
+      if (repetido) { 
         repetido.url = URL.createObjectURL(file);
         agregados += 1;
         return;
@@ -771,7 +760,7 @@
 
   /* ---------- Guardado ---------- */
   function guardarPaso4() {
-    const almacen = leerAlmacen(); // conserva paso1, paso2 y paso3 intactos
+    const almacen = leerAlmacen(); 
 
     almacen.paso4 = {
       archivos: archivos.map((a) => ({
@@ -779,7 +768,7 @@
         tipo: a.tipo,
         tamanoBytes: a.tamanoBytes,
         tamanoTexto: a.tamanoTexto
-      })), // solo metadatos: las imágenes no se guardan para no exceder la cuota
+      })), 
       titulo: campoTitulo.value.trim(),
       categoria: campoCategoria.value,
       descripcion: campoDescripcion.value.trim(),
@@ -822,7 +811,7 @@
   /* ---------- Eventos: selección y arrastre ---------- */
   inputArchivos.addEventListener('change', () => {
     procesarArchivos(inputArchivos.files);
-    inputArchivos.value = ''; // permite volver a elegir el mismo archivo
+    inputArchivos.value = ''; 
   });
 
   ['dragenter', 'dragover'].forEach((tipo) => {
