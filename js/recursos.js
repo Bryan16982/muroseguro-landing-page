@@ -52,6 +52,66 @@ var glosario = [
 ];
 
 var fichas = {
+  "Aislamiento sísmico": {
+    sencillo: "Es una tecnología que separa el edificio del suelo con apoyos especiales. Durante un sismo el suelo se mueve, pero al edificio le llega mucha menos vibración. Se usa sobre todo en hospitales y edificios grandes.",
+    opcionA: "Base fija",
+    opcionB: "Con aisladores",
+    explicaA: "El edificio está pegado al suelo: cuando el suelo se mueve, el edificio vibra con la misma fuerza.",
+    explicaB: "Los aisladores absorben gran parte del movimiento: el edificio se mueve mucho menos.",
+    svgA: '<svg viewBox="0 0 260 200"><path class="d-onda" d="M10 172 Q30 162 50 172 T90 172 T130 172 T170 172 T210 172 T250 172"/><rect class="d-suelo" x="0" y="176" width="260" height="24"/><g transform="rotate(-6 130 176)"><rect class="d-muro" x="95" y="40" width="70" height="136"/><rect class="d-ventana" x="105" y="55" width="20" height="18"/><rect class="d-ventana" x="135" y="55" width="20" height="18"/><rect class="d-ventana" x="105" y="95" width="20" height="18"/><rect class="d-ventana" x="135" y="95" width="20" height="18"/></g><path class="d-flecha" d="M70 40 L60 50 L70 60 M190 40 L200 50 L190 60"/><text class="d-texto" x="130" y="22" text-anchor="middle">Vibra junto con el suelo</text></svg>',
+    svgB: '<svg viewBox="0 0 260 200"><path class="d-onda" d="M10 172 Q30 162 50 172 T90 172 T130 172 T170 172 T210 172 T250 172"/><rect class="d-suelo" x="0" y="176" width="260" height="24"/><rect class="d-aislador" x="100" y="164" width="16" height="12" rx="3"/><rect class="d-aislador" x="144" y="164" width="16" height="12" rx="3"/><rect class="d-muro" x="95" y="28" width="70" height="136"/><rect class="d-ventana" x="105" y="43" width="20" height="18"/><rect class="d-ventana" x="135" y="43" width="20" height="18"/><rect class="d-ventana" x="105" y="83" width="20" height="18"/><rect class="d-ventana" x="135" y="83" width="20" height="18"/><text class="d-texto" x="130" y="18" text-anchor="middle">Los aisladores absorben el movimiento</text></svg>',
+    caso: null
+  },
+  "Ciclo de carga": {
+    sencillo: "En un sismo el suelo no empuja una sola vez: empuja de un lado a otro muchas veces. A cada ida y vuelta se le llama ciclo. Un buen diseño resiste muchos ciclos sin dañarse; uno débil se va agrietando con cada uno.",
+    opcionA: "Vuelve a su forma",
+    opcionB: "Acumula daño",
+    explicaA: "Un elemento bien diseñado se mueve de un lado a otro y vuelve a su posición sin dañarse.",
+    explicaB: "Un elemento débil se agrieta un poco más en cada ida y vuelta, hasta que falla.",
+    svgA: '<svg viewBox="0 0 260 200"><rect class="d-suelo" x="40" y="170" width="180" height="20"/><path class="d-fantasma" d="M130 170 Q128 110 100 60"/><path class="d-fantasma" d="M130 170 Q132 110 160 60"/><line class="d-acero-grueso" x1="130" y1="170" x2="130" y2="55"/><path class="d-flecha" d="M95 45 Q130 25 165 45"/><polygon class="d-flecha-punta" points="160,38 170,48 158,50"/><polygon class="d-flecha-punta" points="100,38 90,48 102,50"/><text class="d-texto" x="130" y="198" text-anchor="middle">Va y viene sin dañarse</text></svg>',
+    svgB: '<svg viewBox="0 0 260 200"><rect class="d-suelo" x="40" y="170" width="180" height="20"/><path class="d-fantasma" d="M130 170 Q128 110 100 60"/><path class="d-fantasma" d="M130 170 Q132 110 160 60"/><rect class="d-concreto" x="118" y="55" width="24" height="115"/><path class="d-grieta" d="M118 150 L128 156 L122 162 M142 140 L132 148 L140 156 M118 128 L126 134"/><path class="d-flecha" d="M95 45 Q130 25 165 45"/><polygon class="d-flecha-punta" points="160,38 170,48 158,50"/><polygon class="d-flecha-punta" points="100,38 90,48 102,50"/><text class="d-texto" x="130" y="198" text-anchor="middle">Cada ida y vuelta lo debilita</text></svg>',
+    caso: null
+  },
+  "Cimentación": {
+    sencillo: "Es la base enterrada de la casa, como los pies de una persona. Si la base es ancha y está sobre suelo firme, el peso se reparte y la casa no se hunde.",
+    opcionA: "Zapata adecuada",
+    opcionB: "Zapata insuficiente",
+    explicaA: "Una zapata ancha reparte el peso de la casa sobre más suelo: la columna se mantiene firme.",
+    explicaB: "Si la zapata es pequeña o el suelo es blando, el peso se concentra en un punto y la casa puede hundirse.",
+    svgA: '<svg viewBox="0 0 260 200"><rect class="d-suelo" x="0" y="95" width="260" height="105"/><rect class="d-concreto" x="116" y="15" width="28" height="140"/><rect class="d-concreto" x="76" y="150" width="108" height="24"/><path class="d-flecha-azul" d="M90 178 V190 M110 178 V190 M130 178 V190 M150 178 V190 M170 178 V190"/><text class="d-texto" x="200" y="112">Suelo</text><text class="d-texto" x="130" y="10" text-anchor="middle">El peso se reparte</text></svg>',
+    svgB: '<svg viewBox="0 0 260 200"><path class="d-suelo" d="M0 95 H100 Q130 112 160 95 H260 V200 H0 Z"/><rect class="d-concreto" x="116" y="30" width="28" height="140"/><rect class="d-concreto" x="110" y="165" width="40" height="18"/><path class="d-flecha" d="M130 186 V198"/><polygon class="d-flecha-punta" points="124,192 136,192 130,200"/><path class="d-grieta" d="M100 98 L94 110 M160 98 L166 110"/><text class="d-texto" x="200" y="112">Suelo</text><text class="d-texto" x="130" y="22" text-anchor="middle">El peso se concentra y se hunde</text></svg>',
+    caso: 4
+  },
+  "Columna": {
+    sencillo: "Es el elemento vertical de concreto con fierro que sostiene los techos. Junto con la viga de amarre, \"abraza\" al muro de ladrillo para que no se desarme durante un sismo.",
+    opcionA: "Con columnas",
+    opcionB: "Sin columnas",
+    explicaA: "Las columnas y la viga de amarre mantienen unido el muro durante un sismo.",
+    explicaB: "Un muro de ladrillo sin columnas se agrieta y puede caerse con facilidad.",
+    svgA: '<svg viewBox="0 0 260 200"><rect class="d-suelo" x="20" y="175" width="220" height="15"/><rect class="d-concreto" x="40" y="25" width="24" height="150"/><rect class="d-concreto" x="196" y="25" width="24" height="150"/><rect class="d-concreto" x="40" y="15" width="180" height="20"/><rect class="d-ladrillo" x="64" y="35" width="132" height="140"/><path class="d-junta" d="M64 63 H196 M64 91 H196 M64 119 H196 M64 147 H196"/><text class="d-texto" x="130" y="10" text-anchor="middle">Viga de amarre</text><text class="d-texto" x="52" y="198" text-anchor="middle">Columna</text><text class="d-texto" x="208" y="198" text-anchor="middle">Columna</text></svg>',
+    svgB: '<svg viewBox="0 0 260 200"><rect class="d-suelo" x="20" y="175" width="220" height="15"/><g transform="rotate(4 64 175)"><rect class="d-ladrillo" x="64" y="35" width="132" height="140"/><path class="d-junta" d="M64 63 H196 M64 91 H196 M64 119 H196 M64 147 H196"/></g><path class="d-grieta" d="M110 45 L122 63 L116 75 L134 91 L128 105 L148 121 L142 135 L162 151"/><rect class="d-ladrillo" x="200" y="160" width="22" height="12" transform="rotate(20 211 166)"/><text class="d-texto" x="130" y="198" text-anchor="middle">El muro se agrieta y se inclina</text></svg>',
+    caso: 3
+  },
+  "Fisura": {
+    sencillo: "Es una rajadura muy delgada, menor a 1 milímetro, que normalmente solo afecta la pintura o el tarrajeo. No suele ser grave, pero conviene medirla y vigilar si crece.",
+    opcionA: "Fisura fina",
+    opcionB: "Grieta ancha",
+    explicaA: "Una fisura fina (menos de 1 mm) suele ser solo del acabado: mídela y vigila si crece.",
+    explicaB: "Si la abertura es ancha (más de 3 mm) ya es una grieta y puede afectar la estructura: consulta a un ingeniero.",
+    svgA: '<svg viewBox="0 0 260 200"><rect class="d-muro" x="40" y="20" width="180" height="155"/><path class="d-fisura" d="M90 40 L104 66 L98 90 L114 118 L108 146"/><rect class="d-regla" x="125" y="84" width="70" height="14" rx="2"/><path class="d-junta" d="M135 84 V92 M145 84 V90 M155 84 V92 M165 84 V90 M175 84 V92 M185 84 V90"/><text class="d-texto" x="130" y="194" text-anchor="middle">Menos de 1 mm</text></svg>',
+    svgB: '<svg viewBox="0 0 260 200"><rect class="d-muro" x="40" y="20" width="180" height="155"/><path class="d-grieta-ancha" d="M90 40 L104 66 L98 90 L114 118 L108 146"/><rect class="d-regla" x="125" y="84" width="70" height="14" rx="2"/><path class="d-junta" d="M135 84 V92 M145 84 V90 M155 84 V92 M165 84 V90 M175 84 V92 M185 84 V90"/><text class="d-texto" x="130" y="194" text-anchor="middle">Más de 3 mm</text></svg>',
+    caso: 1
+  },
+  "Grieta": {
+    sencillo: "Es una abertura más ancha que una fisura, que puede atravesar el muro. Su forma da pistas: las grietas en diagonal o en escalera suelen indicar un problema estructural.",
+    opcionA: "Grieta vertical",
+    opcionB: "Grieta en diagonal",
+    explicaA: "Una grieta vertical puede deberse a contracción del material o a cambios de temperatura: mídela y vigila si crece.",
+    explicaB: "Las grietas en diagonal, sobre todo desde las esquinas de puertas y ventanas, suelen indicar daño por sismo o asentamiento: consulta a un ingeniero.",
+    svgA: '<svg viewBox="0 0 260 200"><rect class="d-muro" x="40" y="20" width="180" height="155"/><rect class="d-ventana" x="100" y="55" width="60" height="45"/><path class="d-grieta" d="M190 30 L194 60 L188 90 L193 120 L189 165"/><text class="d-texto" x="130" y="194" text-anchor="middle">Recta, de arriba hacia abajo</text></svg>',
+    svgB: '<svg viewBox="0 0 260 200"><rect class="d-muro" x="40" y="20" width="180" height="155"/><rect class="d-ventana" x="100" y="55" width="60" height="45"/><path class="d-grieta" d="M160 100 L172 112 L170 124 L184 136 L182 148 L200 165"/><path class="d-grieta" d="M100 55 L90 45 L92 38 L80 28"/><path class="d-grieta" d="M100 100 L88 114 L90 124 L74 140"/><text class="d-texto" x="130" y="194" text-anchor="middle">En diagonal desde las esquinas</text></svg>',
+    caso: 1
+  },
   "Asentamiento": {
     sencillo: "Es cuando el suelo debajo de la casa se hunde, sobre todo de un lado. La casa se \"tuerce\": aparecen grietas en diagonal y las puertas o ventanas dejan de cerrar bien.",
     opcionA: "Suelo firme",
@@ -353,7 +413,12 @@ function abrirFicha(termino, origen) {
 
   cambiarDiagrama("a");
 
-  document.querySelector("#ficha-caso").innerHTML =
+  if (!caso) {
+    document.querySelector("#ficha-caso-bloque").classList.add("oculto");
+    document.querySelector("#ficha-caso").innerHTML = "";
+  } else {
+    document.querySelector("#ficha-caso-bloque").classList.remove("oculto");
+    document.querySelector("#ficha-caso").innerHTML =
     '<div class="ficha-caso-tarjeta">' +
       '<img src="' + caso.antes + '" alt="Vivienda en ' + caso.lugar + ' antes de la intervención">' +
       '<div>' +
@@ -362,6 +427,7 @@ function abrirFicha(termino, origen) {
         '<button type="button" class="boton-enlace" onclick="irACaso(' + caso.id + ')">Ver caso en la galería →</button>' +
       '</div>' +
     '</div>';
+  }
 
   document.querySelector("#ficha").classList.remove("oculto");
   document.querySelector("#btn-cerrar-ficha").focus();
