@@ -1462,3 +1462,131 @@ body.eval-con-sidebar main {
 @media (prefers-reduced-motion: reduce) {
   .p4-layout * { transition: none !important; }
 }
+
+.eval-theme-fab {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.625rem 1rem;
+  font-family: var(--font-main);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--bg-white);
+  background: var(--color-secondary);
+  border: 2px solid var(--bg-white);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.28);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.eval-theme-fab:hover {
+  transform: translateY(-2px);
+}
+
+.eval-theme-fab:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.eval-theme-fab .eval-theme-fab__sun { display: none; }
+.eval-theme-fab .eval-theme-fab__moon { display: block; }
+
+body.eval-dark .eval-theme-fab {
+  color: #0F172A;
+  background: #F8FAFC;
+  border-color: #3B82F6;
+}
+
+body.eval-dark .eval-theme-fab .eval-theme-fab__sun { display: block; }
+body.eval-dark .eval-theme-fab .eval-theme-fab__moon { display: none; }
+
+body.eval-dark {
+  background-color: #0F172A;
+}
+
+body.eval-dark main {
+  --bg-dominant: #0F172A;
+  --bg-white: #1E293B;
+  --color-secondary: #F1F5F9;
+  --color-accent: #3B82F6;
+  --color-accent-hover: #2563EB;
+  --border-neutral: #334155;
+  --text-body-alt: #CBD5E1;
+  --text-muted: #94A3B8;
+  --color-error: #F87171;
+  --color-warning: #FBBF24;
+  --color-success: #22C55E;
+}
+
+body.eval-dark main .btn-primary:not(:disabled),
+body.eval-dark main .eval-sr:checked + .p2-option,
+body.eval-dark main .p3-tirador,
+body.eval-dark main .p4-ok-icon,
+body.eval-dark main .eval-sr:checked + .eval-option .eval-radio,
+body.eval-dark main .eval-sr:checked + label .eval-check {
+  color: #FFFFFF;
+}
+
+body.eval-dark main .eval-btn.btn-primary:disabled {
+  color: #94A3B8;
+  background: #334155;
+  border-color: #334155;
+}
+
+body.eval-dark main .form-input,
+body.eval-dark main .form-select,
+body.eval-dark main .form-textarea {
+  background-color: #0F172A;
+  color: #F1F5F9;
+  border-color: #475569;
+}
+
+body.eval-dark main .form-input::placeholder,
+body.eval-dark main .form-textarea::placeholder {
+  color: #94A3B8;
+}
+
+body.eval-dark .ms-sb {
+  background: #0B1120;
+  border-right: 1px solid #1E293B;
+}
+
+body.eval-dark .ms-sb__footer {
+  background: #0B1120;
+}
+
+body.eval-dark .ms-sb .ms-sb__link,
+body.eval-dark .ms-sb .ms-sb__logout {
+  background: #1E293B;
+  color: #F1F5F9;
+}
+
+body.eval-dark .ms-sb .ms-sb__link .ms-sb__icon,
+body.eval-dark .ms-sb .ms-sb__logout .ms-sb__icon {
+  color: #CBD5E1;
+}
+
+body.eval-dark .ms-sb .ms-sb__link[aria-current="page"] {
+  background: #2563EB;
+  color: #FFFFFF;
+}
+
+@media (max-width: 560px) {
+  .eval-theme-fab {
+    right: 0.875rem;
+    bottom: 0.875rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eval-theme-fab { transition: none !important; }
+}
+
