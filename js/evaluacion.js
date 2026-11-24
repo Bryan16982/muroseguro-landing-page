@@ -3,7 +3,7 @@
   'use strict';
 
   const CLAVE_ALMACEN = 'muroseguro_evaluacion';
-  const RESTAURAR_AL_CARGAR = true; 
+  const RESTAURAR_AL_CARGAR = false; 
 
   /* ---------- Datos de prueba / catálogo ---------- */
   const TERRENOS = [
@@ -885,6 +885,7 @@
     archivos.forEach((a) => { if (a.url) URL.revokeObjectURL(a.url); });
   });
 
-  /* ---------- Inicio: restaura lo guardado ---------- */
-  restaurar();
+  /* ---------- Inicio: siempre comienza en cero ---------- */
+  archivos = [];
+  renderLista();
 })();
