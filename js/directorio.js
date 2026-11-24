@@ -116,6 +116,9 @@ const btnAnterior = document.getElementById("btn-anterior");
 const btnSiguiente = document.getElementById("btn-siguiente");
 const infoPagina = document.getElementById("info-pagina");
 const contenedorFaq = document.getElementById("contenedor-faq");
+const filtroIngeniero = document.getElementById("filtro-ingeniero");
+const perfilSeleccionado = document.getElementById("perfil-seleccionado");
+const perfilContenido = document.getElementById("perfil-contenido");
 
 const avatarSvg =
   "data:image/svg+xml;charset=utf-8," +
@@ -139,6 +142,14 @@ if (selectDistrito) {
   selectDistrito.addEventListener("change", function () {
     ampliarCercanos = false;
     paginaActual = 1;
+    poblarIngenieros();
+    renderizarTodo();
+  });
+}
+
+if (filtroIngeniero) {
+  filtroIngeniero.addEventListener("change", function () {
+    paginaActual = 1;
     renderizarTodo();
   });
 }
@@ -147,6 +158,7 @@ if (btnCercanos) {
   btnCercanos.addEventListener("click", function () {
     ampliarCercanos = true;
     paginaActual = 1;
+    poblarIngenieros();
     renderizarTodo();
   });
 }
@@ -158,17 +170,92 @@ if (btnLimpiar) {
     }
     ampliarCercanos = false;
     paginaActual = 1;
+    poblarIngenieros();
     renderizarTodo();
   });
 }
 
+// Llena el filtro de ingenieros según el distrito elegido (o todos si no hay distrito)
+function poblarIngenieros() {
+  if (!filtroIngeniero) return;
+  const dist = selectDistrito ? selectDistrito.value : "";
+
+  filtroIngeniero.innerHTML = '<option value="">Todos los ingenieros</option>';
+  for (let i = 0; i < ingenieros.length; i++) {
+    const ing = ingenieros[i];
+    if (ampliarCercanos || dist === "" || ing.distrito === dist) {
+      const opcion = document.createElement("option");
+      opcion.value = ing.cip;
+      opcion.textContent = ing.nombre + " (" + ing.distrito + ")";
+      filtroIngeniero.appendChild(opcion);
+    }
+  }
+  filtroIngeniero.value = "";
+}
+
+// Muestra el perfil completo del ingeniero elegido en el filtro
+function renderizarPerfil() {
+  if (!perfilSeleccionado || !perfilContenido) return;
+
+  const cip = filtroIngeniero ? filtroIngeniero.value : "";
+  let ing = null;
+  for (let i = 0; i < ingenieros.length; i++) {
+    if (ingenieros[i].cip === cip) {
+      ing = ingenieros[i];
+      break;
+    }
+  }
+
+  if (!ing) {
+    perfilSeleccionado.hidden = true;
+    perfilContenido.innerHTML = "";
+    return;
+  }
+
+  const rutaFoto = ing.foto
+    ? "../assets/images/ingeniero/" + encodeURI(ing.foto)
+    : avatarSvg;
+  const urlWhatsapp =
+    "https://wa.me/" + ing.telefono + "?text=" +
+    encodeURIComponent("Hola, encontré su perfil en MuroSeguro y deseo una evaluación estructural");
+
+  perfilContenido.innerHTML =
+    '<div class="perfil-layout">' +
+      '<img src="' + rutaFoto + '" alt="Foto de ' + ing.nombre + '" class="perfil-foto">' +
+      '<div class="perfil-datos">' +
+        '<h2 class="perfil-nombre">' + ing.nombre + "</h2>" +
+        '<span class="ing-cip">CIP ' + ing.cip + "</span>" +
+        '<ul class="perfil-lista">' +
+          "<li><strong>Especialidad:</strong> " + ing.especialidad + "</li>" +
+          "<li><strong>Ubicación:</strong> " + ing.distrito + ", " + ing.departamento + "</li>" +
+          "<li><strong>Teléfono:</strong> +" + ing.telefono + "</li>" +
+        "</ul>" +
+      "</div>" +
+      '<a href="' + urlWhatsapp + '" target="_blank" rel="noopener noreferrer" class="btn-primary">Contactar por WhatsApp</a>' +
+    "</div>";
+
+  const imgPerfil = perfilContenido.querySelector(".perfil-foto");
+  if (imgPerfil) {
+    imgPerfil.addEventListener("error", function () {
+      imgPerfil.src = avatarSvg;
+    });
+  }
+
+  perfilSeleccionado.hidden = false;
+}
+
 function obtenerFiltrados() {
   const dist = selectDistrito ? selectDistrito.value : "";
+  const cipSeleccionado = filtroIngeniero ? filtroIngeniero.value : "";
   const filtrados = [];
 
   for (let i = 0; i < ingenieros.length; i++) {
     const ing = ingenieros[i];
-    if (ampliarCercanos || dist === "" || ing.distrito === dist) {
+    if (cipSeleccionado !== "") {
+      if (ing.cip === cipSeleccionado) {
+        filtrados.push(ing);
+      }
+    } else if (ampliarCercanos || dist === "" || ing.distrito === dist) {
       filtrados.push(ing);
     }
   }
@@ -205,6 +292,8 @@ function renderizarTodo() {
       panelCercanos.style.display = "none";
     }
   }
+
+  renderizarPerfil();
 
   gridIngenieros.innerHTML = "";
   const mensajeBase = "Hola, encontré su perfil en MuroSeguro y deseo una evaluación estructural";
@@ -321,5 +410,6 @@ function renderizarFaq() {
 }
 
 poblarDistritos();
+poblarIngenieros();
 renderizarTodo();
 renderizarFaq();
