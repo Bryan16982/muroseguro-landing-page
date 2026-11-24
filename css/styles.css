@@ -370,3 +370,206 @@ textarea:focus-visible {
   background-color: var(--color-accent);
   color: var(--bg-white);
 }
+
+/* ==========================================================================
+   MODO OSCURO / LUMINOSO GLOBAL (Botón flotante en todas las secciones)
+   ========================================================================== */
+.ms-theme-fab {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.625rem 1rem;
+  font-family: var(--font-main);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: #1E1B4B;
+  border: 2px solid #FFFFFF;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.28);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.ms-theme-fab:hover {
+  transform: translateY(-2px);
+}
+
+.ms-theme-fab:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.ms-theme-fab__icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ms-theme-fab__sun { display: none; }
+.ms-theme-fab__moon { display: block; }
+
+body.ms-dark .ms-theme-fab {
+  color: #0F172A;
+  background: #F8FAFC;
+  border-color: #3B82F6;
+}
+
+body.ms-dark .ms-theme-fab__sun { display: block; }
+body.ms-dark .ms-theme-fab__moon { display: none; }
+
+/* --- Paleta oscura accesible (WCAG AA) para toda la app --- */
+body.ms-dark {
+  --bg-dominant: #0F172A;
+  --bg-white: #1E293B;
+  --color-secondary: #F1F5F9;
+  --color-accent: #3B82F6;
+  --color-accent-hover: #2563EB;
+  --border-neutral: #334155;
+  --text-body-alt: #CBD5E1;
+  --text-muted: #94A3B8;
+  --color-error: #F87171;
+  --color-warning: #FBBF24;
+  --color-success: #22C55E;
+  background-color: var(--bg-dominant);
+  color: var(--color-secondary);
+}
+
+/* Mantiene texto e íconos blancos en botones y elementos seleccionados */
+body.ms-dark .btn-primary:not(:disabled),
+body.ms-dark .tag.activo,
+body.ms-dark .toast,
+body.ms-dark .eval-sr:checked + .p2-option,
+body.ms-dark .p3-tirador,
+body.ms-dark .p4-ok-icon,
+body.ms-dark .eval-sr:checked + .eval-option .eval-radio,
+body.ms-dark .eval-sr:checked + label .eval-check {
+  color: #FFFFFF;
+}
+
+body.ms-dark .btn-primary:disabled {
+  color: #94A3B8;
+  background-color: #334155;
+  border-color: #334155;
+}
+
+/* Inputs, selects y textareas legibles en modo oscuro */
+body.ms-dark .form-input,
+body.ms-dark .form-select,
+body.ms-dark .form-textarea {
+  background-color: #0F172A;
+  color: #F1F5F9;
+  border-color: #475569;
+}
+
+body.ms-dark .form-input::placeholder,
+body.ms-dark .form-textarea::placeholder {
+  color: #94A3B8;
+}
+
+/* Menú lateral unificado (.ms-sb) en modo oscuro */
+body.ms-dark .ms-sb {
+  background: #0B1120;
+  border-right: 1px solid #1E293B;
+}
+
+body.ms-dark .ms-sb__footer {
+  background: #0B1120;
+}
+
+body.ms-dark .ms-sb__title {
+  color: #F8FAFC;
+}
+
+body.ms-dark .ms-sb__subtitle,
+body.ms-dark .ms-sb__role {
+  color: #94A3B8;
+}
+
+body.ms-dark .ms-sb__logo,
+body.ms-dark .ms-sb__avatar {
+  background: #F8FAFC;
+  color: #0F172A;
+}
+
+body.ms-dark .ms-sb .ms-sb__link,
+body.ms-dark .ms-sb .ms-sb__logout {
+  background: #1E293B;
+  color: #F1F5F9;
+}
+
+body.ms-dark .ms-sb .ms-sb__link .ms-sb__icon,
+body.ms-dark .ms-sb .ms-sb__logout .ms-sb__icon {
+  color: #CBD5E1;
+}
+
+body.ms-dark .ms-sb .ms-sb__link[aria-current="page"] {
+  background: #2563EB;
+  color: #FFFFFF;
+}
+
+body.ms-dark .ms-sb .ms-sb__link[aria-current="page"] .ms-sb__icon {
+  color: #FFFFFF;
+}
+
+/* Ajustes para colores fijos de Directorio en modo oscuro */
+body.ms-dark .header-sub,
+body.ms-dark .faq-sub,
+body.ms-dark .ing-meta,
+body.ms-dark .faq-panel {
+  color: #CBD5E1;
+}
+
+body.ms-dark .badge-orientacion {
+  background-color: rgba(59, 130, 246, 0.16);
+  border-color: #3B82F6;
+  color: #93C5FD;
+}
+
+body.ms-dark .aviso-legal {
+  background-color: rgba(251, 191, 36, 0.12);
+  border-color: #92400E;
+  color: #FEF3C7;
+}
+
+body.ms-dark .panel-cercanos,
+body.ms-dark .ing-cip,
+body.ms-dark .faq-panel,
+body.ms-dark .faq-trigger:hover {
+  background-color: #0F172A;
+}
+
+body.ms-dark .faq-panel,
+body.ms-dark .paginacion-bar {
+  border-top-color: #334155;
+}
+
+body.ms-dark .ing-foto {
+  border-color: #334155;
+}
+
+@media (max-width: 560px) {
+  .ms-theme-fab {
+    right: 0.875rem;
+    bottom: 0.875rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-theme-fab { transition: none !important; }
+}
+
+@media print {
+  .ms-theme-fab { display: none !important; }
+}
