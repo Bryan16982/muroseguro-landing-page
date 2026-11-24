@@ -75,8 +75,10 @@
           <div class="buscador">
             <label for="buscador-glosario" class="solo-lector">Buscar término técnico o infografía</label>
             <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-            <input type="text" id="buscador-glosario" class="form-input search-bar" placeholder="Buscar término técnico o infografía...">
+            <input type="text" id="buscador-glosario" class="form-input search-bar" placeholder="Buscar término técnico o infografía..." aria-describedby="ayuda-buscador">
           </div>
+
+          <p class="ayuda-buscador" id="ayuda-buscador">Escribe un término, por ejemplo "cangrejera", y presiona Enter para ver su ficha visual.</p>
 
           <div class="grilla-recursos" id="lista-recursos"></div>
 
@@ -128,6 +130,40 @@
           </video>
 
           <p class="aviso" id="visor-aviso"></p>
+        </div>
+      </div>
+
+      <div class="visor oculto" id="ficha">
+        <div class="visor-caja ficha-caja" role="dialog" aria-modal="true" aria-labelledby="ficha-titulo">
+          <button type="button" class="visor-cerrar" id="btn-cerrar-ficha" aria-label="Cerrar ficha">X</button>
+          <p class="caption etiqueta-seccion">GLOSARIO SÍSMICO</p>
+          <h3 class="h3" id="ficha-titulo"></h3>
+
+          <div class="ficha-cuerpo">
+            <div class="ficha-texto">
+              <h4 class="ficha-subtitulo">En palabras simples</h4>
+              <p class="ficha-sencillo" id="ficha-sencillo"></p>
+              <h4 class="ficha-subtitulo">Definición técnica</h4>
+              <p class="ficha-definicion" id="ficha-definicion"></p>
+            </div>
+
+            <div class="ficha-diagrama">
+              <h4 class="ficha-subtitulo">Compara</h4>
+              <div class="ficha-opciones" role="group" aria-label="Cambiar el diagrama">
+                <button type="button" class="opcion activo" id="ficha-opcion-a" aria-pressed="true"></button>
+                <button type="button" class="opcion" id="ficha-opcion-b" aria-pressed="false"></button>
+              </div>
+              <div class="ficha-svg" id="ficha-svg" role="img" aria-label=""></div>
+              <p class="ficha-explica" id="ficha-explica" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <div class="ficha-caso">
+            <h4 class="ficha-subtitulo">Ejemplo real</h4>
+            <div id="ficha-caso"></div>
+          </div>
+
+          <p class="aviso">Conocer estos términos no otorga facultades para certificar una estructura.</p>
         </div>
       </div>
 
