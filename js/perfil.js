@@ -70,15 +70,19 @@
     input.addEventListener('input', () => { input.value = input.value.replace(/\D/g, '').slice(0, 9); });
   }
 
-  function setSaludo(nombres) {
-    const n = (nombres || '').trim().split(' ')[0];
-    $('saludo-nombre').textContent = n ? ', ' + n : '';
+  function obtenerCorreoSesion() {
+    try {
+      return sessionStorage.getItem('ms_sesion') || localStorage.getItem('ms_usuario_activo') || '';
+    } catch (e) {
+      return '';
+    }
   }
 
-  $('btn-cerrar-sesion').addEventListener('click', () => {
-    try { localStorage.removeItem('ms_usuario_activo'); } catch (e) {  }
-    window.location.href = 'index.html';
-  });
+  function setSaludo(nombres) {
+    const primerNombre = (nombres || '').trim().split(/\s+/)[0];
+    const texto = primerNombre || obtenerCorreoSesion();
+    $('saludo-nombre').textContent = texto ? ', ' + texto : '';
+  }
 
   const fPerfil = $('form-perfil');
   const perfil = load('perfil', null);
@@ -86,8 +90,8 @@
     $('p-nombres').value = perfil.nombres || '';
     $('p-apellidos').value = perfil.apellidos || '';
     $('p-telefono').value = perfil.telefono || '';
-    setSaludo(perfil.nombres);
   }
+  setSaludo(perfil ? perfil.nombres : '');
   onlyDigits($('p-telefono'));
   clearOnInput(fPerfil);
   fPerfil.addEventListener('submit', (e) => {
