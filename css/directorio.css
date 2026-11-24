@@ -270,7 +270,7 @@ html, body {
 
 .filtros-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   gap: 14px;
   align-items: end;
 }
@@ -490,6 +490,56 @@ button:disabled {
 
 .faq-card-item.open .faq-panel {
   display: block;
+}
+
+/* Perfil del ingeniero seleccionado */
+.perfil-card[hidden] {
+  display: none;
+}
+
+.perfil-layout {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.perfil-foto {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #E2E8F0;
+  flex-shrink: 0;
+}
+
+.perfil-datos {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.perfil-nombre {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.perfil-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.perfil-layout .btn-primary {
+  flex-shrink: 0;
 }
 
 /* =========================================================
