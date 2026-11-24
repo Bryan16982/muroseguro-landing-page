@@ -1,4 +1,4 @@
-// Catálogo de ingenieros colegiados (ubicación actualizada a Lima)
+// Catálogo de ingenieros colegiados (5 distritos de Lima)
 const ingenieros = [
   {
     nombre: "Ing. Carlos Paredes Quispe",
@@ -41,36 +41,9 @@ const ingenieros = [
     cip: "190441",
     especialidad: "Concreto armado",
     departamento: "Lima",
-    distrito: "San Juan de Lurigancho",
+    distrito: "Puente Piedra",
     telefono: "51987111226",
     foto: "MiguelTorres.jpg"
-  },
-  {
-    nombre: "Ing. Lucía Castro Díaz",
-    cip: "194882",
-    especialidad: "Vulnerabilidad sísmica",
-    departamento: "Lima",
-    distrito: "Villa El Salvador",
-    telefono: "51987111227",
-    foto: "LucíaCastro.jpg"
-  },
-  {
-    nombre: "Ing. Jorge Navarro Rojas",
-    cip: "201155",
-    especialidad: "Muros y losas",
-    departamento: "Lima",
-    distrito: "Comas",
-    telefono: "51987111228",
-    foto: ""
-  },
-  {
-    nombre: "Ing. Valeria Montes Cruz",
-    cip: "208774",
-    especialidad: "Geotecnia y cimentaciones",
-    departamento: "Lima",
-    distrito: "San Martín de Porres",
-    telefono: "51987111229",
-    foto: ""
   }
 ];
 
@@ -323,3 +296,6 @@ function renderizarFaq() {
 poblarDistritos();
 renderizarTodo();
 renderizarFaq();
+```[cite: 4]
+
+Recuerda también incluir `<script src="../js/directorio.js"></script>` al final de `pages/directorio.html` y `../css/directorio.css` en su `<head>` para que todo se muestre en pantalla[cite: 3, 4, 5]. ¿Te gustaría que también te deje el `directorio.html` completo con esos enlaces listos?
