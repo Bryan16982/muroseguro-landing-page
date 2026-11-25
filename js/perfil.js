@@ -246,4 +246,136 @@
     fSop.reset();
     toast('Mensaje enviado. Nuestro equipo revisará tu solicitud.');
   });
+
+  function iniciarDictado(idCampo) {
+    const campo = $(idCampo);
+    if (!campo) return;
+    const grupo = campo.closest('.form-group');
+    const form = campo.form;
+    const Reconocimiento = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const caja = el('div', 'dictado');
+    grupo.appendChild(caja);
+
+    if (!Reconocimiento) {
+      caja.appendChild(el('p', 'dictado-nota', 'Tu navegador no admite dictado por voz. Puedes escribir el texto con normalidad.'));
+      return;
+    }
+
+    const btnMic = el('button', 'btn-secondary btn-mic');
+    btnMic.type = 'button';
+    btnMic.setAttribute('aria-pressed', 'false');
+    btnMic.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg><span>Dictar por voz</span>';
+    const etiquetaMic = btnMic.querySelector('span');
+    const estado = el('span', 'dictado-estado');
+    estado.setAttribute('role', 'status');
+    estado.setAttribute('aria-live', 'polite');
+
+    const previa = el('div', 'dictado-previa');
+    previa.hidden = true;
+    const idPrevia = 'previa-' + idCampo;
+    const lblPrevia = el('label', 'form-label', 'Vista previa del dictado (puedes editarla)');
+    lblPrevia.setAttribute('for', idPrevia);
+    const txtPrevia = el('textarea', 'form-textarea');
+    txtPrevia.id = idPrevia;
+    txtPrevia.rows = 3;
+    const filaBtn = el('div', 'btn-row');
+    const btnInsertar = el('button', 'btn-primary', 'Insertar en el campo');
+    btnInsertar.type = 'button';
+    const btnDescartar = el('button', 'btn-secondary', 'Descartar');
+    btnDescartar.type = 'button';
+    filaBtn.appendChild(btnInsertar);
+    filaBtn.appendChild(btnDescartar);
+    previa.appendChild(lblPrevia);
+    previa.appendChild(txtPrevia);
+    previa.appendChild(filaBtn);
+
+    caja.appendChild(btnMic);
+    caja.appendChild(estado);
+    caja.appendChild(previa);
+
+    const rec = new Reconocimiento();
+    rec.lang = 'es-PE';
+    rec.continuous = true;
+    rec.interimResults = true;
+    let escuchando = false;
+    let base = '';
+    let finales = '';
+
+    function marcar(activo) {
+      escuchando = activo;
+      btnMic.setAttribute('aria-pressed', String(activo));
+      etiquetaMic.textContent = activo ? 'Detener dictado' : 'Dictar por voz';
+      estado.textContent = activo ? 'Escuchando… habla con claridad.' : '';
+    }
+
+    function detener() {
+      if (escuchando) { try { rec.stop(); } catch (e) { marcar(false); } }
+    }
+
+    function cerrarPrevia() {
+      detener();
+      txtPrevia.value = '';
+      previa.hidden = true;
+    }
+
+    rec.onresult = (ev) => {
+      let provisional = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const t = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) finales += t; else provisional += t;
+      }
+      txtPrevia.value = (base + finales + provisional).replace(/\s+/g, ' ').trimStart();
+    };
+    rec.onend = () => {
+      marcar(false);
+      txtPrevia.value = txtPrevia.value.trim();
+    };
+    rec.onerror = (ev) => {
+      marcar(false);
+      const msgs = {
+        'not-allowed': 'No se permitió el uso del micrófono. Actívalo en el navegador.',
+        'service-not-allowed': 'No se permitió el uso del micrófono. Actívalo en el navegador.',
+        'no-speech': 'No se detectó voz. Inténtalo de nuevo.',
+        'audio-capture': 'No se encontró un micrófono disponible.',
+        'network': 'El dictado necesita conexión a internet.'
+      };
+      estado.textContent = msgs[ev.error] || 'No se pudo dictar. Inténtalo de nuevo.';
+    };
+
+    btnMic.addEventListener('click', () => {
+      if (escuchando) { detener(); return; }
+      base = txtPrevia.value.trim() ? txtPrevia.value.trim() + ' ' : '';
+      finales = '';
+      previa.hidden = false;
+      try {
+        rec.start();
+        marcar(true);
+      } catch (e) {
+        estado.textContent = 'No se pudo iniciar el dictado.';
+      }
+    });
+
+    btnInsertar.addEventListener('click', () => {
+      detener();
+      const texto = txtPrevia.value.trim();
+      if (!texto) { estado.textContent = 'No hay texto para insertar.'; return; }
+      campo.value = campo.value.trim() ? campo.value.trim() + ' ' + texto : texto;
+      campo.dispatchEvent(new Event('input', { bubbles: true }));
+      cerrarPrevia();
+      estado.textContent = '';
+      campo.focus();
+      toast('Texto insertado. Revísalo antes de enviar.');
+    });
+
+    btnDescartar.addEventListener('click', () => {
+      cerrarPrevia();
+      estado.textContent = '';
+    });
+
+    if (form) form.addEventListener('reset', () => { cerrarPrevia(); estado.textContent = ''; });
+  }
+
+  iniciarDictado('b-desc');
+  iniciarDictado('s-mensaje');
 })();
