@@ -69,6 +69,31 @@
   background: var(--bg-dominant);
 }
 
+@media (max-width: 899px) {
+  .eval-layout {
+    grid-template-areas:
+      "cab"
+      "info"
+      "preguntas"
+      "aceptacion"
+      "acciones";
+  }
+
+  .eval-aside {
+    display: contents;
+  }
+
+  .eval-aside > .eval-aside-card:not(.eval-accept) {
+    grid-area: info;
+    margin: 1rem max(var(--eval-pad), calc((100% - 40rem) / 2));
+  }
+
+  #card-aceptacion {
+    grid-area: aceptacion;
+    margin: 1rem max(var(--eval-pad), calc((100% - 40rem) / 2));
+  }
+}
+
 @media (min-width: 900px) {
   .eval-layout {
     grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
