@@ -630,6 +630,27 @@
     return i >= 0 ? nombre.slice(i + 1).toLowerCase() : '';
   }
 
+  function comprimirImagen(file, alTerminar) {
+    const lector = new FileReader();
+    lector.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX_ANCHO = 640;
+        const escala = img.width > MAX_ANCHO ? MAX_ANCHO / img.width : 1;
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * escala);
+        canvas.height = Math.round(img.height * escala);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        alTerminar(canvas.toDataURL('image/jpeg', 0.72));
+      };
+      img.onerror = () => alTerminar(null);
+      img.src = lector.result;
+    };
+    lector.onerror = () => alTerminar(null);
+    lector.readAsDataURL(file);
+  }  
+
   /* ---------- Validación (CA01 y CA03) ---------- */
   function validarArchivo(file) {
     const extOk = EXTENSIONES_PERMITIDAS.includes(extensionDe(file.name));
@@ -730,14 +751,17 @@
         return;
       }
 
-      archivos.push({
+      const nuevoItem = {
         id: ++siguienteId,
         nombre: file.name,
         tipo: file.type || (extensionDe(file.name) === 'png' ? 'image/png' : 'image/jpeg'),
         tamanoBytes: file.size,
         tamanoTexto: formatearPeso(file.size),
-        url: URL.createObjectURL(file)
-      });
+        url: URL.createObjectURL(file),
+        dataUrl: null
+      };
+      archivos.push(nuevoItem);
+      comprimirImagen(file, (dataUrl) => { nuevoItem.dataUrl = dataUrl; });
       agregados += 1;
     });
 
@@ -789,7 +813,8 @@
         nombre: a.nombre,
         tipo: a.tipo,
         tamanoBytes: a.tamanoBytes,
-        tamanoTexto: a.tamanoTexto
+        tamanoTexto: a.tamanoTexto,
+        dataUrl: a.dataUrl || null
       })), 
       titulo: campoTitulo.value.trim(),
       categoria: campoCategoria.value,
