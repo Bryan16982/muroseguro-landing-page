@@ -1,19 +1,10 @@
-/* =========================================================
-   resultados.js - Integrante 4 (Motor de Riesgo y Reportes)
-   HU-012 Semáforo | HU-013 Dashboard | HU-014 PDF
-   HU-024 Mapa SVG | HU-029 Copiar enlace
-   Sin backend: lee la evaluación guardada en localStorage
-   (la misma clave que usa evaluacion.js).
-   ========================================================= */
 (function () {
   'use strict';
 
-  /* ---------- 1. Configuración del motor (HU-012 CA01) ---------- */
   var STORAGE_KEY = 'muroseguro_evaluacion';
   var PASOS_TOTALES = 4;
   var MAX_HISTORIAL = 20;
 
-  // Suma ponderada: clave -> puntos + texto visible
   var PESOS = {
     columna:           { pts: 5, label: 'Daño ubicado en columnas' },
     desplome:          { pts: 5, label: 'Desplome o inclinación' },
@@ -29,8 +20,8 @@
     viento:            { pts: 1, label: 'Exposición a viento' }
   };
 
-  var PUNTAJE_MAX_ESCALA = 20; // 100% de la barra
-  var UMBRAL_AMARILLO = 6;     // 0-5 verde | 6-12 amarillo | 13+ rojo
+  var PUNTAJE_MAX_ESCALA = 20;
+  var UMBRAL_AMARILLO = 6;
   var UMBRAL_ROJO = 13;
 
   var NIVELES = {
@@ -60,14 +51,32 @@
     }
   };
 
-  // Datos de prueba solo para el equipo (se activan con ?demo=rojo | amarillo | verde)
   var DEMOS = {
     rojo:     ['columna', 'desplome', 'terreno_humedo', 'grietas'],
     amarillo: ['losa', 'lluvia', 'terreno_inclinado', 'humedad'],
     verde:    ['lluvia']
   };
 
-  // Datos de prueba del mapa (HU-024): distritos de Lima, valores ilustrativos
+  var R_FISURAS   = { tipo: 'recurso', param: 'Fisuras',       etiqueta: 'Infografía', texto: 'Tipos de Fisuras' };
+  var R_REFUERZO  = { tipo: 'recurso', param: 'Refuerzo',      etiqueta: 'Video',      texto: 'Refuerzo de Muros' };
+  var R_EVACUA    = { tipo: 'recurso', param: 'Evacuación',    etiqueta: 'Video',      texto: 'Plan de Evacuación' };
+  var C_CANGREJ   = { tipo: 'caso',    param: 'cangrejeras',   etiqueta: 'Caso real',  texto: 'Reparación de cangrejeras en columnas' };
+  var C_ZAPATAS   = { tipo: 'caso',    param: 'zapatas',       etiqueta: 'Caso real',  texto: 'Ampliación con refuerzo de zapatas' };
+
+  var RECOMENDACIONES = {
+    grietas:           { contenido: R_FISURAS,  especialidad: 'Patología y refuerzo estructural' },
+    humedad:           { contenido: R_FISURAS,  especialidad: 'Patología y refuerzo estructural' },
+    losa:              { contenido: R_FISURAS,  especialidad: 'Muros y losas' },
+    desplome:          { contenido: R_REFUERZO, especialidad: 'Estructuras y sismorresistencia' },
+    muro:              { contenido: R_REFUERZO, especialidad: 'Albañilería confinada' },
+    columna:           { contenido: C_CANGREJ,  especialidad: 'Concreto armado' },
+    humedad_base:      { contenido: C_ZAPATAS,  especialidad: 'Geotecnia y cimentaciones' },
+    terreno_humedo:    { contenido: C_ZAPATAS,  especialidad: 'Geotecnia y cimentaciones' },
+    terreno_inclinado: { contenido: C_ZAPATAS,  especialidad: 'Geotecnia y cimentaciones' },
+    huaico:            { contenido: R_EVACUA,   especialidad: 'Geotecnia y cimentaciones' }
+  };
+  var MAX_RECOMENDACIONES = 3;
+
   var DISTRITOS = {
     'comas':                   { nombre: 'Comas',                   riesgo: 'medio', viviendas: 380, pctAlto: 25 },
     'rimac':                   { nombre: 'Rímac',                   riesgo: 'alto',  viviendas: 310, pctAlto: 38 },
@@ -102,7 +111,6 @@
     }
   }
 
-  // Solo se aceptan claves conocidas (evita inyección desde la URL)
   function limpiarFactores(lista) {
     var vistos = {};
     return (Array.isArray(lista) ? lista : []).map(function (f) {
@@ -114,8 +122,6 @@
     });
   }
 
-  /* ---------- 3. Origen de datos ---------- */
-  // Traduce lo que guarda evaluacion.js (paso1, paso2...) a factores de riesgo
   function factoresDeEvaluacion(a) {
     var p1 = a.paso1 || {};
     var p2 = a.paso2 || {};
@@ -128,7 +134,7 @@
       if (c === 'lluvia' || c === 'viento') f.push(c);
     });
     (Array.isArray(p1.patologias) ? p1.patologias : []).forEach(function (p) {
-      f.push(p); // grietas | humedad | desplome
+      f.push(p);
     });
     if (p1.humedadBase === 'si') f.push('humedad_base');
 
@@ -138,8 +144,6 @@
     return limpiarFactores(f);
   }
 
-  // Evaluación actual guardada por evaluacion.js
-  // -> { estado: 'ok' | 'vacio' | 'incompleto', entrada?, paso? }
   function leerEvaluacionActual() {
     var a = leerStorage();
     if (!a || typeof a !== 'object' || (!a.paso1 && !a.pasoCompletado)) {
@@ -166,7 +170,6 @@
     };
   }
 
-  /* ---------- Historial de resultados (por usuario) ---------- */
   function claveHistorial() {
     var usuario = 'demo';
     try { usuario = localStorage.getItem('ms_usuario_activo') || 'demo'; } catch (e) { /* sin storage */ }
@@ -198,7 +201,6 @@
     return leerHistorial();
   }
 
-  /* ---------- 4. Motor de riesgo (HU-012) ---------- */
   function calcular(factores) {
     var puntaje = factores.reduce(function (acc, k) { return acc + PESOS[k].pts; }, 0);
     var nivel = 'verde';
@@ -207,7 +209,74 @@
     return { puntaje: puntaje, nivel: nivel };
   }
 
-  /* ---------- 5. Render del dashboard (HU-013) ---------- */
+  function calcularRecomendaciones(factores) {
+    var grupos = {};
+    var orden = [];
+
+    factores.forEach(function (k) {
+      var r = RECOMENDACIONES[k];
+      if (!r) return;
+      var clave = r.contenido.tipo + '|' + r.contenido.param + '|' + r.especialidad;
+      if (!grupos[clave]) {
+        grupos[clave] = { contenido: r.contenido, especialidad: r.especialidad, factores: [], pts: 0 };
+        orden.push(clave);
+      }
+      grupos[clave].factores.push(PESOS[k].label);
+      grupos[clave].pts += PESOS[k].pts;
+    });
+
+    return orden.map(function (c) { return grupos[c]; })
+      .sort(function (a, b) { return b.pts - a.pts; })
+      .slice(0, MAX_RECOMENDACIONES);
+  }
+
+  function urlContenido(c) {
+    return 'recursos.html?' + c.tipo + '=' + encodeURIComponent(c.param);
+  }
+
+  function urlEspecialidad(esp) {
+    return 'directorio.html?especialidad=' + encodeURIComponent(esp);
+  }
+
+  function renderPersonalizadas(recs) {
+    var card = $('#card-personalizadas');
+    var ol = $('#rec-lista');
+    ol.innerHTML = '';
+
+    if (!recs.length) {
+      card.hidden = true;
+      return;
+    }
+
+    recs.forEach(function (r) {
+      var li = crear('li', 'rec-item');
+
+      var motivo = crear('p', 'rec-motivo');
+      motivo.appendChild(document.createTextNode('Porque marcaste: '));
+      motivo.appendChild(crear('strong', '', r.factores.join(', ')));
+      li.appendChild(motivo);
+
+      var enlaces = crear('div', 'rec-enlaces');
+
+      var aprender = crear('a', 'btn-secondary');
+      aprender.href = urlContenido(r.contenido);
+      aprender.appendChild(crear('span', 'rec-etiqueta', 'Aprende · ' + r.contenido.etiqueta));
+      aprender.appendChild(document.createTextNode(r.contenido.texto));
+      enlaces.appendChild(aprender);
+
+      var consultar = crear('a', 'btn-secondary');
+      consultar.href = urlEspecialidad(r.especialidad);
+      consultar.appendChild(crear('span', 'rec-etiqueta', 'Consulta a un ingeniero en'));
+      consultar.appendChild(document.createTextNode(r.especialidad));
+      enlaces.appendChild(consultar);
+
+      li.appendChild(enlaces);
+      ol.appendChild(li);
+    });
+
+    card.hidden = false;
+  }
+
   function renderResultado(datos, res) {
     var info = NIVELES[res.nivel];
     var card = $('#card-semaforo');
@@ -226,13 +295,11 @@
     $('#stat-factores').textContent = datos.factores.length;
     $('#stat-nivel').textContent = info.titulo.replace('Riesgo ', '');
 
-    // Barra de progreso CSS
     var pct = Math.min(100, Math.round((res.puntaje / PUNTAJE_MAX_ESCALA) * 100));
     $('#barra-relleno').style.width = pct + '%';
     $('#barra').setAttribute('aria-valuenow', pct);
     $('#barra-valor').textContent = res.puntaje + ' pts';
 
-    // Factores
     var ul = $('#lista-factores');
     ul.innerHTML = '';
     if (!datos.factores.length) {
@@ -246,13 +313,15 @@
       });
     }
 
-    // Recomendaciones / botón de emergencia (HU-013 CA02)
+    var recs = calcularRecomendaciones(datos.factores);
+    renderPersonalizadas(recs);
+
     var slot = $('#slot-urgente');
     var cardReco = $('#card-recomendaciones');
     slot.innerHTML = '';
 
     if (res.nivel === 'rojo') {
-      cardReco.hidden = true; // oculta consejos básicos
+      cardReco.hidden = true;
       var urgente = crear('section', 'card res-urgente');
       urgente.setAttribute('aria-labelledby', 'h-urgente');
       var h = crear('h2', 'res-h2', 'Acción urgente recomendada');
@@ -261,7 +330,7 @@
       urgente.appendChild(crear('p', '',
         'Tu resultado indica un riesgo alto. Contacta lo antes posible a un ingeniero civil colegiado y evita permanecer en los ambientes más afectados.'));
       var a = crear('a', 'btn-primary res-urgente-btn', 'Contactar Ingeniero Urgente');
-      a.href = 'directorio.html';
+      a.href = recs.length ? urlEspecialidad(recs[0].especialidad) : 'directorio.html';
       urgente.appendChild(a);
       slot.appendChild(urgente);
     } else {
@@ -272,7 +341,6 @@
     }
   }
 
-  /* ---------- 6. Subtítulo, historial y estado vacío ---------- */
   function formatoFecha(iso) {
     var f = new Date(iso || Date.now());
     if (isNaN(f.getTime())) f = new Date();
@@ -294,7 +362,7 @@
     var ul = $('#hist-lista');
     ul.innerHTML = '';
 
-    if (lista.length < 2) { // con un solo resultado no hace falta lista
+    if (lista.length < 2) {
       card.hidden = true;
       return;
     }
@@ -320,7 +388,6 @@
     });
   }
 
-  // tipo: 'vacio' | 'incompleto' | 'pendiente'
   function renderVacio(estado) {
     var sub = $('#res-subtitulo');
     var texto = $('#vacio-texto');
@@ -345,7 +412,6 @@
     $('#estado-vacio').hidden = false;
   }
 
-  /* ---------- 7. Modal de aceptación (HU-012 CA03) ---------- */
   function iniciarModal(alAceptar) {
     var dlg = $('#modal-limites');
     var chk = $('#acepto-limites');
@@ -356,7 +422,6 @@
 
     chk.addEventListener('change', function () { btn.disabled = !chk.checked; });
 
-    // No se puede cerrar con Esc: la aceptación es obligatoria
     dlg.addEventListener('cancel', function (e) { e.preventDefault(); });
 
     btn.addEventListener('click', function () {
@@ -371,14 +436,12 @@
     chk.focus();
   }
 
-  /* ---------- 8. Descargar PDF (HU-014) ---------- */
   function iniciarDescarga() {
     $('#btn-descargar').addEventListener('click', function () {
       window.print();
     });
   }
 
-  /* ---------- 9. Copiar enlace (HU-029) ---------- */
   var timerCopiar = null;
 
   function urlCompartible(entrada) {
@@ -435,13 +498,11 @@
     });
   }
 
-  /* ---------- 10. Mapa SVG (HU-024) ---------- */
   function iniciarMapa() {
     var zonas = $$('.zona');
     var select = $('#select-distrito');
     var info = $('#mapa-info');
 
-    // Colorea zonas, etiqueta para lectores de pantalla y llena el select
     zonas.forEach(function (z) {
       var d = DISTRITOS[z.getAttribute('data-id')];
       if (!d) return;
@@ -495,8 +556,7 @@
     });
   }
 
-  /* ---------- 11. Arranque ---------- */
-  var actual = null; // entrada que se está mostrando
+  var actual = null; 
 
   function mostrar(entrada, historial) {
     actual = entrada;
@@ -514,7 +574,6 @@
   }
 
   function init() {
-    // El mapa es información zonal: siempre disponible
     iniciarMapa();
     iniciarDescarga();
     iniciarCopiar(function () { return actual; });
@@ -524,7 +583,6 @@
     var demo = params.get('demo');
     var vieneDeEvaluacion = params.get('desde') === 'evaluacion';
 
-    // A) Enlace compartido (HU-029) o datos de prueba: modal y un solo resultado
     if (f !== null || (demo && DEMOS.hasOwnProperty(demo))) {
       var entrada = f !== null
         ? { id: 'enlace', fecha: null, factores: limpiarFactores(f.split(',')), detalle: [], origen: 'enlace' }
@@ -540,7 +598,6 @@
     var historial = leerHistorial();
     var evaluacion = leerEvaluacionActual();
 
-    // B) Llega desde Evaluar: modal obligatorio y se guarda en el historial
     if (vieneDeEvaluacion) {
       if (evaluacion.estado !== 'ok') {
         limpiarUrl();
@@ -550,7 +607,7 @@
       var nueva = evaluacion.entrada;
       var yaAceptada = historial.some(function (e) { return e.id === nueva.id; });
 
-      if (yaAceptada) { // ya vio el aviso con esta misma evaluación (p. ej. recarga)
+      if (yaAceptada) {
         limpiarUrl();
         mostrar(historial.filter(function (e) { return e.id === nueva.id; })[0], historial);
         return;
@@ -558,20 +615,18 @@
       renderSubtitulo(nueva);
       iniciarModal(function () {
         var lista = guardarEnHistorial(nueva);
-        limpiarUrl(); // así, al recargar, el modal no vuelve a saltar
+        limpiarUrl(); 
         mostrar(nueva, lista);
         $('#titulo-pagina').focus();
       });
       return;
     }
 
-    // C) Llega desde Perfil, Inicio, el menú, etc.: sin modal, historial directo
     if (historial.length) {
       mostrar(historial[0], historial);
       return;
     }
 
-    // Sin historial: evaluación terminada pero aún no vista / incompleta / vacío
     renderVacio(evaluacion.estado === 'ok' ? { estado: 'pendiente' } : evaluacion);
   }
 
