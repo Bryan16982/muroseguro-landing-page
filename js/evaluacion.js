@@ -249,6 +249,7 @@
   const pildora = document.getElementById('p2-pildora');
   const pildoraTexto = document.getElementById('p2-pildora-texto');
   const btnContinuar = document.getElementById('p2-continuar');
+  const btnVolver = document.getElementById('p2-volver');
   const ayuda = document.getElementById('p2-ayuda');
   const estado = document.getElementById('p2-estado');
 
@@ -361,6 +362,27 @@
       anunciar('Tu selección se guardó. El Paso 3 estará disponible próximamente.');
     }
   });
+
+  if (btnVolver) {
+    btnVolver.addEventListener('click', () => {
+      const paso1 = document.getElementById('paso-1');
+      if (!paso1) return;
+
+      seccion.hidden = true;
+      paso1.hidden = false;
+
+      const sidebar = document.getElementById('eval-sidebar');
+      if (sidebar) sidebar.hidden = true;
+      document.body.classList.remove('eval-con-sidebar');
+
+      window.scrollTo({ top: 0 });
+      const titulo = document.getElementById('paso-1-titulo');
+      if (titulo) {
+        titulo.setAttribute('tabindex', '-1');
+        titulo.focus();
+      }
+    });
+  }
 
   /* ---------- Inicio: restaura la selección guardada ---------- */
   const guardado = leerAlmacen().paso2;
