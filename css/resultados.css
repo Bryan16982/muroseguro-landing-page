@@ -474,3 +474,54 @@
   font-weight: 400;
   opacity: 0.8;
 }
+
+/* ---------- Evidencias fotográficas (pantalla y PDF) ---------- */
+.res-evidencias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.res-evidencia-item {
+  margin: 0;
+  padding: 8px;
+  background: var(--bg-dominant);
+  border: 1px solid var(--border-neutral);
+  border-radius: 8px;
+}
+
+.res-evidencia-img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.res-evidencia-cap {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--color-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media print {
+  .res-evidencias-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .res-evidencia-item {
+    break-inside: avoid;
+    background: #FFFFFF;
+  }
+
+  .res-evidencia-img {
+    height: 130px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
