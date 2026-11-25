@@ -820,6 +820,11 @@ body.eval-con-sidebar main {
   margin-top: 2rem;
 }
 
+.p2-btn-volver {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
 .p2-ayuda {
   margin: 0.75rem 0 0;
   font-size: 0.75rem;
