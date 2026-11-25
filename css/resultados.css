@@ -1,10 +1,3 @@
-/* =========================================================
-   resultados.css - Integrante 4 (Motor de Riesgo y Reportes)
-   Usa solo variables de styles.css. Todo va bajo .resultados
-   para no sobrescribir las clases base.
-   Al final: SIDEBAR con el diseño de los mockups.
-   ========================================================= */
-
 .resultados {
   min-width: 0;
 }
@@ -21,7 +14,6 @@
   outline-offset: 2px;
 }
 
-/* Botones / enlaces-botón: mínimo 44x44 */
 .resultados .btn-primary,
 .resultados .btn-secondary,
 .modal-limites .btn-primary,
@@ -36,7 +28,6 @@
   cursor: pointer;
 }
 
-/* ---------- Encabezado ---------- */
 .res-header { margin-bottom: 20px; }
 .res-header h1 { color: var(--color-secondary); margin: 0 0 4px; }
 .res-subtitulo { margin: 0; color: var(--color-secondary); opacity: 0.8; }
@@ -74,7 +65,6 @@
   border-radius: 6px;
 }
 
-/* ---------- Semáforo ---------- */
 .res-semaforo-cuerpo {
   display: flex;
   align-items: center;
@@ -125,7 +115,6 @@
 .res-semaforo.nivel-amarillo { border-top-color: var(--color-warning); }
 .res-semaforo.nivel-rojo { border-top-color: var(--color-error); }
 
-/* ---------- Barra de progreso (HU-013 CA01) ---------- */
 .res-barra-bloque { margin-top: 20px; }
 
 .res-barra-info {
@@ -166,7 +155,6 @@
   opacity: 0.8;
 }
 
-/* ---------- Botón urgente (HU-013 CA02) ---------- */
 .res-urgente {
   border: 2px solid var(--color-error);
 }
@@ -183,7 +171,6 @@
   100% { box-shadow: 0 0 0 0 transparent; }
 }
 
-/* ---------- Stats ---------- */
 .res-stats { margin-bottom: 16px; }
 .res-stats .card { margin-bottom: 0; }
 .res-stat-valor {
@@ -193,7 +180,6 @@
   color: var(--color-secondary);
 }
 
-/* ---------- Listas ---------- */
 .res-lista {
   margin: 0;
   padding-left: 20px;
@@ -216,7 +202,6 @@
 }
 .res-factores li:last-child { border-bottom: none; }
 
-/* ---------- Acciones ---------- */
 .res-acciones {
   display: flex;
   gap: 12px;
@@ -224,7 +209,6 @@
 }
 .res-acciones button { flex: 1 1 200px; }
 
-/* ---------- Mapa SVG (HU-024) ---------- */
 .mapa-contenedor {
   background: var(--bg-dominant);
   border-radius: 8px;
@@ -322,9 +306,8 @@
 .punto-amarillo { background: var(--color-warning); }
 .punto-rojo { background: var(--color-error); }
 
-/* ---------- Modal (HU-012 CA03) ---------- */
 .modal-limites {
-  margin: auto; /* el reset global de styles.css quita el centrado nativo */
+  margin: auto; 
   width: calc(100% - 32px);
   max-width: 480px;
   padding: 24px;
@@ -362,10 +345,8 @@
 }
 .modal-acciones > * { flex: 1 1 160px; }
 
-/* ---------- Cabecera de impresión (oculta en pantalla) ---------- */
 .print-header { display: none; }
 
-/* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   .resultados .grid-3 { grid-template-columns: 1fr; }
   .res-nivel { font-size: 1.25rem; }
@@ -376,7 +357,6 @@
   .barra-relleno, .zona, .lampara { transition: none; }
 }
 
-/* ---------- Impresión / PDF (HU-014 CA02, CA03) ---------- */
 @media print {
   .sidebar,
   .ms-sb,
@@ -412,11 +392,9 @@
   }
 }
 
-/* ---------- Estado vacío (sin evaluación completa) ---------- */
 .res-vacio p { margin: 0 0 16px; color: var(--color-secondary); }
 .res-vacio { border-top: 6px solid var(--border-neutral); }
 
-/* ---------- Historial de evaluaciones ---------- */
 .hist-lista {
   list-style: none;
   margin: 0;
@@ -455,3 +433,44 @@
 }
 .hist-fecha { font-size: 0.875rem; opacity: 0.85; }
 .hist-pts { margin-left: auto; font-weight: 700; }
+
+.rec-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rec-item {
+  padding: 14px;
+  border: 1px solid var(--border-neutral);
+  border-radius: var(--radius-btn);
+  background: var(--bg-white);
+}
+
+.rec-motivo {
+  margin: 0 0 12px;
+  color: var(--color-secondary);
+}
+.rec-motivo strong { font-weight: 700; }
+
+.rec-enlaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rec-enlaces .btn-secondary {
+  flex: 1 1 220px;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.rec-etiqueta {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.8;
+}
