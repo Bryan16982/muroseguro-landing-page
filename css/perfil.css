@@ -116,3 +116,15 @@
   .sidebar-footer { flex-direction: row; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 0; }
   .sidebar-logout { width: auto; flex: 1; justify-content: center; }
 }
+
+.dictado { margin-top: 8px; }
+.dictado-nota { margin: 0; font-size: .85rem; }
+.btn-mic { display: inline-flex; align-items: center; gap: 8px; }
+.btn-mic[aria-pressed="true"] { border-color: var(--color-error); color: var(--color-error); }
+.dictado-estado { display: block; margin-top: 6px; font-size: .85rem; min-height: 1.2em; }
+.dictado-previa {
+  margin-top: 12px; padding: 12px; background: var(--bg-white);
+  border: 1px dashed var(--border-neutral); border-radius: 10px;
+}
+.dictado-previa[hidden] { display: none; }
+.dictado-previa .btn-row { margin-top: 10px; }
