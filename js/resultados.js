@@ -159,13 +159,25 @@
     if (a.paso2 && a.paso2.zonaEtiqueta) detalle.push('Zona del daño: ' + a.paso2.zonaEtiqueta);
 
     var fecha = (a.paso4 && a.paso4.guardadoEn) || new Date().toISOString();
+    var p4 = a.paso4 || {};
+    var evidencias = (Array.isArray(p4.archivos) ? p4.archivos : [])
+      .filter(function (img) {
+        return img && typeof img.dataUrl === 'string' && img.dataUrl.indexOf('data:image/') === 0;
+      })
+      .map(function (img) {
+        return { nombre: String(img.nombre || 'Evidencia'), dataUrl: img.dataUrl };
+      });
+
     return {
       estado: 'ok',
       entrada: {
         id: String(fecha),
         fecha: fecha,
         factores: factoresDeEvaluacion(a),
-        detalle: detalle
+        detalle: detalle,
+        evidencias: evidencias,
+        evidenciaTitulo: p4.titulo ? String(p4.titulo) : '',
+        evidenciaDescripcion: p4.descripcion ? String(p4.descripcion) : ''
       }
     };
   }
@@ -187,7 +199,12 @@
         id: String(e.id),
         fecha: e.fecha,
         factores: limpiarFactores(e.factores),
-        detalle: (Array.isArray(e.detalle) ? e.detalle : []).map(String)
+        detalle: (Array.isArray(e.detalle) ? e.detalle : []).map(String),
+        evidencias: (Array.isArray(e.evidencias) ? e.evidencias : []).filter(function (img) {
+          return img && typeof img.dataUrl === 'string' && img.dataUrl.indexOf('data:image/') === 0;
+        }),
+        evidenciaTitulo: e.evidenciaTitulo ? String(e.evidenciaTitulo) : '',
+        evidenciaDescripcion: e.evidenciaDescripcion ? String(e.evidenciaDescripcion) : ''
       };
     });
   }
@@ -338,6 +355,36 @@
       var lista = $('#lista-recomendaciones');
       lista.innerHTML = '';
       info.acciones.forEach(function (t) { lista.appendChild(crear('li', '', t)); });
+    }
+    // Evidencias fotográficas (Paso 4)
+    var cardEv = $('#card-evidencias');
+    var gridEv = $('#lista-evidencias');
+    var metaEv = $('#evidencias-meta');
+    if (cardEv && gridEv) {
+      var imgs = Array.isArray(datos.evidencias) ? datos.evidencias : [];
+      gridEv.innerHTML = '';
+
+      if (!imgs.length) {
+        cardEv.hidden = true;
+      } else {
+        cardEv.hidden = false;
+        if (metaEv) {
+          var textoMeta = [datos.evidenciaTitulo, datos.evidenciaDescripcion].filter(Boolean).join(' — ');
+          metaEv.textContent = textoMeta;
+          metaEv.hidden = !textoMeta;
+        }
+        imgs.forEach(function (img) {
+          var fig = crear('figure', 'res-evidencia-item');
+          var elImg = crear('img', 'res-evidencia-img');
+          elImg.src = img.dataUrl;
+          elImg.alt = 'Evidencia fotográfica: ' + img.nombre;
+          var cap = crear('figcaption', 'res-evidencia-cap', img.nombre);
+          cap.title = img.nombre;
+          fig.appendChild(elImg);
+          fig.appendChild(cap);
+          gridEv.appendChild(fig);
+        });
+      }
     }
   }
 
