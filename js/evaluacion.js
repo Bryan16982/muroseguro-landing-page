@@ -855,6 +855,412 @@
     renderLista();
   }
 
+  // Umbrales ajustables. Calibrar con 10–20 fotos reales tomadas con celulares de gama media.
+  const UMBRALES = {
+    anchoAnalisis: 480,    // px: la foto se reduce a este ancho SOLO para medirla
+    oscuraMedia: 70,       // luminancia media (0–255) menor → "muy oscura"
+    oscuraPorcion: 0.55,   // o más de 55 % de píxeles casi negros
+    quemadaMedia: 215,     // luminancia media mayor → "demasiada luz"
+    quemadaPorcion: 0.40,  // o más de 40 % de píxeles casi blancos
+    borrosaVarianza: 35    // varianza del Laplaciano menor → "posiblemente borrosa"
+  };
+
+  // Vocabulario para el borrador (las claves coinciden con los <option> de #p4-campo-categoria)
+  const ETIQUETA_DANO = { grietas: 'Grietas', humedad: 'Humedad', desplome: 'Desplome' };
+  const ETIQUETA_LUGAR = { techo: 'Techo', muros: 'Muros', columnas: 'Columnas' };
+  const TITULO_DANO_LUGAR = {
+    techo: 'en el techo', muros: 'en los muros', columnas: 'en las columnas'
+  };
+  const TITULO_SOLO_DANO = {
+    grietas: 'Grietas visibles', humedad: 'Humedad visible', desplome: 'Desplome visible'
+  };
+  const TITULO_SOLO_LUGAR = {
+    techo: 'Foto del techo', muros: 'Foto de los muros', columnas: 'Foto de las columnas'
+  };
+  const PISTAS_DANO = [
+    [/grieta|fisura|rajadura/, 'grietas'],
+    [/humedad|salitre|filtrac/, 'humedad'],
+    [/desplom|inclin/, 'desplome']
+  ];
+  const PISTAS_LUGAR = [
+    [/techo|losa|cubierta/, 'techo'],
+    [/columna/, 'columnas'],
+    [/muro|pared/, 'muros']
+  ];
+
+  const ICONOS_CALIDAD = {
+    ok: '<svg class="eval-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><polyline points="20 6 9 17 4 12"/></svg>',
+    alerta: '<svg class="eval-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>',
+    pend: '<svg class="eval-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>'
+  };
+
+  /* ---------- Referencias del panel (si el HTML no está, la mejora se desactiva sola) ---------- */
+  const calidad = $('p4-calidad') ? {
+    panel: $('p4-calidad'),
+    img: $('p4-calidad-img'),
+    archivo: $('p4-calidad-archivo'),
+    titulo: $('p4-calidad-titulo'),
+    chipIlum: $('p4-calidad-ilum'),
+    txtIlum: $('p4-calidad-ilum-txt'),
+    chipEnfoque: $('p4-calidad-enfoque'),
+    txtEnfoque: $('p4-calidad-enfoque-txt'),
+    alerta: $('p4-calidad-alerta'),
+    alertaTitulo: $('p4-calidad-alerta-titulo'),
+    consejos: $('p4-calidad-consejos'),
+    btnReemplazar: $('p4-calidad-reemplazar'),
+    btnConservar: $('p4-calidad-conservar'),
+    borrador: $('p4-calidad-borrador'),
+    sugTitulo: $('p4-calidad-sug-titulo'),
+    sugCategoria: $('p4-calidad-sug-categoria'),
+    porque: $('p4-calidad-porque'),
+    previo: $('p4-calidad-previo'),
+    acciones: $('p4-calidad-acciones'),
+    btnAplicar: $('p4-calidad-aplicar'),
+    btnManual: $('p4-calidad-manual'),
+    hecho: $('p4-calidad-hecho'),
+    btnDeshacer: $('p4-calidad-deshacer'),
+    sinSug: $('p4-calidad-sin-sug')
+  } : null;
+
+  let itemEnPanel = null;       // foto que muestra el panel
+  let borrador = null;          // sugerencia vigente
+  let respaldoCampos = null;    // valores previos del usuario, para "Deshacer"
+  let reemplazoPendiente = null;
+  let rondaAnalisis = 0;
+
+  /* ---------- 1) Medición con Canvas (función pura, probable sin navegador) ---------- */
+  function medirCalidad(rgba, ancho, alto) {
+    const n = ancho * alto;
+    const gris = new Float32Array(n);
+    let suma = 0;
+    let oscuros = 0;
+    let quemados = 0;
+
+    for (let i = 0, p = 0; p < n; i += 4, p++) {
+      const y = 0.2126 * rgba[i] + 0.7152 * rgba[i + 1] + 0.0722 * rgba[i + 2];
+      gris[p] = y;
+      suma += y;
+      if (y < 40) oscuros++;
+      if (y > 240) quemados++;
+    }
+
+    // Nitidez: varianza del Laplaciano (4 vecinos). Poco contraste de bordes = foto borrosa.
+    let s = 0;
+    let s2 = 0;
+    let m = 0;
+    for (let y = 1; y < alto - 1; y++) {
+      for (let x = 1; x < ancho - 1; x++) {
+        const p = y * ancho + x;
+        const l = gris[p - 1] + gris[p + 1] + gris[p - ancho] + gris[p + ancho] - 4 * gris[p];
+        s += l;
+        s2 += l * l;
+        m++;
+      }
+    }
+
+    return {
+      media: suma / n,
+      porcionOscura: oscuros / n,
+      porcionQuemada: quemados / n,
+      varianza: m ? s2 / m - (s / m) * (s / m) : 0
+    };
+  }
+
+  function evaluarCalidad(m) {
+    let iluminacion = 'ok';
+    if (m.media < UMBRALES.oscuraMedia || m.porcionOscura > UMBRALES.oscuraPorcion) {
+      iluminacion = 'oscura';
+    } else if (m.media > UMBRALES.quemadaMedia || m.porcionQuemada > UMBRALES.quemadaPorcion) {
+      iluminacion = 'quemada';
+    }
+    // En una foto muy oscura la nitidez no se puede medir con confianza.
+    const enfoque = iluminacion === 'oscura'
+      ? 'pendiente'
+      : (m.varianza < UMBRALES.borrosaVarianza ? 'borrosa' : 'ok');
+
+    return { iluminacion, enfoque, medidas: m, hayProblemas: iluminacion !== 'ok' || enfoque === 'borrosa' };
+  }
+
+  function medirImagen(url) {
+    return new Promise((resolver, rechazar) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const escala = Math.min(1, UMBRALES.anchoAnalisis / img.naturalWidth);
+          const w = Math.max(8, Math.round(img.naturalWidth * escala));
+          const h = Math.max(8, Math.round(img.naturalHeight * escala));
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          ctx.drawImage(img, 0, 0, w, h);
+          resolver(medirCalidad(ctx.getImageData(0, 0, w, h).data, w, h));
+        } catch (e) {
+          rechazar(e);
+        }
+      };
+      img.onerror = () => rechazar(new Error('Imagen no legible'));
+      img.src = url;
+    });
+  }
+
+  /* ---------- 2) Borrador sugerido: respuestas de los Pasos 1 y 2 + pista del nombre del archivo ---------- */
+  function pistasDeNombre(nombre) {
+    const t = nombre.replace(/\.[^.]+$/, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const dano = PISTAS_DANO.find(([patron]) => patron.test(t));
+    const lugar = PISTAS_LUGAR.find(([patron]) => patron.test(t));
+    return { dano: dano ? dano[1] : null, lugar: lugar ? lugar[1] : null };
+  }
+
+  function proponerBorrador(nombreArchivo) {
+    const almacen = leerAlmacen();
+    const p1 = almacen.paso1 || {};
+    const p2 = almacen.paso2 || {};
+    const pista = pistasDeNombre(nombreArchivo || '');
+    const motivos = [];
+
+    let dano = pista.dano;
+    if (dano) {
+      motivos.push(`el nombre del archivo menciona «${ETIQUETA_DANO[dano]}»`);
+    } else {
+      const marcados = (Array.isArray(p1.patologias) ? p1.patologias : []).filter((p) => ETIQUETA_DANO[p]);
+      if (marcados.length === 1) {
+        dano = marcados[0];
+        motivos.push(`en el Paso 1 marcaste «${ETIQUETA_DANO[dano]}»`);
+      } else if (marcados.length > 1) {
+        motivos.push('en el Paso 1 marcaste varios daños, así que no elijo uno por ti');
+      }
+    }
+
+    let lugar = pista.lugar;
+    if (lugar) {
+      motivos.push(`el nombre del archivo menciona «${ETIQUETA_LUGAR[lugar]}»`);
+    } else if (ETIQUETA_LUGAR[p2.zona]) {
+      lugar = p2.zona;
+      motivos.push(`en el Paso 2 elegiste «${ETIQUETA_LUGAR[lugar]}»`);
+    }
+
+    const categoria = dano || lugar;
+    const opcion = categoria ? campoCategoria.querySelector(`option[value="${categoria}"]`) : null;
+    if (!opcion) return null;   // sin datos suficientes: no se inventa nada
+
+    let titulo;
+    if (dano && lugar) titulo = `${ETIQUETA_DANO[dano]} ${TITULO_DANO_LUGAR[lugar]}`;
+    else if (dano) titulo = TITULO_SOLO_DANO[dano];
+    else titulo = TITULO_SOLO_LUGAR[lugar];
+
+    return { titulo, categoria, categoriaEtiqueta: opcion.textContent.trim(), motivos };
+  }
+
+  /* ---------- 3) Pintado del panel ---------- */
+  function pintarChip(chip, texto, estado, mensaje) {
+    chip.dataset.estado = estado;
+    chip.querySelector('.p4-calidad__chip-ico').innerHTML = ICONOS_CALIDAD[estado];
+    texto.textContent = mensaje;
+  }
+
+  function ocultarPanelCalidad() {
+    if (!calidad) return;
+    calidad.panel.hidden = true;
+    itemEnPanel = null;
+    borrador = null;
+    respaldoCampos = null;
+  }
+
+  function pintarAnalizando(item, total) {
+    itemEnPanel = item;
+    borrador = null;
+    respaldoCampos = null;
+    calidad.img.src = item.url || '';
+    calidad.archivo.textContent = total > 1 ? `${item.nombre} · revisando ${total} fotos…` : item.nombre;
+    pintarChip(calidad.chipIlum, calidad.txtIlum, 'pend', 'Analizando…');
+    pintarChip(calidad.chipEnfoque, calidad.txtEnfoque, 'pend', 'Analizando…');
+    calidad.alerta.hidden = true;
+    calidad.borrador.hidden = true;
+    calidad.sinSug.hidden = true;
+    calidad.panel.hidden = false;
+  }
+
+  function armarAlerta(a) {
+    const partes = [];
+    const consejos = [];
+
+    if (a.iluminacion === 'oscura') {
+      partes.push('salió muy oscura');
+      consejos.push('Enciende la luz o abre una ventana y, si puedes, acércate a 1 metro de la zona.');
+    }
+    if (a.iluminacion === 'quemada') {
+      partes.push('tiene demasiada luz');
+      consejos.push('Evita el sol directo o el flash sobre el muro: ponte de espaldas al sol o busca sombra.');
+    }
+    if (a.enfoque === 'borrosa') {
+      partes.push('parece borrosa');
+      consejos.push('Sostén el celular con las dos manos, toca la pantalla sobre la zona para enfocar y espera un segundo antes de disparar.');
+      consejos.push('Si el muro es muy liso, la foto puede estar bien: en ese caso puedes conservarla.');
+    }
+
+    calidad.alertaTitulo.textContent = `La foto ${partes.join(' y ')}`;
+    calidad.consejos.textContent = '';
+    consejos.forEach((c) => {
+      const li = document.createElement('li');
+      li.textContent = c;
+      calidad.consejos.appendChild(li);
+    });
+    calidad.alerta.hidden = false;
+  }
+
+  function actualizarAvisoPrevio() {
+    if (!calidad || !borrador || calidad.borrador.hidden || !calidad.hecho.hidden) return;
+    const pisados = [];
+    const titulo = campoTitulo.value.trim();
+    if (titulo && titulo !== borrador.titulo) pisados.push('tu título');
+    if (campoCategoria.value && campoCategoria.value !== borrador.categoria) pisados.push('tu categoría');
+
+    calidad.previo.hidden = pisados.length === 0;
+    calidad.previo.textContent = pisados.length
+      ? `Ya completaste ${pisados.join(' y ')}. Si aplicas la sugerencia, se reemplazará; podrás deshacerlo.`
+      : '';
+  }
+
+  function mostrarBorrador(item) {
+    borrador = proponerBorrador(item.nombre);
+    respaldoCampos = null;
+    calidad.hecho.hidden = true;
+    calidad.acciones.hidden = false;
+
+    if (!borrador) {
+      calidad.borrador.hidden = true;
+      calidad.sinSug.hidden = false;
+      return false;
+    }
+
+    calidad.sinSug.hidden = true;
+    calidad.sugTitulo.textContent = borrador.titulo;
+    calidad.sugCategoria.textContent = borrador.categoriaEtiqueta;
+    calidad.porque.textContent = `Por qué: ${borrador.motivos.join(' · ')}.`;
+    calidad.borrador.hidden = false;
+    actualizarAvisoPrevio();
+    return true;
+  }
+
+  function pintarResultado(item, total) {
+    itemEnPanel = item;
+    const a = item.analisis;
+    calidad.img.src = item.url || '';
+    calidad.archivo.textContent = total > 1
+      ? `${item.nombre} · se revisaron ${total} fotos; esta es la que más atención necesita`
+      : item.nombre;
+
+    let resumen;
+    if (!a) {
+      pintarChip(calidad.chipIlum, calidad.txtIlum, 'pend', 'No se pudo revisar');
+      pintarChip(calidad.chipEnfoque, calidad.txtEnfoque, 'pend', 'No se pudo revisar');
+      calidad.alerta.hidden = true;
+      resumen = 'No pudimos revisar la calidad de la foto. Puedes continuar con normalidad.';
+    } else {
+      const textoIlum = { ok: 'Buena', oscura: 'Muy oscura', quemada: 'Demasiada luz' }[a.iluminacion];
+      const textoEnfoque = {
+        ok: 'Nítida',
+        borrosa: 'Posiblemente borrosa',
+        pendiente: 'Sin evaluar (foto muy oscura)'
+      }[a.enfoque];
+      pintarChip(calidad.chipIlum, calidad.txtIlum, a.iluminacion === 'ok' ? 'ok' : 'alerta', textoIlum);
+      pintarChip(calidad.chipEnfoque, calidad.txtEnfoque,
+        a.enfoque === 'ok' ? 'ok' : (a.enfoque === 'borrosa' ? 'alerta' : 'pend'), textoEnfoque);
+
+      if (a.hayProblemas) armarAlerta(a); else calidad.alerta.hidden = true;
+      resumen = `Revisión lista. Iluminación: ${textoIlum}. Enfoque: ${textoEnfoque}.` +
+        (a.hayProblemas ? ' Hay consejos para mejorar la foto, pero puedes conservarla.' : '');
+    }
+
+    if (mostrarBorrador(item)) resumen += ' Hay una sugerencia de título y categoría para que la revises.';
+    anunciar(resumen);
+  }
+
+  async function analizarNuevos(items) {
+    if (!calidad || !items.length) return;
+    const ronda = ++rondaAnalisis;
+    pintarAnalizando(items[0], items.length);
+
+    for (const item of items) {
+      try {
+        item.analisis = evaluarCalidad(await medirImagen(item.url));
+      } catch (e) {
+        item.analisis = null;
+      }
+      if (ronda !== rondaAnalisis) return;   // llegó una selección más reciente
+    }
+
+    const vigentes = items.filter((it) => archivos.includes(it));
+    if (!vigentes.length) { ocultarPanelCalidad(); return; }
+    const elegido = vigentes.find((it) => it.analisis && it.analisis.hayProblemas) || vigentes[0];
+    pintarResultado(elegido, vigentes.length);
+  }
+
+  /* ---------- 4) Acciones del usuario ---------- */
+  function aplicarSugerencia() {
+    if (!borrador) return;
+    respaldoCampos = { titulo: campoTitulo.value, categoria: campoCategoria.value };
+    campoTitulo.value = borrador.titulo;
+    campoCategoria.value = borrador.categoria;
+
+    calidad.previo.hidden = true;
+    calidad.acciones.hidden = true;
+    calidad.hecho.hidden = false;
+    anunciar('Sugerencia aplicada. Revisa el título y la categoría, y corrígelos si hace falta.');
+    enfocar(calidad.hecho);
+  }
+
+  function deshacerSugerencia() {
+    if (!respaldoCampos) return;
+    campoTitulo.value = respaldoCampos.titulo;
+    campoCategoria.value = respaldoCampos.categoria;
+    respaldoCampos = null;
+
+    calidad.hecho.hidden = true;
+    calidad.acciones.hidden = false;
+    actualizarAvisoPrevio();
+    anunciar('Se restauraron tus valores anteriores.');
+    calidad.btnAplicar.focus();
+  }
+
+  function editarManualmente() {
+    calidad.borrador.hidden = true;
+    borrador = null;
+    anunciar('Sugerencia descartada. Completa el título y la categoría a tu manera.');
+    campoTitulo.focus();
+  }
+
+  function conservarFoto() {
+    calidad.alerta.hidden = true;
+    anunciar('Conservaste la foto. Puedes seguir con el formulario.');
+    enfocar(calidad.titulo);
+  }
+
+  function pedirReemplazo() {
+    if (!itemEnPanel) return;
+    reemplazoPendiente = itemEnPanel.id;   // la foto actual solo se quita si llega una válida
+    inputArchivos.click();
+  }
+
+  if (calidad) {
+    calidad.btnAplicar.addEventListener('click', aplicarSugerencia);
+    calidad.btnDeshacer.addEventListener('click', deshacerSugerencia);
+    calidad.btnManual.addEventListener('click', editarManualmente);
+    calidad.btnConservar.addEventListener('click', conservarFoto);
+    calidad.btnReemplazar.addEventListener('click', pedirReemplazo);
+
+    // Si el usuario escribe después, el aviso de "se reemplazará" se mantiene al día.
+    campoTitulo.addEventListener('input', actualizarAvisoPrevio);
+    campoCategoria.addEventListener('change', actualizarAvisoPrevio);
+
+    // Cancelar el selector, usar el botón normal o arrastrar archivos anula el reemplazo pendiente.
+    inputArchivos.addEventListener('cancel', () => { reemplazoPendiente = null; });
+    const etiquetaSeleccionar = seccion.querySelector('.p4-seleccionar');
+    if (etiquetaSeleccionar) etiquetaSeleccionar.addEventListener('click', () => { reemplazoPendiente = null; });
+    zona.addEventListener('drop', () => { reemplazoPendiente = null; });
+  }
+
   /* ---------- Eventos: selección y arrastre ---------- */
   inputArchivos.addEventListener('change', () => {
     procesarArchivos(inputArchivos.files);
