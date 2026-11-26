@@ -188,6 +188,81 @@ if (formLogin) {
 }
 
 
+// ---------- Olvidé mi contraseña (login.html) ----------
+const formOlvido = document.getElementById('form-olvido');
+if (formOlvido) {
+  const tarjetaLogin = document.getElementById('tarjeta-login');
+  const tarjetaOlvido = document.getElementById('tarjeta-olvido');
+  const correo = document.getElementById('olvido-correo');
+  const clave = document.getElementById('olvido-clave');
+  const clave2 = document.getElementById('olvido-clave2');
+  const errorGeneral = document.getElementById('olvido-general');
+  const avisoOk = document.getElementById('aviso-registro');
+
+  function mostrarOlvido(ver) {
+    tarjetaLogin.hidden = ver;
+    tarjetaOlvido.hidden = !ver;
+    errorGeneral.hidden = true;
+    if (ver) {
+      correo.value = document.getElementById('correo').value;
+      correo.focus();
+    } else {
+      document.getElementById('correo').focus();
+    }
+  }
+
+  document.getElementById('abrir-olvido').addEventListener('click', () => mostrarOlvido(true));
+  document.getElementById('cerrar-olvido').addEventListener('click', () => mostrarOlvido(false));
+
+  formOlvido.addEventListener('input', (e) => {
+    if (e.target.classList.contains('is-error')) quitarError(e.target);
+  });
+
+  formOlvido.addEventListener('submit', (e) => {
+    e.preventDefault();
+    errorGeneral.hidden = true;
+
+    const mail = correo.value.trim().toLowerCase();
+    let ok = true;
+
+    ok = revisar(correo, !mail ? 'Ingresa tu correo electrónico.' : (correoValido(mail) ? '' : 'Escribe un correo válido, por ejemplo nombre@correo.com.')) && ok;
+
+    let msgClave = '';
+    if (!clave.value) msgClave = 'Crea una contraseña nueva.';
+    else if (clave.value.length < 8) msgClave = 'Debe tener al menos 8 caracteres.';
+    else if (!/[a-zA-Z]/.test(clave.value) || !/[0-9]/.test(clave.value)) msgClave = 'Combina letras y números.';
+    ok = revisar(clave, msgClave) && ok;
+
+    let msgClave2 = '';
+    if (!clave2.value) msgClave2 = 'Repite tu contraseña nueva.';
+    else if (clave2.value !== clave.value) msgClave2 = 'Las contraseñas no coinciden.';
+    ok = revisar(clave2, msgClave2) && ok;
+
+    if (!ok) {
+      formOlvido.querySelector('[aria-invalid="true"]').focus();
+      return;
+    }
+
+    const usuarios = leerUsuarios();
+    const usuario = usuarios.find((u) => u.correo === mail);
+    if (!usuario) {
+      errorGeneral.textContent = 'No encontramos una cuenta con ese correo. Revisa que esté bien escrito o crea una cuenta.';
+      errorGeneral.hidden = false;
+      return;
+    }
+
+    usuario.clave = clave.value;
+    localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
+
+    formOlvido.reset();
+    mostrarOlvido(false);
+    document.getElementById('correo').value = mail;
+    avisoOk.textContent = 'Tu contraseña fue actualizada. Inicia sesión con la nueva.';
+    avisoOk.hidden = false;
+    document.getElementById('clave').focus();
+  });
+}
+
 const botonMenu = document.getElementById('boton-menu');
 if (botonMenu) {
   const menu = document.getElementById('menu');
