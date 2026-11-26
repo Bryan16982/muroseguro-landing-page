@@ -19,7 +19,7 @@
   </header>
 
   <main class="centrado">
-    <section class="card tarjeta" aria-labelledby="titulo-login">
+    <section class="card tarjeta" id="tarjeta-login" aria-labelledby="titulo-login">
       <h1 id="titulo-login">Iniciar sesión</h1>
 
       <p class="aviso aviso-ok" id="aviso-registro" role="status" hidden>Tu cuenta fue creada. Inicia sesión para continuar.</p>
@@ -42,10 +42,45 @@
                     aria-controls="clave" aria-pressed="false">Mostrar</button>
           </div>
           <p class="error-texto" id="clave-error" hidden></p>
+          <button class="enlace-boton" id="abrir-olvido" type="button">¿Olvidaste tu contraseña?</button>
         </div>
 
         <button class="btn-primary" type="submit">Ingresar</button>
       </form>
+    </section>
+
+    <section class="card tarjeta" id="tarjeta-olvido" aria-labelledby="titulo-olvido" hidden>
+      <h1 id="titulo-olvido">Recuperar contraseña</h1>
+      <p class="caption" style="margin-bottom:16px">Escribe el correo de tu cuenta y elige una contraseña nueva.</p>
+      <p class="aviso aviso-error" id="olvido-general" role="alert" hidden></p>
+
+      <form id="form-olvido" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="olvido-correo">Correo electrónico</label>
+          <input class="form-input" id="olvido-correo" type="email" autocomplete="email"
+                 placeholder="nombre@correo.com" aria-describedby="olvido-correo-error">
+          <p class="error-texto" id="olvido-correo-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="olvido-clave">Contraseña nueva</label>
+          <input class="form-input" id="olvido-clave" type="password" autocomplete="new-password"
+                 aria-describedby="olvido-clave-ayuda olvido-clave-error">
+          <p class="caption" id="olvido-clave-ayuda">Mínimo 8 caracteres, con letras y números.</p>
+          <p class="error-texto" id="olvido-clave-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="olvido-clave2">Confirmar contraseña nueva</label>
+          <input class="form-input" id="olvido-clave2" type="password" autocomplete="new-password"
+                 aria-describedby="olvido-clave2-error">
+          <p class="error-texto" id="olvido-clave2-error" hidden></p>
+        </div>
+
+        <button class="btn-primary" type="submit">Cambiar contraseña</button>
+      </form>
+
+      <p class="pie-tarjeta"><button class="enlace-boton" id="cerrar-olvido" type="button">← Volver a iniciar sesión</button></p>
     </section>
   </main>
 
