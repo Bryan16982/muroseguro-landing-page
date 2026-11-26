@@ -128,3 +128,18 @@
 }
 .dictado-previa[hidden] { display: none; }
 .dictado-previa .btn-row { margin-top: 10px; }
+
+.btn-eliminar { margin-top: 10px; color: var(--color-error); border-color: var(--color-error); }
+
+.dlg {
+  width: min(420px, calc(100% - 32px)); padding: 20px; border: 0; border-radius: 12px;
+  background: var(--bg-white); color: inherit; box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+.dlg::backdrop { background: rgba(15, 23, 42, .55); }
+.dlg-cabecera { display: flex; align-items: center; gap: 10px; }
+.dlg-cabecera h2 { flex: 1; margin: 0; font-size: 1.15rem; color: var(--color-secondary); }
+.dlg-icono { flex-shrink: 0; }
+.dlg-cerrar { min-width: 44px; min-height: 44px; border: 0; background: transparent; font-size: 1.6rem; line-height: 1; color: inherit; cursor: pointer; }
+.dlg p { margin: 12px 0 0; }
+.dlg .btn-row { display: grid; gap: 8px; margin-top: 16px; }
+.dlg .btn-row button { width: 100%; min-height: 44px; }
