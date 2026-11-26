@@ -306,3 +306,20 @@ html { scroll-behavior: smooth; }
 @media (max-width: 480px) {
   .herramientas { grid-template-columns: 1fr; }
 }
+
+
+/* Botón con aspecto de enlace (¿Olvidaste tu contraseña?) */
+.enlace-boton {
+  align-self: flex-start;
+  min-height: var(--touch-target);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #1D4ED8;
+  font-family: var(--font-main);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.pie-tarjeta .enlace-boton { align-self: center; }
