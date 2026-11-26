@@ -1,0 +1,264 @@
+/* ==========================================================================
+   asistente.css - Estilos del asistente conversacional (botón flotante + chat)
+   Usa las variables de styles.css, así funciona también en modo oscuro.
+   ========================================================================== */
+
+.ms-asis {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 5rem;           /* deja libre el botón de modo oscuro (abajo a la derecha) */
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  font-family: var(--font-main);
+}
+
+/* --- Botón flotante --- */
+.ms-asis__fab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding: 0 1.125rem 0 1rem;
+  font-family: var(--font-main);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: #2563EB;
+  border: 2px solid #FFFFFF;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.ms-asis__fab:hover { background: #1D4ED8; transform: translateY(-2px); }
+.ms-asis__fab:focus-visible { outline: 3px solid var(--color-secondary); outline-offset: 3px; }
+
+.ms-asis__fab svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* --- Panel del chat --- */
+.ms-asis__panel {
+  display: flex;
+  flex-direction: column;
+  width: min(380px, calc(100vw - 2rem));
+  max-height: min(600px, calc(100vh - 9rem));
+  background: var(--bg-white);
+  color: var(--color-secondary);
+  border: 1px solid var(--border-neutral);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.28);
+  overflow: hidden;
+  animation: ms-asis-sube 0.2s ease;
+}
+
+.ms-asis__panel[hidden] { display: none; }
+
+@keyframes ms-asis-sube {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ms-asis__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: #1E1B4B;
+  color: #FFFFFF;
+}
+
+.ms-asis__avatar {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: #FFFFFF;
+  color: #1E1B4B;
+  border-radius: 50%;
+}
+
+.ms-asis__avatar svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ms-asis__titulos { flex: 1; min-width: 0; }
+.ms-asis__titulo { font-size: 1rem; font-weight: 700; line-height: 1.2; color: #FFFFFF; }
+.ms-asis__sub { font-size: 0.75rem; line-height: 1.3; color: #C7D2FE; }
+
+.ms-asis__cerrar {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.ms-asis__cerrar:hover { background: rgba(255, 255, 255, 0.14); }
+.ms-asis__cerrar:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 0; }
+
+.ms-asis__cerrar svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* --- Conversación --- */
+.ms-asis__chat {
+  flex: 1 1 auto;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  overflow-y: auto;
+  background: var(--bg-dominant);
+}
+
+.ms-asis__msg {
+  max-width: 88%;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  border-radius: 14px;
+  overflow-wrap: anywhere;
+}
+
+.ms-asis__msg--bot {
+  align-self: flex-start;
+  color: var(--color-secondary);
+  background: var(--bg-white);
+  border: 1px solid var(--border-neutral);
+  border-bottom-left-radius: 4px;
+}
+
+.ms-asis__msg--yo {
+  align-self: flex-end;
+  color: #FFFFFF;
+  background: #2563EB;
+  border-bottom-right-radius: 4px;
+}
+
+.ms-asis__msg--urgente {
+  border-color: var(--color-error);
+  border-width: 2px;
+}
+
+/* --- Respuestas rápidas --- */
+.ms-asis__opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 46%;
+  padding: 0.75rem 1rem;
+  overflow-y: auto;
+  background: var(--bg-white);
+  border-top: 1px solid var(--border-neutral);
+}
+
+.ms-asis__opciones:empty { display: none; }
+
+.ms-asis__chip,
+.ms-asis__ir {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 0.875rem;
+  font-family: var(--font-main);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  text-decoration: none;
+  color: var(--color-accent);
+  background: var(--bg-white);
+  border: 1.5px solid var(--color-accent);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ms-asis__chip:hover { background: color-mix(in srgb, var(--color-accent) 12%, var(--bg-white)); }
+
+.ms-asis__chip--urgente {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.ms-asis__chip--urgente:hover { background: color-mix(in srgb, var(--color-error) 12%, var(--bg-white)); }
+
+.ms-asis__chip--suave {
+  justify-content: center;
+  color: var(--text-body-alt);
+  border-color: var(--border-neutral);
+  font-weight: 500;
+}
+
+.ms-asis__ir {
+  justify-content: center;
+  color: #FFFFFF;
+  background: #2563EB;
+  border-color: #2563EB;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.ms-asis__ir:hover { background: #1D4ED8; border-color: #1D4ED8; }
+
+.ms-asis__chip:focus-visible,
+.ms-asis__ir:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.ms-asis__aviso {
+  padding: 0.5rem 1rem 0.75rem;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+  background: var(--bg-white);
+}
+
+/* --- Pantallas pequeñas --- */
+@media (max-width: 560px) {
+  .ms-asis { right: 0.875rem; bottom: 4.75rem; }
+  .ms-asis__panel { max-height: calc(100vh - 8rem); }
+  .ms-asis__fab-texto { display: none; }
+  .ms-asis__fab { padding: 0 0.875rem; }
+  /* con el panel abierto, el botón se esconde para no tapar las respuestas */
+  .ms-asis.is-open .ms-asis__fab { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-asis__panel { animation: none; }
+  .ms-asis__fab { transition: none; }
+}
+
+@media print {
+  .ms-asis { display: none !important; }
+}
