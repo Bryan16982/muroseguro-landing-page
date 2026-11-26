@@ -249,6 +249,40 @@
 
             <p class="eval-accept__msg" id="error-aceptacion">Debes aceptar esta condición antes de continuar.</p>
           </div>
+          <!-- Checklist de progreso en vivo -->
+          <div class="card eval-aside-card eval-checklist" id="card-checklist" aria-live="polite">
+            <div class="eval-checklist__head">
+              <h2 class="eval-checklist__title">Progreso del paso</h2>
+              <span class="eval-checklist__badge" id="chk-badge">Pendiente</span>
+            </div>
+
+            <ul class="eval-checklist__list">
+              <li class="eval-checklist__item" id="chk-item-terreno" data-estado="pend">
+                <span class="eval-checklist__ico" aria-hidden="true">
+                  <svg class="eval-icon eval-chk-ok" viewBox="0 0 24 24" width="16" height="16" focusable="false"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg class="eval-icon eval-chk-pend" viewBox="0 0 24 24" width="16" height="16" focusable="false"><circle cx="12" cy="12" r="9"/></svg>
+                </span>
+                <span id="chk-txt-terreno">Condición del terreno (obligatorio)</span>
+              </li>
+
+              <li class="eval-checklist__item" id="chk-item-aceptacion" data-estado="pend">
+                <span class="eval-checklist__ico" aria-hidden="true">
+                  <svg class="eval-icon eval-chk-ok" viewBox="0 0 24 24" width="16" height="16" focusable="false"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg class="eval-icon eval-chk-pend" viewBox="0 0 24 24" width="16" height="16" focusable="false"><circle cx="12" cy="12" r="9"/></svg>
+                </span>
+                <span id="chk-txt-aceptacion">Aceptación obligatoria pendiente</span>
+              </li>
+
+              <li class="eval-checklist__item" id="chk-item-opcionales" data-estado="info">
+                <span class="eval-checklist__ico" aria-hidden="true">
+                  <svg class="eval-icon" viewBox="0 0 24 24" width="16" height="16" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>
+                </span>
+                <span id="chk-txt-opcionales">Opcionales: ninguno marcado</span>
+              </li>
+            </ul>
+
+            <p class="eval-checklist__pie" id="chk-pie">Completa los 2 requisitos obligatorios para habilitar «Siguiente».</p>
+          </div>
         </aside>
 
         <!-- Navegación -->
