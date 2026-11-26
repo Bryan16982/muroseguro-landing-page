@@ -515,76 +515,72 @@
                 <div class="p4-error" id="p4-error" role="alert" hidden>
                   <ul class="p4-error__lista" id="p4-error-lista"></ul>
                 </div>
-                <!--
-                  PASO 4 · Revisión de calidad de foto + borrador sugerido
-                  DÓNDE PEGAR (evaluacion.html): dentro de la tarjeta "Archivos", justo DESPUÉS del bloque
-                  <div class="p4-error" id="p4-error" ...> ... </div> y ANTES del </div> que cierra esa tarjeta.
-                -->
-                <section class="p4-ia" id="p4-ia" aria-labelledby="p4-ia-titulo" hidden>
+              
+                <section class="p4-calidad" id="p4-calidad" aria-labelledby="p4-calidad-titulo" hidden>
                 
-                  <header class="p4-ia__cab">
-                    <img class="p4-ia__thumb" id="p4-ia-img" alt="" width="56" height="56">
-                    <div class="p4-ia__cab-texto">
-                      <h4 class="p4-ia__titulo" id="p4-ia-titulo">Revisión de tu foto</h4>
-                      <p class="p4-ia__archivo" id="p4-ia-archivo"></p>
+                  <header class="p4-calidad__cab">
+                    <img class="p4-calidad__thumb" id="p4-calidad-img" alt="" width="56" height="56">
+                    <div class="p4-calidad__cab-texto">
+                      <h4 class="p4-calidad__titulo" id="p4-calidad-titulo">Revisión de tu foto</h4>
+                      <p class="p4-calidad__archivo" id="p4-calidad-archivo"></p>
                     </div>
                   </header>
                 
                   <!-- Transparencia: etiqueta fija junto al indicador de calidad -->
-                  <p class="p4-ia__etiqueta">
+                  <p class="p4-calidad__etiqueta">
                     <svg class="eval-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>
                     <span>Sugerencia automática basada en tu imagen y respuestas previas</span>
                   </p>
                 
-                  <ul class="p4-ia__calidad" aria-label="Calidad de la fotografía">
-                    <li class="p4-ia__chip" id="p4-ia-ilum" data-estado="pend">
-                      <span class="p4-ia__chip-ico" aria-hidden="true"></span>
-                      <span><strong>Iluminación:</strong> <span id="p4-ia-ilum-txt">Analizando…</span></span>
+                  <ul class="p4-calidad__calidad" aria-label="Calidad de la fotografía">
+                    <li class="p4-calidad__chip" id="p4-calidad-ilum" data-estado="pend">
+                      <span class="p4-calidad__chip-ico" aria-hidden="true"></span>
+                      <span><strong>Iluminación:</strong> <span id="p4-calidad-ilum-txt">Analizando…</span></span>
                     </li>
-                    <li class="p4-ia__chip" id="p4-ia-enfoque" data-estado="pend">
-                      <span class="p4-ia__chip-ico" aria-hidden="true"></span>
-                      <span><strong>Enfoque:</strong> <span id="p4-ia-enfoque-txt">Analizando…</span></span>
+                    <li class="p4-calidad__chip" id="p4-calidad-enfoque" data-estado="pend">
+                      <span class="p4-calidad__chip-ico" aria-hidden="true"></span>
+                      <span><strong>Enfoque:</strong> <span id="p4-calidad-enfoque-txt">Analizando…</span></span>
                     </li>
                   </ul>
                 
                   <!-- Recuperación ante errores: alerta NO bloqueante -->
-                  <div class="p4-ia__alerta" id="p4-ia-alerta" hidden>
-                    <p class="p4-ia__alerta-titulo" id="p4-ia-alerta-titulo"></p>
-                    <ul class="p4-ia__consejos" id="p4-ia-consejos"></ul>
-                    <p class="p4-ia__alerta-nota">Es solo un aviso: puedes guardar la evidencia con esta foto si prefieres.</p>
-                    <div class="p4-ia__acciones">
-                      <button type="button" class="btn-secondary eval-btn" id="p4-ia-reemplazar">Reemplazar foto</button>
-                      <button type="button" class="btn-secondary eval-btn" id="p4-ia-conservar">Conservar de todos modos</button>
+                  <div class="p4-calidad__alerta" id="p4-calidad-alerta" hidden>
+                    <p class="p4-calidad__alerta-titulo" id="p4-calidad-alerta-titulo"></p>
+                    <ul class="p4-calidad__consejos" id="p4-calidad-consejos"></ul>
+                    <p class="p4-calidad__alerta-nota">Es solo un aviso: puedes guardar la evidencia con esta foto si prefieres.</p>
+                    <div class="p4-calidad__acciones">
+                      <button type="button" class="btn-secondary eval-btn" id="p4-calidad-reemplazar">Reemplazar foto</button>
+                      <button type="button" class="btn-secondary eval-btn" id="p4-calidad-conservar">Conservar de todos modos</button>
                     </div>
                   </div>
                 
                   <!-- Control del usuario: borrador editable, nunca aplicado en silencio -->
-                  <div class="p4-ia__borrador" id="p4-ia-borrador" hidden>
-                    <p class="p4-ia__sub">Borrador para llenar “Título” y “Categoría”</p>
-                    <dl class="p4-ia__datos">
-                      <div><dt>Título</dt><dd id="p4-ia-sug-titulo"></dd></div>
-                      <div><dt>Categoría</dt><dd id="p4-ia-sug-categoria"></dd></div>
+                  <div class="p4-calidad__borrador" id="p4-calidad-borrador" hidden>
+                    <p class="p4-calidad__sub">Borrador para llenar “Título” y “Categoría”</p>
+                    <dl class="p4-calidad__datos">
+                      <div><dt>Título</dt><dd id="p4-calidad-sug-titulo"></dd></div>
+                      <div><dt>Categoría</dt><dd id="p4-calidad-sug-categoria"></dd></div>
                     </dl>
-                    <p class="p4-ia__porque" id="p4-ia-porque"></p>
-                    <p class="p4-ia__previo" id="p4-ia-previo" hidden></p>
+                    <p class="p4-calidad__porque" id="p4-calidad-porque"></p>
+                    <p class="p4-calidad__previo" id="p4-calidad-previo" hidden></p>
                 
-                    <div class="p4-ia__acciones" id="p4-ia-acciones">
-                      <button type="button" class="btn-primary eval-btn" id="p4-ia-aplicar">Aplicar sugerencia</button>
-                      <button type="button" class="btn-secondary eval-btn" id="p4-ia-manual">Editar manualmente</button>
+                    <div class="p4-calidad__acciones" id="p4-calidad-acciones">
+                      <button type="button" class="btn-primary eval-btn" id="p4-calidad-aplicar">Aplicar sugerencia</button>
+                      <button type="button" class="btn-secondary eval-btn" id="p4-calidad-manual">Editar manualmente</button>
                     </div>
                 
-                    <div class="p4-ia__hecho" id="p4-ia-hecho" hidden>
+                    <div class="p4-calidad__hecho" id="p4-calidad-hecho" hidden>
                       <p>Sugerencia aplicada. Revísala y corrígela si hace falta.</p>
-                      <button type="button" class="btn-secondary eval-btn" id="p4-ia-deshacer">Deshacer</button>
+                      <button type="button" class="btn-secondary eval-btn" id="p4-calidad-deshacer">Deshacer</button>
                     </div>
                   </div>
                 
-                  <p class="p4-ia__sin-sug" id="p4-ia-sin-sug" hidden>
+                  <p class="p4-calidad__sin-sug" id="p4-calidad-sin-sug" hidden>
                     Todavía no tengo datos suficientes para sugerir un título y una categoría. Complétalos tú en “Detalles de la evidencia”.
                   </p>
                 
                   <!-- Confianza: límite explícito del análisis, siempre visible -->
-                  <p class="p4-ia__nota">
+                  <p class="p4-calidad__nota">
                     Este análisis solo revisa la calidad de la imagen (luz y nitidez) y te ayuda a llenar el formulario.
                     <strong>No diagnostica ni evalúa la resistencia estructural de tu vivienda.</strong>
                   </p>
