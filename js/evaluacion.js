@@ -732,9 +732,7 @@
   function procesarArchivos(seleccion) {
     const errores = [];
     let agregados = 0;
-    const errores = [];
-    const nuevos = [];            
-    let agregados = 0;
+    const nuevos = [];    
 
     Array.from(seleccion).forEach((file) => {
       const motivo = validarArchivo(file);
