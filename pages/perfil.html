@@ -91,8 +91,21 @@
           <label class="form-label" for="p-telefono">Teléfono (máx. 9 dígitos)</label>
           <input class="form-input" id="p-telefono" type="tel" inputmode="numeric" maxlength="9" pattern="[0-9]{1,9}" placeholder="987654321" required>
         </div>
-        <button class="btn-primary" type="submit">Guardar perfil</button>
+        <div class="btn-row">
+          <button class="btn-primary" type="submit">Guardar perfil</button>
+          <button class="btn-secondary" type="button" id="btn-cancelar-perfil" hidden>Cancelar</button>
+        </div>
       </form>
+      <div id="perfil-guardado" class="card" hidden>
+        <span class="viv-badge">Perfil guardado</span>
+        <h3>Tus datos</h3>
+        <dl class="perfil-datos">
+          <div class="perfil-dato"><dt>Nombres</dt><dd id="pg-nombres"></dd></div>
+          <div class="perfil-dato"><dt>Apellidos</dt><dd id="pg-apellidos"></dd></div>
+          <div class="perfil-dato"><dt>Teléfono</dt><dd id="pg-telefono"></dd></div>
+        </dl>
+        <button class="btn-primary" type="button" id="btn-editar-perfil">Editar perfil</button>
+      </div>
     </section>
 
     <section id="viviendas" class="perfil-section" aria-labelledby="t-viv">
@@ -136,13 +149,73 @@
         </label>
         <progress id="progreso" max="100" value="0">0%</progress>
         <ul class="check-list" id="check-list">
-          <li><label for="c1"><input type="checkbox" id="c1" value="c1"> Planos de arquitectura</label></li>
-          <li><label for="c2"><input type="checkbox" id="c2" value="c2"> Planos de estructuras</label></li>
-          <li><label for="c3"><input type="checkbox" id="c3" value="c3"> DNI del propietario</label></li>
-          <li><label for="c4"><input type="checkbox" id="c4" value="c4"> Fotos históricas de la autoconstrucción</label></li>
-          <li><label for="c5"><input type="checkbox" id="c5" value="c5"> Permiso municipal o constancia de posesión</label></li>
+          <li class="check-item" data-obligatorio="false">
+            <div class="check-fila">
+              <label for="c1"><input type="checkbox" id="c1" value="c1"> <span>Planos de arquitectura</span></label>
+              <span class="req-tag req-opcional">Opcional / Si cuentas con ellos</span>
+            </div>
+            <div class="check-adjunto">
+              <button type="button" class="btn-secondary btn-adjuntar">Adjuntar (opcional)</button>
+              <input type="file" id="f1" accept=".pdf,.png,.jpg,.jpeg" aria-label="Archivo de Planos de arquitectura" hidden>
+              <span class="adjunto-info" hidden><span class="adjunto-check" aria-hidden="true">✓</span> <span class="adjunto-nombre"></span></span>
+              <button type="button" class="btn-secondary btn-quitar" hidden>Quitar</button>
+            </div>
+          </li>
+          <li class="check-item" data-obligatorio="false">
+            <div class="check-fila">
+              <label for="c2"><input type="checkbox" id="c2" value="c2"> <span>Planos de estructuras</span></label>
+              <span class="req-tag req-opcional">Opcional / Si cuentas con ellos</span>
+            </div>
+            <div class="check-adjunto">
+              <button type="button" class="btn-secondary btn-adjuntar">Adjuntar (opcional)</button>
+              <input type="file" id="f2" accept=".pdf,.png,.jpg,.jpeg" aria-label="Archivo de Planos de estructuras" hidden>
+              <span class="adjunto-info" hidden><span class="adjunto-check" aria-hidden="true">✓</span> <span class="adjunto-nombre"></span></span>
+              <button type="button" class="btn-secondary btn-quitar" hidden>Quitar</button>
+            </div>
+          </li>
+          <li class="check-item" data-obligatorio="true">
+            <div class="check-fila">
+              <label for="c3"><input type="checkbox" id="c3" value="c3"> <span>DNI del propietario</span></label>
+              <span class="req-tag req-obligatorio">Obligatorio</span>
+            </div>
+            <div class="check-adjunto">
+              <button type="button" class="btn-secondary btn-adjuntar">Adjuntar (opcional)</button>
+              <input type="file" id="f3" accept=".pdf,.png,.jpg,.jpeg" aria-label="Archivo de DNI del propietario" hidden>
+              <span class="adjunto-info" hidden><span class="adjunto-check" aria-hidden="true">✓</span> <span class="adjunto-nombre"></span></span>
+              <button type="button" class="btn-secondary btn-quitar" hidden>Quitar</button>
+            </div>
+          </li>
+          <li class="check-item" data-obligatorio="true">
+            <div class="check-fila">
+              <label for="c4"><input type="checkbox" id="c4" value="c4"> <span>Fotos históricas de la autoconstrucción</span></label>
+              <span class="req-tag req-obligatorio">Obligatorio</span>
+            </div>
+            <div class="check-adjunto">
+              <button type="button" class="btn-secondary btn-adjuntar">Adjuntar (opcional)</button>
+              <input type="file" id="f4" accept=".pdf,.png,.jpg,.jpeg" aria-label="Archivo de Fotos históricas de la autoconstrucción" hidden>
+              <span class="adjunto-info" hidden><span class="adjunto-check" aria-hidden="true">✓</span> <span class="adjunto-nombre"></span></span>
+              <button type="button" class="btn-secondary btn-quitar" hidden>Quitar</button>
+            </div>
+          </li>
+          <li class="check-item" data-obligatorio="false">
+            <div class="check-fila">
+              <label for="c5"><input type="checkbox" id="c5" value="c5"> <span>Permiso municipal o constancia de posesión</span></label>
+              <span class="req-tag req-opcional">Opcional / Si cuentas con él</span>
+            </div>
+            <div class="check-adjunto">
+              <button type="button" class="btn-secondary btn-adjuntar">Adjuntar (opcional)</button>
+              <input type="file" id="f5" accept=".pdf,.png,.jpg,.jpeg" aria-label="Archivo de Permiso municipal o constancia de posesión" hidden>
+              <span class="adjunto-info" hidden><span class="adjunto-check" aria-hidden="true">✓</span> <span class="adjunto-nombre"></span></span>
+              <button type="button" class="btn-secondary btn-quitar" hidden>Quitar</button>
+            </div>
+          </li>
         </ul>
+        <p id="check-ayuda" class="check-ayuda" aria-live="polite"></p>
         <button class="btn-primary" type="button" id="btn-confirmar" disabled>Confirmar preparación</button>
+        <div id="check-exito" class="check-exito" role="status" hidden>
+          <p><strong>¡Preparación confirmada!</strong> <span id="check-exito-texto"></span></p>
+          <a class="btn-primary" id="check-exito-enlace" href="directorio.html">Ir al Directorio de Ingenieros</a>
+        </div>
       </div>
     </section>
 
