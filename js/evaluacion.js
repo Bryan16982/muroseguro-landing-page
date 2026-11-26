@@ -177,7 +177,7 @@
     if (destino) {
       actual.hidden = true;
       destino.hidden = false;
-      toggleSidebar(numero > 1);
+      toggleSidebar(true);
       window.scrollTo({ top: 0 });
       const titulo = destino.querySelector('h1, h2');
       if (titulo) {
@@ -219,7 +219,7 @@
   });
 
   /* ---------- Inicio ---------- */
-  toggleSidebar(false);
+  toggleSidebar(true);
   if (RESTAURAR_AL_CARGAR) restaurar();
   actualizarEstado();
 })();
@@ -370,10 +370,6 @@
 
       seccion.hidden = true;
       paso1.hidden = false;
-
-      const sidebar = document.getElementById('eval-sidebar');
-      if (sidebar) sidebar.hidden = true;
-      document.body.classList.remove('eval-con-sidebar');
 
       window.scrollTo({ top: 0 });
       const titulo = document.getElementById('paso-1-titulo');
