@@ -39,6 +39,18 @@
     });
   })();
 
+  const CLAVE_PREINSPECCION = 'muroseguro_preinspeccion';
+
+  function leerPreinspeccion() {
+    try {
+      const raw = localStorage.getItem(CLAVE_PREINSPECCION);
+      const obj = raw ? JSON.parse(raw) : null;
+      return obj && obj.confirmado && obj.usuario === USER ? obj : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   let toastTimer;
   function toast(msg, isError) {
     const t = $('toast');
@@ -92,6 +104,48 @@
     $('p-telefono').value = perfil.telefono || '';
   }
   setSaludo(perfil ? perfil.nombres : '');
+
+  const tarjetaPerfil = $('perfil-guardado');
+  const btnEditarPerfil = $('btn-editar-perfil');
+  const btnCancelarPerfil = $('btn-cancelar-perfil');
+  let datosPerfil = perfil;
+
+  function valorOGuion(v) {
+    return v && String(v).trim() ? v : '—';
+  }
+
+  function mostrarPerfil() {
+    const hayPerfil = !!(datosPerfil && (datosPerfil.nombres || datosPerfil.apellidos || datosPerfil.telefono));
+    fPerfil.hidden = hayPerfil;
+    tarjetaPerfil.hidden = !hayPerfil;
+    btnCancelarPerfil.hidden = true;
+    if (hayPerfil) {
+      $('pg-nombres').textContent = valorOGuion(datosPerfil.nombres);
+      $('pg-apellidos').textContent = valorOGuion(datosPerfil.apellidos);
+      $('pg-telefono').textContent = valorOGuion(datosPerfil.telefono);
+    }
+  }
+
+  function editarPerfil() {
+    $('p-nombres').value = datosPerfil.nombres || '';
+    $('p-apellidos').value = datosPerfil.apellidos || '';
+    $('p-telefono').value = datosPerfil.telefono || '';
+    fPerfil.querySelectorAll('.input-error').forEach((f) => {
+      f.classList.remove('input-error');
+      f.setAttribute('aria-invalid', 'false');
+    });
+    fPerfil.hidden = false;
+    tarjetaPerfil.hidden = true;
+    btnCancelarPerfil.hidden = false;
+    $('p-nombres').focus();
+  }
+
+  btnEditarPerfil.addEventListener('click', editarPerfil);
+  btnCancelarPerfil.addEventListener('click', () => {
+    mostrarPerfil();
+    btnEditarPerfil.focus();
+  });
+  mostrarPerfil();
   onlyDigits($('p-telefono'));
   clearOnInput(fPerfil);
   fPerfil.addEventListener('submit', (e) => {
@@ -104,6 +158,9 @@
     };
     save('perfil', data);
     setSaludo(data.nombres);
+    datosPerfil = data;
+    mostrarPerfil();
+    btnEditarPerfil.focus();
     toast('Perfil actualizado correctamente.');
   });
 
@@ -136,9 +193,13 @@
   function renderViviendas() {
     const ul = $('lista-viviendas');
     ul.innerHTML = '';
+    const pre = leerPreinspeccion();
     viviendas.forEach((v, i) => {
       const li = el('li', 'viv-item');
       li.appendChild(el('span', 'viv-badge', 'Activa'));
+      if (pre) {
+        li.appendChild(el('span', 'viv-badge viv-badge-listo', 'Listo para visita técnica (' + pre.cantidad + '/' + pre.total + ' documentos)'));
+      }
       li.appendChild(el('h3', '', 'Vivienda en ' + v.dist));
       li.appendChild(el('p', '', 'Departamento: ' + v.depto));
       li.appendChild(el('p', '', 'Provincia: ' + v.prov));
@@ -229,9 +290,30 @@
   });
 
   const checks = Array.from(document.querySelectorAll('#check-list input[type="checkbox"]'));
+  const obligatorios = checks.filter((c) => c.closest('.check-item').dataset.obligatorio === 'true');
   const progreso = $('progreso');
+  const btnConfirmar = $('btn-confirmar');
+  const panelExito = $('check-exito');
+  const ayuda = $('check-ayuda');
   const estado = load('checklist', {});
+  const adjuntos = load('checklist_adjuntos', {});
   checks.forEach((c) => { c.checked = !!estado[c.value]; });
+
+  function textoDe(c) {
+    return c.closest('label').querySelector('span').textContent.trim();
+  }
+
+  function guardarEstado() {
+    const s = {};
+    checks.forEach((x) => { s[x.value] = x.checked; });
+    save('checklist', s);
+  }
+
+  function mostrarExito(pre) {
+    if (!pre) { panelExito.hidden = true; return; }
+    $('check-exito-texto').textContent = 'Listo para visita técnica (' + pre.cantidad + '/' + pre.total + ' documentos).';
+    panelExito.hidden = false;
+  }
 
   function actualizarProgreso() {
     const marcados = checks.filter((c) => c.checked).length;
@@ -239,16 +321,92 @@
     progreso.value = pct;
     progreso.textContent = pct + '%';
     $('progreso-texto').textContent = pct + '% completado (' + marcados + ' de ' + checks.length + ' requisitos)';
-    $('btn-confirmar').disabled = pct < 60;
+    const faltan = obligatorios.filter((c) => !c.checked).map(textoDe);
+    btnConfirmar.disabled = faltan.length > 0;
+    ayuda.textContent = faltan.length
+      ? 'Para confirmar necesitas marcar los requisitos obligatorios: ' + faltan.join(' y ') + '.'
+      : 'Ya cumples los requisitos obligatorios. Puedes confirmar tu preparación.';
   }
-  checks.forEach((c) => c.addEventListener('change', () => {
-    const s = {};
-    checks.forEach((x) => { s[x.value] = x.checked; });
-    save('checklist', s);
-    actualizarProgreso();
-  }));
-  $('btn-confirmar').addEventListener('click', () => toast('Preparación confirmada.'));
+
+  function invalidarConfirmacion() {
+    if (!leerPreinspeccion()) return;
+    try { localStorage.removeItem(CLAVE_PREINSPECCION); } catch (e) { }
+    mostrarExito(null);
+    renderViviendas();
+  }
+
+  checks.forEach((c) => {
+    const item = c.closest('.check-item');
+    const input = item.querySelector('input[type="file"]');
+    const btnAdjuntar = item.querySelector('.btn-adjuntar');
+    const btnQuitar = item.querySelector('.btn-quitar');
+    const info = item.querySelector('.adjunto-info');
+    const nombreEl = item.querySelector('.adjunto-nombre');
+
+    function pintarAdjunto() {
+      const nombre = adjuntos[c.value];
+      info.hidden = !nombre;
+      btnQuitar.hidden = !nombre;
+      nombreEl.textContent = nombre || '';
+      btnAdjuntar.textContent = nombre ? 'Cambiar archivo' : 'Adjuntar (opcional)';
+      btnAdjuntar.setAttribute('aria-label', (nombre ? 'Cambiar archivo de ' : 'Adjuntar archivo de ') + textoDe(c));
+      btnQuitar.setAttribute('aria-label', 'Quitar archivo de ' + textoDe(c));
+    }
+
+    c.addEventListener('change', () => {
+      guardarEstado();
+      actualizarProgreso();
+      invalidarConfirmacion();
+    });
+
+    btnAdjuntar.addEventListener('click', () => input.click());
+
+    input.addEventListener('change', () => {
+      const archivo = input.files && input.files[0];
+      if (!archivo) return;
+      adjuntos[c.value] = archivo.name;
+      save('checklist_adjuntos', adjuntos);
+      input.value = '';
+      c.checked = true;
+      guardarEstado();
+      pintarAdjunto();
+      actualizarProgreso();
+      invalidarConfirmacion();
+      toast('Archivo adjuntado: ' + archivo.name);
+    });
+
+    btnQuitar.addEventListener('click', () => {
+      delete adjuntos[c.value];
+      save('checklist_adjuntos', adjuntos);
+      pintarAdjunto();
+      invalidarConfirmacion();
+      btnAdjuntar.focus();
+    });
+
+    pintarAdjunto();
+  });
+
+  btnConfirmar.addEventListener('click', () => {
+    const marcados = checks.filter((c) => c.checked);
+    const pre = {
+      confirmado: true,
+      usuario: USER,
+      fecha: new Date().toISOString(),
+      porcentaje: Math.round((marcados.length / checks.length) * 100),
+      cantidad: marcados.length,
+      total: checks.length,
+      documentos: marcados.map(textoDe),
+      adjuntos: {}
+    };
+    marcados.forEach((c) => { if (adjuntos[c.value]) pre.adjuntos[textoDe(c)] = adjuntos[c.value]; });
+    try { localStorage.setItem(CLAVE_PREINSPECCION, JSON.stringify(pre)); } catch (e) { }
+    mostrarExito(pre);
+    renderViviendas();
+    toast('Preparación confirmada.');
+  });
+
   actualizarProgreso();
+  mostrarExito(leerPreinspeccion());
 
   const fBit = $('form-bitacora');
   let hitos = load('bitacora', []);
