@@ -37,6 +37,15 @@
   const estado = $('estado-formulario');
   const radiosTerreno = form.querySelectorAll('input[name="terreno"]');
   const sidebar = $('eval-sidebar');
+  const CLIMA_ETIQUETAS = { viento: 'Viento', lluvia: 'Lluvia', sol: 'Sol' };
+  const cardChecklist = $('card-checklist');
+  const chkBadge = $('chk-badge');
+  const chkItemTerreno = $('chk-item-terreno');
+  const chkTxtTerreno = $('chk-txt-terreno');
+  const chkItemAceptacion = $('chk-item-aceptacion');
+  const chkTxtAceptacion = $('chk-txt-aceptacion');
+  const chkTxtOpcionales = $('chk-txt-opcionales');
+  const chkPie = $('chk-pie');
 
   let intentoFallido = false;
 
@@ -95,6 +104,44 @@
     return { puntajes, total };
   }
 
+  function actualizarChecklist(datos) {
+    if (!cardChecklist) return;
+
+    const terrenoObj = TERRENOS.find((t) => t.valor === datos.terreno);
+    const terrenoOk = Boolean(terrenoObj);
+    const aceptacionOk = Boolean(datos.aceptacion);
+    const listo = terrenoOk && aceptacionOk;
+
+    chkItemTerreno.dataset.estado = terrenoOk ? 'ok' : 'pend';
+    chkTxtTerreno.textContent = terrenoOk
+      ? `Condición del terreno: ${terrenoObj.etiqueta}`
+      : 'Condición del terreno (obligatorio)';
+
+    chkItemAceptacion.dataset.estado = aceptacionOk ? 'ok' : 'pend';
+    chkTxtAceptacion.textContent = aceptacionOk
+      ? 'Aceptación obligatoria marcada'
+      : 'Aceptación obligatoria pendiente';
+
+    const opcionales = [
+      ...datos.clima.map((c) => CLIMA_ETIQUETAS[c] || c),
+      ...datos.patologias.map((p) => {
+        const found = PATOLOGIAS.find((x) => x.valor === p);
+        return found ? found.etiqueta : p;
+      })
+    ];
+    if (datos.humedadBase === 'si') opcionales.push('Humedad en base');
+
+    chkTxtOpcionales.textContent = opcionales.length
+      ? `Opcionales marcados: ${opcionales.join(', ')}`
+      : 'Opcionales: ninguno marcado';
+
+    cardChecklist.classList.toggle('is-ready', listo);
+    chkBadge.textContent = listo ? 'Listo' : 'Pendiente';
+    chkPie.textContent = listo
+      ? 'Todo listo. Ya puedes pulsar «Siguiente».'
+      : 'Completa los 2 requisitos obligatorios para habilitar «Siguiente».';
+  }
+
   /* ---------- HU-007: validación y estado del botón ---------- */
   function actualizarEstado() {
     actualizarPreguntaCondicional();
@@ -116,6 +163,8 @@
     const hayErrorTerreno = intentoFallido && faltaTerreno;
     cardTerreno.classList.toggle('has-error', hayErrorTerreno);
     errorTerreno.hidden = !hayErrorTerreno;
+
+    actualizarChecklist(datos);
 
     return datos;
   }
