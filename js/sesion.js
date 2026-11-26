@@ -16,13 +16,68 @@
     document.querySelectorAll('[data-usuario-nombre]').forEach(function (el) { el.textContent = correo; el.title = correo; });
   }
 
+  function cerrarSesion() {
+    sessionStorage.removeItem(CLAVE_SESION);
+    localStorage.removeItem(CLAVE_ACTIVO);
+    location.replace('index.html');
+  }
+
+  /* Pregunta antes de cerrar la sesión: Cerrar sesión / Cancelar */
+  function confirmarCierre(disparador) {
+    if (document.getElementById('ms-confirmar')) return;
+
+    var fondo = document.createElement('div');
+    fondo.className = 'ms-confirmar';
+    fondo.id = 'ms-confirmar';
+    fondo.innerHTML =
+      '<div class="ms-confirmar__caja" role="alertdialog" aria-modal="true" ' +
+           'aria-labelledby="ms-confirmar-titulo" aria-describedby="ms-confirmar-texto">' +
+        '<h2 id="ms-confirmar-titulo">¿Cerrar sesión?</h2>' +
+        '<p id="ms-confirmar-texto">Saldrás de tu cuenta en este dispositivo. Podrás volver a ingresar cuando quieras.</p>' +
+        '<div class="ms-confirmar__botones">' +
+          '<button type="button" class="btn-secondary" data-ms-cancelar>Cancelar</button>' +
+          '<button type="button" class="btn-primary" data-ms-confirmar>Sí, cerrar sesión</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(fondo);
+
+    var btnCancelar = fondo.querySelector('[data-ms-cancelar]');
+    var btnConfirmar = fondo.querySelector('[data-ms-confirmar]');
+
+    function cerrarDialogo() {
+      document.removeEventListener('keydown', alTeclear, true);
+      fondo.remove();
+      if (disparador && typeof disparador.focus === 'function') disparador.focus();
+    }
+
+    function alTeclear(ev) {
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        cerrarDialogo();
+      } else if (ev.key === 'Tab') {
+        /* El foco se queda dentro del cuadro */
+        if (ev.shiftKey && document.activeElement === btnCancelar) {
+          ev.preventDefault();
+          btnConfirmar.focus();
+        } else if (!ev.shiftKey && document.activeElement === btnConfirmar) {
+          ev.preventDefault();
+          btnCancelar.focus();
+        }
+      }
+    }
+
+    btnCancelar.addEventListener('click', cerrarDialogo);
+    btnConfirmar.addEventListener('click', cerrarSesion);
+    fondo.addEventListener('click', function (ev) { if (ev.target === fondo) cerrarDialogo(); });
+    document.addEventListener('keydown', alTeclear, true);
+    btnCancelar.focus();
+  }
+
   document.addEventListener('click', function (e) {
     var enlace = e.target.closest('[data-cerrar-sesion]');
     if (!enlace) return;
     e.preventDefault();
-    sessionStorage.removeItem(CLAVE_SESION);
-    localStorage.removeItem(CLAVE_ACTIVO);
-    location.replace('index.html');
+    confirmarCierre(enlace);
   });
 
   (function iniciarTemaGlobal() {
