@@ -136,7 +136,7 @@
   function renderViviendas() {
     const ul = $('lista-viviendas');
     ul.innerHTML = '';
-    viviendas.forEach((v) => {
+    viviendas.forEach((v, i) => {
       const li = el('li', 'viv-item');
       li.appendChild(el('span', 'viv-badge', 'Activa'));
       li.appendChild(el('h3', '', 'Vivienda en ' + v.dist));
@@ -144,12 +144,61 @@
       li.appendChild(el('p', '', 'Provincia: ' + v.prov));
       li.appendChild(el('p', '', 'Distrito: ' + v.dist));
       li.appendChild(el('p', '', 'Dirección técnica inicial: ' + v.dt));
+      const btnEliminar = el('button', 'btn-secondary btn-eliminar', 'Eliminar');
+      btnEliminar.type = 'button';
+      btnEliminar.dataset.indice = String(i);
+      btnEliminar.setAttribute('aria-label', 'Eliminar vivienda en ' + v.dist);
+      li.appendChild(btnEliminar);
       ul.appendChild(li);
     });
     $('viv-total').textContent = '(Total: ' + viviendas.length + ')';
     $('viv-vacio').hidden = viviendas.length > 0;
   }
   renderViviendas();
+
+  const dlg = $('dlg-eliminar');
+  let indicePendiente = null;
+  let botonOrigen = null;
+
+  function eliminarPendiente() {
+    if (indicePendiente === null) return;
+    viviendas.splice(indicePendiente, 1);
+    save('viviendas', viviendas);
+    indicePendiente = null;
+    renderViviendas();
+    toast('Vivienda eliminada.');
+  }
+
+  $('lista-viviendas').addEventListener('click', (e) => {
+    const b = e.target.closest('.btn-eliminar');
+    if (!b) return;
+    indicePendiente = Number(b.dataset.indice);
+    botonOrigen = b;
+    const v = viviendas[indicePendiente];
+    const nombre = 'Vivienda en ' + v.dist;
+    $('dlg-texto').textContent = '¿Estás seguro de que deseas eliminar «' + nombre + '»? Esta acción no se puede deshacer.';
+    if (typeof dlg.showModal === 'function') {
+      dlg.showModal();
+      $('dlg-cancelar').focus();
+    } else if (window.confirm('¿Eliminar «' + nombre + '»? Esta acción no se puede deshacer.')) {
+      eliminarPendiente();
+    }
+  });
+
+  $('dlg-confirmar').addEventListener('click', () => {
+    eliminarPendiente();
+    botonOrigen = null;
+    dlg.close();
+    $('btn-nueva-vivienda').focus();
+  });
+  $('dlg-cancelar').addEventListener('click', () => dlg.close());
+  $('dlg-x').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', () => {
+    indicePendiente = null;
+    if (botonOrigen && document.body.contains(botonOrigen)) botonOrigen.focus();
+    botonOrigen = null;
+  });
 
   const btnNueva = $('btn-nueva-vivienda');
   function toggleFormViv(show) {
