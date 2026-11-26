@@ -1,285 +1,181 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MuroSeguro - Seguridad sísmica de tu vivienda</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body class="index">
 
-const CLAVE_USUARIOS = 'ms_usuarios';   
-const CLAVE_SESION = 'ms_sesion';       
-const CLAVE_ACTIVO = 'ms_usuario_activo';
+  <header class="topbar">
+    <a class="marca" href="index.html">
+      <img src="../assets/images/logo-muroseguro.png" alt="" width="32" height="39">
+      MuroSeguro
+    </a>
 
+    <button class="icon-btn" id="boton-menu" type="button"
+            aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">☰</button>
 
-function leerUsuarios() {
-  try { return JSON.parse(localStorage.getItem(CLAVE_USUARIOS)) || []; }
-  catch (e) { return []; }
-}
+    <nav id="menu" class="menu" aria-label="Principal">
+      <a href="#inicio">Inicio</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#herramientas">Herramientas</a>
+      <a href="#crear-cuenta">Crear cuenta</a>
+      <a class="btn-secondary" href="login.html">Iniciar sesión</a>
+    </nav>
+  </header>
 
-function correoValido(correo) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo);
-}
+  <main>
+    <!-- 1. Bienvenida -->
+    <section id="inicio" class="hero" aria-labelledby="titulo-hero">
+      <div class="hero-texto">
+        <p class="etiqueta">Orientación preliminar sísmica</p>
+        <h1 id="titulo-hero">¿Es seguro el muro de tu casa? <span class="resalta">Descúbrelo en minutos.</span></h1>
+        <p class="hero-lead">Aprende a reconocer grietas, humedad y otras señales visibles en tu vivienda, y entérate a tiempo de cuándo llamar a un ingeniero civil colegiado.</p>
 
+        <div class="hero-acciones">
+          <a class="btn-primary btn-grande" href="#crear-cuenta">Crear cuenta gratis</a>
+          <a class="btn-secondary btn-grande" href="login.html">Ya tengo cuenta</a>
+        </div>
 
-function mostrarError(campo, mensaje) {
-  const texto = document.getElementById(campo.id + '-error');
-  texto.textContent = mensaje;
-  texto.hidden = false;
-  campo.classList.add('is-error');
-  campo.setAttribute('aria-invalid', 'true');
-}
+        <ul class="hero-puntos" aria-label="Ventajas">
+          <li>Sin costo</li>
+          <li>Sin instalar nada</li>
+          <li>Funciona en tu celular</li>
+        </ul>
+      </div>
 
-function quitarError(campo) {
-  const texto = document.getElementById(campo.id + '-error');
-  texto.textContent = '';
-  texto.hidden = true;
-  campo.classList.remove('is-error');
-  campo.removeAttribute('aria-invalid');
-}
+      <figure class="hero-visual">
+        <img src="../assets/images/grieta-estructural.png"
+             alt="Grieta diagonal que atraviesa un muro de ladrillo" width="480" height="567">
+        <figcaption class="hero-nota">
+          <strong>Una grieta diagonal</strong>
+          <span>¿Cuándo preocuparse? Te lo explicamos.</span>
+        </figcaption>
+      </figure>
+    </section>
 
+    <!-- 2. Cómo funciona -->
+    <section id="como-funciona" class="seccion" aria-labelledby="titulo-pasos">
+      <div class="seccion-cabecera">
+        <h2 id="titulo-pasos">Así de simple</h2>
+        <p>Tres pasos, sin tecnicismos.</p>
+      </div>
 
-function revisar(campo, mensaje) {
-  if (mensaje) { mostrarError(campo, mensaje); return false; }
-  quitarError(campo);
-  return true;
-}
+      <ol class="pasos">
+        <li class="paso card">
+          <span class="paso-num" aria-hidden="true">1</span>
+          <h3>Cuéntanos qué ves</h3>
+          <p>Responde una encuesta guiada sobre el entorno, el tipo de daño y dónde está en tu vivienda.</p>
+        </li>
+        <li class="paso card">
+          <span class="paso-num" aria-hidden="true">2</span>
+          <h3>Recibe tu diagnóstico</h3>
+          <p>Obtienes una orientación referencial sobre qué tan urgente es revisar tu vivienda.</p>
+        </li>
+        <li class="paso card">
+          <span class="paso-num" aria-hidden="true">3</span>
+          <h3>Actúa con información</h3>
+          <p>Aprende con guías y videos, o contacta a un ingeniero civil colegiado del directorio.</p>
+        </li>
+      </ol>
+    </section>
 
+    <!-- 3. Herramientas -->
+    <section id="herramientas" class="seccion seccion-alt" aria-labelledby="titulo-herramientas">
+      <div class="seccion-cabecera">
+        <h2 id="titulo-herramientas">Todo lo que necesitas en un solo lugar</h2>
+        <p>Cuatro herramientas pensadas para propietarios, no para ingenieros.</p>
+      </div>
 
-function cerrarSesion() {
-  sessionStorage.removeItem(CLAVE_SESION);
-  localStorage.removeItem(CLAVE_ACTIVO);
-  location.assign('index.html');
-}
+      <div class="herramientas">
+        <article class="card herramienta">
+          <svg class="herramienta-icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          <h3>Evaluar mi vivienda</h3>
+          <p>Una encuesta corta para identificar señales de riesgo visibles.</p>
+        </article>
+        <article class="card herramienta">
+          <svg class="herramienta-icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect width="6" height="4" x="9" y="3" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+          <h3>Resultados claros</h3>
+          <p>Un diagnóstico referencial que puedes guardar y descargar.</p>
+        </article>
+        <article class="card herramienta">
+          <svg class="herramienta-icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <h3>Directorio de ingenieros</h3>
+          <p>Encuentra ingenieros civiles colegiados cuando necesites una revisión profesional.</p>
+        </article>
+        <article class="card herramienta">
+          <svg class="herramienta-icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <h3>Recursos y videos</h3>
+          <p>Aprende a reconocer grietas, humedad y fallas de tarrajeo.</p>
+        </article>
+      </div>
+    </section>
 
+    <!-- 4. Registro -->
+    <section id="crear-cuenta" class="seccion registro-seccion" aria-label="Crear cuenta">
+      <div class="registro-texto">
+        <h2>Empieza hoy, es gratis</h2>
+        <p>Crea tu cuenta y evalúa tu vivienda cuando quieras. Tus datos se guardan en tu navegador.</p>
+        <ul class="registro-lista">
+          <li>Evaluación guiada paso a paso</li>
+          <li>Diagnóstico referencial de tu vivienda</li>
+          <li>Directorio de ingenieros civiles colegiados</li>
+        </ul>
+        <p class="caption">MuroSeguro es una herramienta de orientación. No certifica la seguridad de tu vivienda ni reemplaza la evaluación de un profesional.</p>
+      </div>
 
-function protegerPagina() {
-  if (!sessionStorage.getItem(CLAVE_SESION)) location.replace('login.html');
-}
-if (document.body.hasAttribute('data-privada')) {
-  protegerPagina();
-  window.addEventListener('pageshow', protegerPagina);
-}
+      <section class="card tarjeta" id="registro" aria-labelledby="titulo-registro">
+      <h2 id="titulo-registro">Crea tu cuenta</h2>
 
-// Con sesión iniciada no se muestra la pantalla de registro
-function saltarSiHaySesion() {
-  if (sessionStorage.getItem(CLAVE_SESION)) location.replace('inicio.html');
-}
-if (document.getElementById('form-registro')) {
-  saltarSiHaySesion();
-  window.addEventListener('pageshow', saltarSiHaySesion);
-}
+      <form id="form-registro" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="correo">Correo electrónico</label>
+          <input class="form-input" id="correo" type="email" autocomplete="email"
+                 placeholder="nombre@correo.com" aria-describedby="correo-error">
+          <p class="error-texto" id="correo-error" hidden></p>
+        </div>
 
-const formRegistro = document.getElementById('form-registro');
-if (formRegistro) {
-  const correo = document.getElementById('correo');
-  const clave = document.getElementById('clave');
-  const clave2 = document.getElementById('clave2');
-  const terminos = document.getElementById('terminos');
-  const boton = document.getElementById('boton-registro');
-  const cajaTerminos = document.getElementById('check-terminos');
+        <div class="form-group">
+          <label class="form-label" for="clave">Contraseña</label>
+          <input class="form-input" id="clave" type="password" autocomplete="new-password"
+                 aria-describedby="clave-ayuda clave-error">
+          <p class="caption" id="clave-ayuda">Mínimo 8 caracteres, con letras y números.</p>
+          <p class="error-texto" id="clave-error" hidden></p>
+        </div>
 
+        <div class="form-group">
+          <label class="form-label" for="clave2">Confirmar contraseña</label>
+          <input class="form-input" id="clave2" type="password" autocomplete="new-password"
+                 aria-describedby="clave2-error">
+          <p class="error-texto" id="clave2-error" hidden></p>
+        </div>
 
-  terminos.addEventListener('change', () => {
-    boton.setAttribute('aria-disabled', terminos.checked ? 'false' : 'true');
-    if (terminos.checked) {
-      document.getElementById('terminos-error').hidden = true;
-      cajaTerminos.classList.remove('is-error');
-    }
-  });
+        <div class="form-group">
+          <label class="check" id="check-terminos" for="terminos">
+            <input type="checkbox" id="terminos" aria-describedby="terminos-error">
+            <span>Acepto los <strong>Términos y Condiciones</strong> y entiendo que el diagnóstico de MuroSeguro es <strong>referencial</strong> y <strong>no certifica</strong> la seguridad de mi vivienda.</span>
+          </label>
+          <p class="error-texto" id="terminos-error" hidden></p>
+        </div>
 
+        <button class="btn-primary" id="boton-registro" type="submit" aria-disabled="true">Crear cuenta</button>
+      </form>
 
-  formRegistro.addEventListener('input', (e) => {
-    if (e.target.classList.contains('is-error')) quitarError(e.target);
-  });
+      <p class="pie-tarjeta">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+    </section>
+    </section>
+  </main>
 
-  formRegistro.addEventListener('submit', (e) => {
-    e.preventDefault();
+  <footer class="pie">
+    <p>© MuroSeguro · Orientación preliminar sobre la seguridad sísmica de tu vivienda.</p>
+  </footer>
 
-    let ok = true;
-    const usuarios = leerUsuarios();
-    const mail = correo.value.trim().toLowerCase();
+  <script src="../js/index.js"></script>
+</body>
+</html>
 
-    let msgCorreo = '';
-    if (!mail) msgCorreo = 'Ingresa tu correo electrónico.';
-    else if (!correoValido(mail)) msgCorreo = 'Escribe un correo válido, por ejemplo nombre@correo.com.';
-    else if (usuarios.some((u) => u.correo === mail)) msgCorreo = 'Ya existe una cuenta con este correo.';
-    ok = revisar(correo, msgCorreo) && ok;
-
-    let msgClave = '';
-    if (!clave.value) msgClave = 'Crea una contraseña.';
-    else if (clave.value.length < 8) msgClave = 'Debe tener al menos 8 caracteres.';
-    else if (!/[a-zA-Z]/.test(clave.value) || !/[0-9]/.test(clave.value)) msgClave = 'Combina letras y números.';
-    ok = revisar(clave, msgClave) && ok;
-
-    let msgClave2 = '';
-    if (!clave2.value) msgClave2 = 'Repite tu contraseña.';
-    else if (clave2.value !== clave.value) msgClave2 = 'Las contraseñas no coinciden.';
-    ok = revisar(clave2, msgClave2) && ok;
-
- 
-    if (!terminos.checked) {
-      const texto = document.getElementById('terminos-error');
-      texto.textContent = 'Debes aceptar los términos para crear tu cuenta.';
-      texto.hidden = false;
-      cajaTerminos.classList.add('is-error');
-      terminos.setAttribute('aria-invalid', 'true');
-      ok = false;
-    }
-
-    if (!ok) {
-      const primero = formRegistro.querySelector('[aria-invalid="true"]');
-      if (primero) primero.focus();
-      return;
-    }
-
-    usuarios.push({ correo: mail, clave: clave.value, aceptoTerminos: true });
-    localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
-    location.href = 'login.html?registro=ok';
-  });
-}
-
-const formLogin = document.getElementById('form-login');
-if (formLogin) {
-  const correo = document.getElementById('correo');
-  const clave = document.getElementById('clave');
-  const errorLogin = document.getElementById('login-error');
-
-  if (sessionStorage.getItem(CLAVE_SESION)) location.replace('inicio.html');
-
-
-  if (new URLSearchParams(location.search).get('registro') === 'ok') {
-    document.getElementById('aviso-registro').hidden = false;
-  }
-
-  const verClave = document.getElementById('ver-clave');
-  verClave.addEventListener('click', () => {
-    const mostrar = clave.type === 'password';
-    clave.type = mostrar ? 'text' : 'password';
-    verClave.textContent = mostrar ? 'Ocultar' : 'Mostrar';
-    verClave.setAttribute('aria-pressed', String(mostrar));
-  });
-
-  formLogin.addEventListener('input', (e) => {
-    if (e.target.classList.contains('is-error')) quitarError(e.target);
-  });
-
-  formLogin.addEventListener('submit', (e) => {
-    e.preventDefault();
-    errorLogin.hidden = true;
-
-    let ok = true;
-    ok = revisar(correo, correoValido(correo.value.trim()) ? '' : 'Ingresa un correo válido.') && ok;
-    ok = revisar(clave, clave.value ? '' : 'Ingresa tu contraseña.') && ok;
-    if (!ok) {
-      formLogin.querySelector('[aria-invalid="true"]').focus();
-      return;
-    }
-
-    const mail = correo.value.trim().toLowerCase();
-    const usuario = leerUsuarios().find((u) => u.correo === mail && u.clave === clave.value);
-
-    if (!usuario) {
-   
-      errorLogin.textContent = 'Correo o contraseña incorrectos.';
-      errorLogin.hidden = false;
-      clave.value = '';
-      clave.focus();
-      return;
-    }
-
-    sessionStorage.setItem(CLAVE_SESION, usuario.correo);
-    localStorage.setItem(CLAVE_ACTIVO, usuario.correo);
-    location.replace('inicio.html');
-  });
-}
-
-
-// ---------- Olvidé mi contraseña (login.html) ----------
-const formOlvido = document.getElementById('form-olvido');
-if (formOlvido) {
-  const tarjetaLogin = document.getElementById('tarjeta-login');
-  const tarjetaOlvido = document.getElementById('tarjeta-olvido');
-  const correo = document.getElementById('olvido-correo');
-  const clave = document.getElementById('olvido-clave');
-  const clave2 = document.getElementById('olvido-clave2');
-  const errorGeneral = document.getElementById('olvido-general');
-  const avisoOk = document.getElementById('aviso-registro');
-
-  function mostrarOlvido(ver) {
-    tarjetaLogin.hidden = ver;
-    tarjetaOlvido.hidden = !ver;
-    errorGeneral.hidden = true;
-    if (ver) {
-      correo.value = document.getElementById('correo').value;
-      correo.focus();
-    } else {
-      document.getElementById('correo').focus();
-    }
-  }
-
-  document.getElementById('abrir-olvido').addEventListener('click', () => mostrarOlvido(true));
-  document.getElementById('cerrar-olvido').addEventListener('click', () => mostrarOlvido(false));
-
-  formOlvido.addEventListener('input', (e) => {
-    if (e.target.classList.contains('is-error')) quitarError(e.target);
-  });
-
-  formOlvido.addEventListener('submit', (e) => {
-    e.preventDefault();
-    errorGeneral.hidden = true;
-
-    const mail = correo.value.trim().toLowerCase();
-    let ok = true;
-
-    ok = revisar(correo, !mail ? 'Ingresa tu correo electrónico.' : (correoValido(mail) ? '' : 'Escribe un correo válido, por ejemplo nombre@correo.com.')) && ok;
-
-    let msgClave = '';
-    if (!clave.value) msgClave = 'Crea una contraseña nueva.';
-    else if (clave.value.length < 8) msgClave = 'Debe tener al menos 8 caracteres.';
-    else if (!/[a-zA-Z]/.test(clave.value) || !/[0-9]/.test(clave.value)) msgClave = 'Combina letras y números.';
-    ok = revisar(clave, msgClave) && ok;
-
-    let msgClave2 = '';
-    if (!clave2.value) msgClave2 = 'Repite tu contraseña nueva.';
-    else if (clave2.value !== clave.value) msgClave2 = 'Las contraseñas no coinciden.';
-    ok = revisar(clave2, msgClave2) && ok;
-
-    if (!ok) {
-      formOlvido.querySelector('[aria-invalid="true"]').focus();
-      return;
-    }
-
-    const usuarios = leerUsuarios();
-    const usuario = usuarios.find((u) => u.correo === mail);
-    if (!usuario) {
-      errorGeneral.textContent = 'No encontramos una cuenta con ese correo. Revisa que esté bien escrito o crea una cuenta.';
-      errorGeneral.hidden = false;
-      return;
-    }
-
-    usuario.clave = clave.value;
-    localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
-
-    formOlvido.reset();
-    mostrarOlvido(false);
-    document.getElementById('correo').value = mail;
-    avisoOk.textContent = 'Tu contraseña fue actualizada. Inicia sesión con la nueva.';
-    avisoOk.hidden = false;
-    document.getElementById('clave').focus();
-  });
-}
-
-const botonMenu = document.getElementById('boton-menu');
-if (botonMenu) {
-  const menu = document.getElementById('menu');
-
-  function cambiarMenu(abrir) {
-    menu.classList.toggle('abierto', abrir);
-    botonMenu.setAttribute('aria-expanded', String(abrir));
-    botonMenu.setAttribute('aria-label', abrir ? 'Cerrar menú' : 'Abrir menú');
-    botonMenu.textContent = abrir ? '✕' : '☰';
-  }
-
-  botonMenu.addEventListener('click', () => cambiarMenu(!menu.classList.contains('abierto')));
-  menu.addEventListener('click', (e) => { if (e.target.closest('a')) cambiarMenu(false); });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menu.classList.contains('abierto')) {
-      cambiarMenu(false);
-      botonMenu.focus();
-    }
-  });
-}
