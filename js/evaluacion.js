@@ -732,6 +732,9 @@
   function procesarArchivos(seleccion) {
     const errores = [];
     let agregados = 0;
+    const errores = [];
+    const nuevos = [];            
+    let agregados = 0;
 
     Array.from(seleccion).forEach((file) => {
       const motivo = validarArchivo(file);
@@ -761,6 +764,7 @@
         dataUrl: null
       };
       archivos.push(nuevoItem);
+      nuevos.push(nuevoItem);   
       comprimirImagen(file, (dataUrl) => { nuevoItem.dataUrl = dataUrl; });
       agregados += 1;
     });
@@ -771,6 +775,9 @@
     if (agregados > 0) {
       anunciar(`${agregados} ${agregados === 1 ? 'imagen adjuntada' : 'imágenes adjuntadas'}. Total: ${archivos.length}.`);
     }
+
+    analizarNuevos(nuevos);    
+    return agregados;
   }
 
   function quitarArchivo(id) {
@@ -779,6 +786,7 @@
 
     const [quitado] = archivos.splice(indice, 1);
     if (quitado.url) URL.revokeObjectURL(quitado.url);
+    if (quitado === itemEnPanel) ocultarPanelCalidad();
 
     renderLista();
     mostrarErrores([]);
@@ -1263,8 +1271,13 @@
 
   /* ---------- Eventos: selección y arrastre ---------- */
   inputArchivos.addEventListener('change', () => {
-    procesarArchivos(inputArchivos.files);
-    inputArchivos.value = ''; 
+    const elegidos = Array.from(inputArchivos.files);
+    const idViejo = reemplazoPendiente;
+    reemplazoPendiente = null;
+    // "Reemplazar foto": la anterior se quita solo si llegó al menos un archivo válido.
+    if (idViejo !== null && elegidos.some((f) => !validarArchivo(f))) quitarArchivo(idViejo);
+    procesarArchivos(elegidos);
+    inputArchivos.value = '';
   });
 
   ['dragenter', 'dragover'].forEach((tipo) => {
