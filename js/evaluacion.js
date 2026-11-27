@@ -1439,16 +1439,19 @@
     evento.preventDefault();
 
     if (archivos.length === 0) {
-      const rechazadas = archivos.filter((a) => a.analisis && a.analisis.rechazada);
-      if (rechazadas.length > 0) {
-        mostrarErrores(
-          rechazadas.map((a) => `${a.nombre}: imagen no permitida. No corresponde a una foto de muro o estructura; reemplázala o quítala para continuar.`)
-        );
-        if (calidad && !calidad.panel.hidden) calidad.btnReemplazar.focus();
-        return;
-      }
+      mostrarErrores(['Adjunta al menos una imagen para guardar la evidencia.']);
+      inputArchivos.focus();
+      return;
     }
-  }
+
+    const rechazadas = archivos.filter((a) => a.analisis && a.analisis.rechazada);
+    if (rechazadas.length > 0) {
+      mostrarErrores(
+        rechazadas.map((a) => `${a.nombre}: imagen no permitida. No corresponde a una foto de muro o estructura; reemplázala o quítala para continuar.`)
+      );
+      if (calidad && !calidad.panel.hidden) calidad.btnReemplazar.focus();
+      return;
+    }
 
     mostrarErrores([]);
     if (!guardarPaso4()) return;
