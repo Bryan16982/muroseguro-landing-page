@@ -1733,6 +1733,24 @@ body.eval-con-sidebar main {
   color: var(--p4-texto-suave);
 }
 
+/* Estado bloqueado (imagen externa / no corresponde a un muro) */
+.p4-calidad__chip[data-estado="error"] {
+  border-color: var(--color-error);
+}
+
+.p4-calidad__chip[data-estado="error"] .p4-calidad__chip-ico {
+  color: var(--color-error);
+}
+
+.p4-calidad__alerta.is-error {
+  background: color-mix(in srgb, var(--color-error) 12%, var(--bg-white));
+  border-color: var(--color-error);
+}
+
+.p4-calidad__alerta.is-error .p4-calidad__alerta-titulo {
+  color: var(--color-error);
+}
+
 /* ---------- Borrador editable ---------- */
 .p4-calidad__borrador {
   display: grid;
