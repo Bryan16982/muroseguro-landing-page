@@ -48,7 +48,46 @@ var glosario = [
   { termino: "Estribo", definicion: "Fierro doblado en forma de anillo que rodea las varillas de una columna o viga." },
   { termino: "Fisura", definicion: "Abertura muy fina, menor a 1 mm, que suele afectar solo el acabado." },
   { termino: "Grieta", definicion: "Abertura más ancha que una fisura. Puede atravesar el muro y señalar un problema estructural." },
-  { termino: "Tarrajeo", definicion: "Capa de mortero que cubre el muro como acabado. Si se cae, no siempre indica daño estructural." }
+  { termino: "Tarrajeo", definicion: "Capa de mortero que cubre el muro como acabado. Si se cae, no siempre indica daño estructural." },
+  { termino: "Acero corrugado", definicion: "Varilla de acero con relieves en la superficie que se usa dentro del concreto. Los relieves ayudan a que se adhiera bien a la mezcla." },
+  { termino: "Agregado", definicion: "Arena y piedra que se mezclan con cemento y agua para hacer concreto o mortero." },
+  { termino: "Albañilería confinada", definicion: "Sistema de muros de ladrillo rodeados por columnas y vigas de concreto armado que los mantienen unidos durante un sismo." },
+  { termino: "Ampliación", definicion: "Construcción que agrega pisos o ambientes a una vivienda existente. Debe contar con planos y la revisión de un ingeniero." },
+  { termino: "Cemento", definicion: "Polvo que, mezclado con agua, se endurece y une la arena y la piedra para formar concreto o mortero." },
+  { termino: "Cimiento corrido", definicion: "Franja de concreto enterrada debajo de los muros que transmite su peso al terreno." },
+  { termino: "Concreto armado", definicion: "Concreto con varillas de acero en su interior. El concreto resiste la compresión y el acero, la tracción." },
+  { termino: "Concreto simple", definicion: "Concreto sin varillas de acero. Se usa en cimientos y pisos, pero no resiste bien la tracción ni los sismos." },
+  { termino: "Curado", definicion: "Mantener húmedo el concreto durante los primeros días después del vaciado para que alcance su resistencia." },
+  { termino: "Dintel", definicion: "Viga pequeña colocada sobre puertas y ventanas para sostener el muro que está encima." },
+  { termino: "Dirección técnica", definicion: "Supervisión de la obra por un ingeniero civil o arquitecto colegiado que verifica que se construya según los planos." },
+  { termino: "Encamisado", definicion: "Reforzamiento que consiste en envolver una columna o viga existente con una nueva capa de concreto armado." },
+  { termino: "Encofrado", definicion: "Molde de madera o metal que da forma al concreto mientras se endurece." },
+  { termino: "Epicentro", definicion: "Punto de la superficie terrestre ubicado justo encima del lugar donde se origina un sismo." },
+  { termino: "Intensidad sísmica", definicion: "Medida de qué tan fuerte se sintió un sismo en un lugar y de los daños que causó." },
+  { termino: "Junta sísmica", definicion: "Espacio libre entre dos edificaciones vecinas para que no choquen entre sí durante un sismo." },
+  { termino: "Ladrillo King Kong", definicion: "Ladrillo macizo o con pocos huecos, adecuado para muros portantes." },
+  { termino: "Ladrillo pandereta", definicion: "Ladrillo con muchos huecos horizontales. No debe usarse en muros que cargan peso." },
+  { termino: "Licencia de edificación", definicion: "Permiso que otorga la municipalidad para construir o ampliar una vivienda, previa revisión de los planos." },
+  { termino: "Licuación de suelos", definicion: "Fenómeno en el que un suelo arenoso y saturado de agua pierde firmeza durante un sismo y se comporta como un líquido." },
+  { termino: "Losa aligerada", definicion: "Techo de concreto armado con ladrillos huecos en su interior para reducir el peso." },
+  { termino: "Magnitud", definicion: "Medida de la energía liberada por un sismo en su origen. Es la misma para todos los lugares donde se siente." },
+  { termino: "Mortero", definicion: "Mezcla de cemento, arena y agua que une los ladrillos o se usa como tarrajeo." },
+  { termino: "Muro portante", definicion: "Muro que soporta el peso de los pisos y techos superiores. No debe demolerse ni perforarse sin un ingeniero." },
+  { termino: "Placa", definicion: "Muro de concreto armado que da gran rigidez a la estructura frente a los sismos." },
+  { termino: "Plano estructural", definicion: "Dibujo técnico que indica la ubicación, medidas y refuerzo de columnas, vigas, losas y cimientos." },
+  { termino: "Recubrimiento", definicion: "Capa de concreto que cubre las varillas de acero y las protege del óxido y del fuego." },
+  { termino: "Reforzamiento", definicion: "Conjunto de trabajos para que una estructura existente resista mejor las cargas y los sismos." },
+  { termino: "Salitre", definicion: "Manchas blancas de sales que aparecen en muros húmedos. Debilitan el tarrajeo y el ladrillo con el tiempo." },
+  { termino: "Sobrecimiento", definicion: "Parte del cimiento que sobresale del nivel del suelo y protege la base del muro de la humedad." },
+  { termino: "Suelo blando", definicion: "Terreno poco resistente que se deforma con facilidad y amplifica las vibraciones de un sismo." },
+  { termino: "Tabique", definicion: "Muro que solo separa ambientes y no soporta el peso de los pisos superiores." },
+  { termino: "Techo ligero", definicion: "Cubierta de materiales livianos, como calamina o planchas, que pesa menos que una losa de concreto." },
+  { termino: "Vaciado", definicion: "Colocación del concreto fresco dentro del encofrado." },
+  { termino: "Vibrado", definicion: "Agitar el concreto fresco con una vibradora para eliminar el aire y evitar cangrejeras." },
+  { termino: "Viga", definicion: "Elemento horizontal de concreto armado que une las columnas y recibe el peso de la losa." },
+  { termino: "Viga de amarre", definicion: "Viga sobre los muros de ladrillo que los une con las columnas y los confina." },
+  { termino: "Voladizo", definicion: "Parte de la losa que sobresale de la fachada sin columnas que la sostengan, como un balcón." },
+  { termino: "Zapata", definicion: "Base de concreto, más ancha que la columna, que reparte su peso sobre el suelo." }
 ];
 
 var fichas = {
@@ -333,6 +372,9 @@ function mostrarGlosario(lista) {
 
   contenedor.innerHTML = html;
 
+  document.querySelector("#glosario-contador").textContent =
+    lista.length === 1 ? "1 término" : lista.length + " términos";
+
   if (lista.length === 0) {
     mensajeVacio.classList.remove("oculto");
   } else {
@@ -589,5 +631,8 @@ for (var k = 0; k < botonesTag.length; k++) {
 }
 
 mostrarRecursos(recursos);
+glosario.sort(function (a, b) {
+  return a.termino.localeCompare(b.termino, "es");
+});
 mostrarGlosario(glosario);
 mostrarCasos(casos);

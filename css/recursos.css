@@ -186,6 +186,11 @@
   color: var(--color-secondary);
 }
 
+.glosario-contador {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 .glosario {
   max-height: 320px;
   overflow-y: auto;
@@ -459,7 +464,7 @@
 .termino-btn {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 4px 8px;
   width: 100%;
