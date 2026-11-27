@@ -913,8 +913,8 @@
     quemadaMedia: 215,     
     quemadaPorcion: 0.40,  
     borrosaVarianza: 35,   
-    planaCaptura: 0.58,    
-    blancaPuraCaptura: 0.40
+    identicaCaptura: 0.72,   
+    colorDominanteCaptura: 0.25
   };
 
   // Vocabulario para el borrador (las claves coinciden con los <option> de #p4-campo-categoria)
@@ -986,12 +986,13 @@
   function medirCalidad(rgba, ancho, alto) {
     const n = ancho * alto;
     const gris = new Float32Array(n);
+    const conteoColores = new Map();
     let suma = 0;
     let oscuros = 0;
     let quemados = 0;
-    let blancosPuros = 0;
-    let paresPlanos = 0;
+    let paresIdenticos = 0;
     let totalPares = 0;
+    let maxColor = 0;
 
     for (let y = 0; y < alto; y++) {
       for (let x = 0; x < ancho; x++) {
@@ -1006,12 +1007,17 @@
         suma += lum;
         if (lum < 40) oscuros++;
         if (lum > 240) quemados++;
-        if (r >= 248 && g >= 248 && b >= 248) blancosPuros++;
+
+        const claveColor = (r << 16) | (g << 8) | b;
+        const c = (conteoColores.get(claveColor) || 0) + 1;
+        conteoColores.set(claveColor, c);
+        if (c > maxColor) maxColor = c;
 
         if (x > 0) {
           const iPrev = i - 4;
-          const diff = Math.abs(r - rgba[iPrev]) + Math.abs(g - rgba[iPrev + 1]) + Math.abs(b - rgba[iPrev + 2]);
-          if (diff <= 3) paresPlanos++;
+          if (r === rgba[iPrev] && g === rgba[iPrev + 1] && b === rgba[iPrev + 2]) {
+            paresIdenticos++;
+          }
           totalPares++;
         }
       }
@@ -1035,8 +1041,8 @@
       media: suma / n,
       porcionOscura: oscuros / n,
       porcionQuemada: quemados / n,
-      porcionBlancaPura: blancosPuros / n,
-      porcionPlana: totalPares ? paresPlanos / totalPares : 0,
+      porcionIdentica: totalPares ? paresIdenticos / totalPares : 0,
+      porcionColorDominante: maxColor / n,
       varianza: m ? s2 / m - (s / m) * (s / m) : 0
     };
   }
@@ -1044,9 +1050,9 @@
   function evaluarCalidad(m, nombreArchivo) {
     const esNombreCaptura = /captura|screenshot|screen[\s_-]?shot|recorte|snip/i.test(nombreArchivo || '');
     const rechazada =
-      m.porcionPlana >= UMBRALES.planaCaptura ||
-      (m.porcionPlana >= 0.40 && m.porcionBlancaPura >= UMBRALES.blancaPuraCaptura) ||
-      (esNombreCaptura && m.porcionPlana >= 0.35);
+      (m.porcionColorDominante >= UMBRALES.colorDominanteCaptura && m.porcionIdentica >= 0.45) ||
+      m.porcionIdentica >= UMBRALES.identicaCaptura ||
+      (esNombreCaptura && (m.porcionColorDominante >= 0.15 || m.porcionIdentica >= 0.40));
 
     if (rechazada) {
       return {
@@ -1077,7 +1083,7 @@
       hayProblemas: iluminacion !== 'ok' || enfoque === 'borrosa'
     };
   }
-
+  
   function medirImagen(url) {
     return new Promise((resolver, rechazar) => {
       const img = new Image();
