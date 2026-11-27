@@ -1864,3 +1864,86 @@ body.eval-con-sidebar main {
 @media (prefers-reduced-motion: reduce) {
   .p4-calidad { animation: none; }
 }
+
+/* ==========================================================
+   UNIFICACIÓN DE PASOS 2, 3 Y 4 (Tarjetas de paso + botones)
+   ========================================================== */
+
+/* Botones horizontales separados (igual que Paso 1) */
+.eval-step-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.p3-acciones.eval-step-actions {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.p4-step-actions {
+  margin-top: 0;
+}
+
+/* Tarjetas de título de Paso 2 y Paso 3 */
+.p2-step-card {
+  margin-top: 0.25rem;
+}
+
+.p3-step-card {
+  margin-bottom: 1.25rem;
+}
+
+.p3-progress {
+  margin-bottom: 0.75rem;
+}
+
+/* En móvil (< 1024px) en Paso 2: 1° Barra, 2° Bloque Paso 2, 3° Croquis y opciones */
+@media (max-width: 1023px) {
+  .p2-panel {
+    display: contents;
+  }
+
+  .p2-progress {
+    order: 1;
+    margin-bottom: 0;
+  }
+
+  .p2-step-card {
+    order: 2;
+    margin-top: 0;
+  }
+
+  .p2-card {
+    order: 3;
+  }
+
+  .p2-fieldset {
+    order: 4;
+    margin-top: 0;
+  }
+
+  .p2-acciones {
+    order: 5;
+    margin-top: 0;
+  }
+
+  .p2-ayuda {
+    order: 6;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .eval-step-actions .eval-btn,
+  .p3-acciones.eval-step-actions .eval-btn,
+  .p4-ok-acciones.eval-step-actions .eval-btn {
+    flex: 1 1 0;
+    width: auto;
+  }
+}
