@@ -379,3 +379,20 @@ body.ms-dark .ms-mbar {
 }
 
 body.ms-dark .ms-mbar__marca { color: #F8FAFC; }
+
+.ms-sb__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.ms-sb__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  transform: translateX(-2px);
+}
