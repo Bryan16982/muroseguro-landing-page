@@ -906,14 +906,15 @@
     renderLista();
   }
 
-  // Umbrales ajustables. Calibrar con 10–20 fotos reales tomadas con celulares de gama media.
   const UMBRALES = {
-    anchoAnalisis: 480,    // px: la foto se reduce a este ancho SOLO para medirla
-    oscuraMedia: 70,       // luminancia media (0–255) menor → "muy oscura"
-    oscuraPorcion: 0.55,   // o más de 55 % de píxeles casi negros
-    quemadaMedia: 215,     // luminancia media mayor → "demasiada luz"
-    quemadaPorcion: 0.40,  // o más de 40 % de píxeles casi blancos
-    borrosaVarianza: 35    // varianza del Laplaciano menor → "posiblemente borrosa"
+    anchoAnalisis: 480,    
+    oscuraMedia: 70,       
+    oscuraPorcion: 0.55,   
+    quemadaMedia: 215,     
+    quemadaPorcion: 0.40,  
+    borrosaVarianza: 35,   
+    planaCaptura: 0.58,    
+    blancaPuraCaptura: 0.40
   };
 
   // Vocabulario para el borrador (las claves coinciden con los <option> de #p4-campo-categoria)
@@ -942,6 +943,7 @@
   const ICONOS_CALIDAD = {
     ok: '<svg class="eval-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><polyline points="20 6 9 17 4 12"/></svg>',
     alerta: '<svg class="eval-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>',
+    error: '<svg class="eval-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>',
     pend: '<svg class="eval-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>'
   };
 
@@ -958,6 +960,7 @@
     alerta: $('p4-calidad-alerta'),
     alertaTitulo: $('p4-calidad-alerta-titulo'),
     consejos: $('p4-calidad-consejos'),
+    alertaNota: $('p4-calidad-alerta').querySelector('.p4-calidad__alerta-nota'),
     btnReemplazar: $('p4-calidad-reemplazar'),
     btnConservar: $('p4-calidad-conservar'),
     borrador: $('p4-calidad-borrador'),
@@ -986,13 +989,32 @@
     let suma = 0;
     let oscuros = 0;
     let quemados = 0;
+    let blancosPuros = 0;
+    let paresPlanos = 0;
+    let totalPares = 0;
 
-    for (let i = 0, p = 0; p < n; i += 4, p++) {
-      const y = 0.2126 * rgba[i] + 0.7152 * rgba[i + 1] + 0.0722 * rgba[i + 2];
-      gris[p] = y;
-      suma += y;
-      if (y < 40) oscuros++;
-      if (y > 240) quemados++;
+    for (let y = 0; y < alto; y++) {
+      for (let x = 0; x < ancho; x++) {
+        const p = y * ancho + x;
+        const i = p * 4;
+        const r = rgba[i];
+        const g = rgba[i + 1];
+        const b = rgba[i + 2];
+
+        const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        gris[p] = lum;
+        suma += lum;
+        if (lum < 40) oscuros++;
+        if (lum > 240) quemados++;
+        if (r >= 248 && g >= 248 && b >= 248) blancosPuros++;
+
+        if (x > 0) {
+          const iPrev = i - 4;
+          const diff = Math.abs(r - rgba[iPrev]) + Math.abs(g - rgba[iPrev + 1]) + Math.abs(b - rgba[iPrev + 2]);
+          if (diff <= 3) paresPlanos++;
+          totalPares++;
+        }
+      }
     }
 
     // Nitidez: varianza del Laplaciano (4 vecinos). Poco contraste de bordes = foto borrosa.
@@ -1013,23 +1035,47 @@
       media: suma / n,
       porcionOscura: oscuros / n,
       porcionQuemada: quemados / n,
+      porcionBlancaPura: blancosPuros / n,
+      porcionPlana: totalPares ? paresPlanos / totalPares : 0,
       varianza: m ? s2 / m - (s / m) * (s / m) : 0
     };
   }
 
-  function evaluarCalidad(m) {
+  function evaluarCalidad(m, nombreArchivo) {
+    const esNombreCaptura = /captura|screenshot|screen[\s_-]?shot|recorte|snip/i.test(nombreArchivo || '');
+    const rechazada =
+      m.porcionPlana >= UMBRALES.planaCaptura ||
+      (m.porcionPlana >= 0.40 && m.porcionBlancaPura >= UMBRALES.blancaPuraCaptura) ||
+      (esNombreCaptura && m.porcionPlana >= 0.35);
+
+    if (rechazada) {
+      return {
+        rechazada: true,
+        iluminacion: 'error',
+        enfoque: 'error',
+        medidas: m,
+        hayProblemas: true
+      };
+    }
+
     let iluminacion = 'ok';
     if (m.media < UMBRALES.oscuraMedia || m.porcionOscura > UMBRALES.oscuraPorcion) {
       iluminacion = 'oscura';
     } else if (m.media > UMBRALES.quemadaMedia || m.porcionQuemada > UMBRALES.quemadaPorcion) {
       iluminacion = 'quemada';
     }
-    // En una foto muy oscura la nitidez no se puede medir con confianza.
+
     const enfoque = iluminacion === 'oscura'
       ? 'pendiente'
       : (m.varianza < UMBRALES.borrosaVarianza ? 'borrosa' : 'ok');
 
-    return { iluminacion, enfoque, medidas: m, hayProblemas: iluminacion !== 'ok' || enfoque === 'borrosa' };
+    return {
+      rechazada: false,
+      iluminacion,
+      enfoque,
+      medidas: m,
+      hayProblemas: iluminacion !== 'ok' || enfoque === 'borrosa'
+    };
   }
 
   function medirImagen(url) {
@@ -1133,6 +1179,34 @@
   }
 
   function armarAlerta(a) {
+    calidad.consejos.textContent = '';
+
+    if (a.rechazada) {
+      calidad.alerta.classList.add('is-error');
+      calidad.alertaTitulo.textContent = 'Imagen prohibida: no corresponde a un muro ni a una estructura';
+      const mensajes = [
+        'Se detectó una captura de pantalla, documento o imagen externa que no está relacionada con la evaluación de tu vivienda.',
+        'Sube una fotografía real de la zona afectada (muros, columnas o techo) para continuar.'
+      ];
+      mensajes.forEach((c) => {
+        const li = document.createElement('li');
+        li.textContent = c;
+        calidad.consejos.appendChild(li);
+      });
+      if (calidad.alertaNota) {
+        calidad.alertaNota.textContent = 'No se permite guardar esta imagen. Debes reemplazarla por una foto válida.';
+      }
+      calidad.btnConservar.hidden = true;
+      calidad.alerta.hidden = false;
+      return;
+    }
+
+    calidad.alerta.classList.remove('is-error');
+    calidad.btnConservar.hidden = false;
+    if (calidad.alertaNota) {
+      calidad.alertaNota.textContent = 'Es solo un aviso: puedes guardar la evidencia con esta foto si prefieres.';
+    }
+
     const partes = [];
     const consejos = [];
 
@@ -1151,7 +1225,6 @@
     }
 
     calidad.alertaTitulo.textContent = `La foto ${partes.join(' y ')}`;
-    calidad.consejos.textContent = '';
     consejos.forEach((c) => {
       const li = document.createElement('li');
       li.textContent = c;
@@ -1208,6 +1281,14 @@
       pintarChip(calidad.chipEnfoque, calidad.txtEnfoque, 'pend', 'No se pudo revisar');
       calidad.alerta.hidden = true;
       resumen = 'No pudimos revisar la calidad de la foto. Puedes continuar con normalidad.';
+    } else if (a.rechazada) {
+      pintarChip(calidad.chipIlum, calidad.txtIlum, 'error', 'Captura externa');
+      pintarChip(calidad.chipEnfoque, calidad.txtEnfoque, 'error', 'No es un muro');
+      armarAlerta(a);
+      calidad.borrador.hidden = true;
+      calidad.sinSug.hidden = true;
+      anunciar('Imagen rechazada: no corresponde a un muro o estructura. Debes reemplazarla.');
+      return;
     } else {
       const textoIlum = { ok: 'Buena', oscura: 'Muy oscura', quemada: 'Demasiada luz' }[a.iluminacion];
       const textoEnfoque = {
@@ -1235,7 +1316,7 @@
 
     for (const item of items) {
       try {
-        item.analisis = evaluarCalidad(await medirImagen(item.url));
+        item.analisis = evaluarCalidad(await medirImagen(item.url), item.nombre);
       } catch (e) {
         item.analisis = null;
       }
@@ -1244,7 +1325,7 @@
 
     const vigentes = items.filter((it) => archivos.includes(it));
     if (!vigentes.length) { ocultarPanelCalidad(); return; }
-    const elegido = vigentes.find((it) => it.analisis && it.analisis.hayProblemas) || vigentes[0];
+    const elegido = vigentes.find((it) => it.analisis && it.analisis.rechazada) || vigentes.find((it) => it.analisis && it.analisis.hayProblemas) || vigentes[0];
     pintarResultado(elegido, vigentes.length);
   }
 
@@ -1358,10 +1439,16 @@
     evento.preventDefault();
 
     if (archivos.length === 0) {
-      mostrarErrores(['Adjunta al menos una imagen para guardar la evidencia.']);
-      inputArchivos.focus();
-      return;
+      const rechazadas = archivos.filter((a) => a.analisis && a.analisis.rechazada);
+      if (rechazadas.length > 0) {
+        mostrarErrores(
+          rechazadas.map((a) => `${a.nombre}: imagen no permitida. No corresponde a una foto de muro o estructura; reemplázala o quítala para continuar.`)
+        );
+        if (calidad && !calidad.panel.hidden) calidad.btnReemplazar.focus();
+        return;
+      }
     }
+  }
 
     mostrarErrores([]);
     if (!guardarPaso4()) return;
