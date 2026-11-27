@@ -394,5 +394,5 @@ body.ms-dark .ms-mbar__marca { color: #F8FAFC; }
   object-fit: contain;
   object-position: center;
   display: block;
-  transform: translateX(-3px);
+  transform: translateX(-2px);
 }
