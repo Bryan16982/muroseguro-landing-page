@@ -289,7 +289,7 @@
         <nav class="eval-nav" aria-label="Navegación del asistente">
           <a class="btn-secondary eval-btn" href="inicio.html">
             <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-            Atrás
+            Retroceder
           </a>
           <div class="eval-next-wrap" id="siguiente-wrap">
             <button type="submit" class="btn-primary eval-btn" id="btn-siguiente" disabled>
@@ -375,8 +375,10 @@
             <span>Paso 2 de 3</span>
           </div>
 
-          <h2 class="p2-title" id="paso-2-titulo">¿Dónde se ubica el daño?</h2>
-          <p class="p2-subtitle" id="p2-subtitulo">Selecciona la zona de la estructura para continuar.</p>
+          <div class="card eval-aside-card p2-step-card">
+            <h2 class="eval-aside-title" id="paso-2-titulo">Paso 2: ¿Dónde se ubica el daño?</h2>
+            <p class="eval-help" id="p2-subtitulo">Selecciona la zona de la estructura para continuar.</p>
+          </div>
 
           <fieldset class="p2-fieldset" aria-describedby="p2-subtitulo">
             <legend class="eval-sr">Zona de la estructura donde se ubica el daño</legend>
@@ -402,19 +404,20 @@
             </div>
           </fieldset>
 
-          <button type="submit" class="btn-primary eval-btn p2-btn" id="p2-continuar" aria-describedby="p2-ayuda" disabled>
-            <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            Continuar
-          </button>
-          <button type="button" class="btn-secondary eval-btn p2-btn-volver" id="p2-volver">
-            <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-            Atrás
-          </button>
-          <p class="p2-ayuda" id="p2-ayuda" aria-live="polite">Selecciona una opción para habilitar el botón.</p>
+          <div class="eval-step-actions p2-acciones">
+            <button type="button" class="btn-secondary eval-btn" id="p2-volver">
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              Retroceder
+            </button>
+            <button type="submit" class="btn-primary eval-btn" id="p2-continuar" aria-describedby="p2-ayuda" disabled>
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              Siguiente
+            </button>
+          </div>
 
+          <p class="p2-ayuda" id="p2-ayuda" aria-live="polite">Selecciona una opción para habilitar el botón.</p>
           <p class="eval-sr" id="p2-estado" role="status" aria-live="polite"></p>
         </form>
-
       </div>
     </section>
 
@@ -422,16 +425,16 @@
       <div class="p3-layout">
         <div class="p3-contenedor">
 
-          <header class="p3-header">
-            <h2 class="p3-title" id="paso-3-titulo">Aprende a diferenciar: Falla vs. Grieta</h2>
-            <p class="p3-subtitle">Observa la diferencia entre una falla superficial y una grieta estructural profunda.</p>
-          </header>
-
           <div class="eval-progress p3-progress" role="progressbar" aria-label="Avance del asistente de evaluación"
-              aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="Avance: 100%">
+              aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="Paso 3 de 3, 100% de avance">
             <span>Avance: 100%</span>
+            <span>Paso 3 de 3</span>
           </div>
 
+          <div class="card eval-aside-card p3-step-card">
+            <h2 class="eval-aside-title" id="paso-3-titulo">Paso 3: Aprende a diferenciar Falla vs. Grieta</h2>
+            <p class="eval-help">Observa la diferencia entre una falla superficial y una grieta estructural profunda.</p>
+          </div>
           <!-- Comparador interactivo -->
           <div class="card p3-card">
             <div class="p3-stage" id="p3-stage">
@@ -502,14 +505,14 @@
             </p>
           </div>
 
-          <div class="p3-acciones">
-            <button type="button" class="btn-primary eval-btn p3-btn-principal" id="p3-continuar">
-              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              Entendido, continuar
-            </button>
+          <div class="eval-step-actions p3-acciones">
             <button type="button" class="btn-secondary eval-btn" id="p3-volver">
               <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-              Atrás
+              Retroceder
+            </button>
+            <button type="button" class="btn-primary eval-btn" id="p3-continuar">
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              Siguiente
             </button>
           </div>
 
@@ -659,8 +662,16 @@
               </div>
 
               <div class="card p4-card p4-actions">
-                <button type="submit" class="btn-primary eval-btn p4-btn" id="p4-guardar">Guardar evidencia</button>
-                <button type="button" class="btn-secondary eval-btn p4-btn" id="p4-cancelar">Cancelar</button>
+                <div class="eval-step-actions p4-step-actions">
+                  <button type="button" class="btn-secondary eval-btn" id="p4-cancelar">
+                    <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    Retroceder
+                  </button>
+                  <button type="submit" class="btn-primary eval-btn" id="p4-guardar">
+                    <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    Siguiente
+                  </button>
+                </div>
               </div>
 
             </div>
@@ -684,9 +695,15 @@
             </div>
           </div>
 
-          <div class="p4-ok-acciones">
-            <button type="button" class="btn-secondary eval-btn" id="p4-editar">Editar evidencia</button>
-            <button type="button" class="btn-primary eval-btn" id="p4-continuar">Continuar</button>
+          <div class="eval-step-actions p4-ok-acciones">
+            <button type="button" class="btn-secondary eval-btn" id="p4-editar">
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              Retroceder
+            </button>
+            <button type="button" class="btn-primary eval-btn" id="p4-continuar">
+              <svg class="eval-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              Siguiente
+            </button>
           </div>
         </div>
 
